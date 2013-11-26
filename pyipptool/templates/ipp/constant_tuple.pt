@@ -1,0 +1,2 @@
+<tal:block tal:repeat="child field"
+           tal:replace="child.render(cstruct[child.name])"/>

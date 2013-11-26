@@ -1,0 +1,4 @@
+<tal:block tal:define="item_template item_template|field.widget.item_template;">
+    <tal:block tal:repeat="child field"
+               tal:replace="structure child.render_template(item_template)"/>
+</tal:block>
