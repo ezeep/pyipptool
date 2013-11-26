@@ -22,3 +22,15 @@ def test_ipptool_create_printer_subscription(_call_ipptool):
     assert 'notify-events all' in request
     assert 'notify-lease-duration 0' in request
     assert 'notify-lease-expiration-time 0' in request
+
+
+@mock.patch.object(pyipptool, '_call_ipptool')
+def test_cups_add_modify_printer_request(_call_ipptool):
+    from pyipptool import cups_add_modify_printer_request
+    cups_add_modify_printer_request(
+        printer_uri='https://localhost:631/classes/PUBLIC-PDF',
+        device_uri='cups-pdf:/')
+    assert _call_ipptool._mock_mock_calls[0][1][0] == ('https://localhost:631/'
+                                                       'classes/PUBLIC-PDF')
+    request = _call_ipptool._mock_mock_calls[0][1][1]
+    assert 'device-uri cups-pdf:/' in request

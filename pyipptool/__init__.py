@@ -5,7 +5,8 @@ import subprocess
 import tempfile
 
 import colander
-from .forms import (create_printer_subscription_form)
+from .forms import (create_printer_subscription_form,
+                    cups_add_modify_printer_form)
 
 
 config = ConfigParser.SafeConfigParser()
@@ -46,3 +47,10 @@ def create_printer_subscription(printer_uri=None,
     request = create_printer_subscription_form.render(kw)
     response = _call_ipptool(printer_uri, request)
     return response['Tests'][0]['notify-subscription-id']
+
+
+def cups_add_modify_printer_request(printer_uri=None, device_uri=None):
+    kw = {'printer_uri': printer_uri, 'device_uri': device_uri}
+    request = cups_add_modify_printer_form.render(kw)
+    _call_ipptool(printer_uri, request)
+    return True
