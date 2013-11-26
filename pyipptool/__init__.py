@@ -37,6 +37,9 @@ def create_printer_subscription(printer_uri=None,
                                 notify_events=None,
                                 notify_lease_duration=colander.null,
                                 notify_lease_expiration_time=colander.null):
+    """
+    Create a new subscription and return its subscription id
+    """
     kw = dict(header={'required_attributes':
                       {'printer_uri': printer_uri,
                        'requesting_user_name': requesting_user_name}},
