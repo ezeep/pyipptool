@@ -35,9 +35,6 @@ class OperationAttributes(colander.Schema):
 
 
 class SubscriptionOperationAttributes(OperationAttributes):
-    attributes_charset = colander.SchemaNode(Charset(),
-                                             default='utf-8',
-                                             widget=IPPAttributeWidget())
     printer_uri = colander.SchemaNode(Uri(),
                                       widget=IPPAttributeWidget())
     requesting_user_name = colander.SchemaNode(Name(),
