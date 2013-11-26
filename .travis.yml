@@ -2,6 +2,8 @@ language: python
 python:
     - "2.7"
 
-install: "python setup.py install"
+install:
+    - "python setup.py install"
+    - "echo \"[main]\nipptool_path = /usr/bin/ipptool\" > ~/.pyipptool.cfg"
 
 script: "python setup.py test"
