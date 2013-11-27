@@ -8,6 +8,10 @@ class Charset(colander.String):
     pass
 
 
+class Enum(colander.String):
+    pass
+
+
 class Keyword(colander.String):
     pass
 
@@ -18,6 +22,14 @@ class Language(colander.String):
 
 class Name(colander.String):
     pass
+
+
+class Text(colander.String):
+    def serialize(self, node, appstruct):
+        value = super(Text, self).serialize(node, appstruct)
+        if value is colander.null:
+            return colander.null
+        return '"{}"'.format(value)
 
 
 class Uri(colander.String):
@@ -61,8 +73,30 @@ class CupsAddModifyPrinterRequest(BaseIPPRequest):
     name = 'CUPS Add Modify Printer'
     operation = 'CUPS-Add-Modify-Printer'
     object_attributes_tag = 'printer-object-attributes-tag'
+    auth_info_required = colander.SchemaNode(Keyword(),
+                                             widget=IPPAttributeWidget())
+    job_sheets_default = colander.SchemaNode(Name(),
+                                             widget=IPPAttributeWidget())
     device_uri = colander.SchemaNode(Uri(),
                                      widget=IPPAttributeWidget())
+    port_monitor = colander.SchemaNode(Name(), widget=IPPAttributeWidget())
+    ppd_name = colander.SchemaNode(Name(), widget=IPPAttributeWidget())
+    printer_is_accepting_jobs = colander.SchemaNode(
+        colander.Boolean(false_val=0, true_val=1),
+        widget=IPPAttributeWidget())
+    printer_info = colander.SchemaNode(Text(), widget=IPPAttributeWidget())
+    printer_location = colander.SchemaNode(Text(), widget=IPPAttributeWidget())
+    printer_more_info = colander.SchemaNode(Uri(), widget=IPPAttributeWidget())
+    printer_state = colander.SchemaNode(Enum(), widget=IPPAttributeWidget())
+    printer_state_message = colander.SchemaNode(
+        Text(),
+        widget=IPPAttributeWidget())
+    requesting_user_name_allowed = colander.SchemaNode(
+        Name(),
+        widget=IPPAttributeWidget())
+    requesting_user_name_denied = colander.SchemaNode(
+        Name(),
+        widget=IPPAttributeWidget())
 
 
 class CreatePrinterSubscriptionRequest(BaseIPPRequest):
