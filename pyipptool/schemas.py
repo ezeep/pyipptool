@@ -53,7 +53,7 @@ class SubscriptionOperationAttributes(OperationAttributes):
                                                widget=IPPAttributeWidget())
 
 
-class HeaderIPPRequest(colander.Schema):
+class HeaderIPPSchema(colander.Schema):
     name = colander.SchemaNode(colander.String(), widget=IPPNameWidget())
     operation = colander.SchemaNode(colander.String(), widget=IPPNameWidget())
     operation_attributes_tag = colander.SchemaNode(colander.String(),
@@ -64,12 +64,12 @@ class HeaderIPPRequest(colander.Schema):
         widget=IPPGroupWidget())
 
 
-class BaseIPPRequest(colander.Schema):
+class BaseIPPSchema(colander.Schema):
     operation_attributes_tag = 'operation-attributes-tag'
-    header = HeaderIPPRequest(widget=IPPConstantTupleWidget())
+    header = HeaderIPPSchema(widget=IPPConstantTupleWidget())
 
 
-class CupsAddModifyPrinterRequest(BaseIPPRequest):
+class CupsAddModifyPrinterSchema(BaseIPPSchema):
     name = 'CUPS Add Modify Printer'
     operation = 'CUPS-Add-Modify-Printer'
     object_attributes_tag = 'printer-object-attributes-tag'
@@ -99,7 +99,7 @@ class CupsAddModifyPrinterRequest(BaseIPPRequest):
         widget=IPPAttributeWidget())
 
 
-class CreatePrinterSubscriptionRequest(BaseIPPRequest):
+class CreatePrinterSubscriptionSchema(BaseIPPSchema):
     name = 'Create Printer Subscription'
     operation = 'Create-Printer-Subscription'
     object_attributes_tag = 'subscription-attributes-tag'
@@ -116,9 +116,9 @@ class CreatePrinterSubscriptionRequest(BaseIPPRequest):
                                                  widget=IPPDisplayWidget())
 
 
-cups_add_modify_printer_schema = CupsAddModifyPrinterRequest(
+cups_add_modify_printer_schema = CupsAddModifyPrinterSchema(
     widget=IPPBodyWidget())
-create_printer_subscription_schema = CreatePrinterSubscriptionRequest(
+create_printer_subscription_schema = CreatePrinterSubscriptionSchema(
     widget=IPPBodyWidget())
 create_printer_subscription_schema['header']['required_attributes'] =\
     SubscriptionOperationAttributes(widget=IPPTupleWidget())
