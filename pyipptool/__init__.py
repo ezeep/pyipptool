@@ -10,7 +10,10 @@ from .forms import (create_printer_subscription_form,
                     cups_add_modify_printer_form,
                     cups_get_printers_form,
                     cups_move_job_form,
-                    cups_reject_jobs_form)
+                    cups_reject_jobs_form,
+                    get_jobs_form,
+                    get_subscriptions_form,
+                    )
 
 
 config = ConfigParser.SafeConfigParser()
@@ -130,3 +133,35 @@ def cups_reject_jobs_request(printer_uri=None,
     response = _call_ipptool(printer_uri, request)
     assert response['Tests'][0]['StatusCode'] == 'successful-ok', response
     return True
+
+
+def get_jobs_request(printer_uri=None,
+                     limit=colander.null,
+                     requested_attributes=colander.null,
+                     which_jobs=colander.null,
+                     my_jobs=colander.null):
+    kw = dict(header={'required_attributes':
+                      {'printer_uri': printer_uri,
+                       'limit': limit,
+                       'requested_attributes': requested_attributes,
+                       'which_jobs': which_jobs,
+                       'my_jobs': my_jobs}})
+    request = get_jobs_form.render(kw)
+    response = _call_ipptool(printer_uri, request)
+    return response['Tests'][0]['ResponseAttributes']
+
+
+def get_subscriptions_request(printer_uri=None,
+                              limit=colander.null,
+                              requested_attributes=colander.null,
+                              which_jobs=colander.null,
+                              my_jobs=colander.null):
+    kw = dict(header={'required_attributes':
+                      {'printer_uri': printer_uri,
+                       'limit': limit,
+                       'requested_attributes': requested_attributes,
+                       'which_jobs': which_jobs,
+                       'my_jobs': my_jobs}})
+    request = get_subscriptions_form.render(kw)
+    response = _call_ipptool(printer_uri, request)
+    return response['Tests'][0]['ResponseAttributes']

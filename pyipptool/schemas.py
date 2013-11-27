@@ -53,6 +53,18 @@ class SubscriptionOperationAttributes(OperationAttributes):
                                                widget=IPPAttributeWidget())
 
 
+class GetJobsOperationAttributes(SubscriptionOperationAttributes):
+    limit = colander.SchemaNode(
+        colander.Integer(),
+        widget=IPPAttributeWidget())
+    requested_attributes = colander.SchemaNode(
+        Keyword(),
+        widget=IPPAttributeWidget())
+    which_jobs = colander.SchemaNode(Keyword(), widget=IPPAttributeWidget())
+    my_jobs = colander.SchemaNode(colander.Boolean(true_val=1, false_val=0),
+                                  widget=IPPAttributeWidget())
+
+
 class MoveJobOperationAttributes(OperationAttributes):
     printer_uri = colander.SchemaNode(Uri(),
                                       widget=IPPAttributeWidget())
@@ -181,6 +193,20 @@ class CreatePrinterSubscriptionSchema(BaseIPPSchema):
                                                  widget=IPPDisplayWidget())
 
 
+class GetJobsSchema(BaseIPPSchema):
+    name = 'Get Jobs'
+    operation = 'Get-Jobs'
+    object_attributes_tag = colander.null
+    header = HeaderIPPSchema(widget=IPPConstantTupleWidget())
+    header['required_attributes'] = GetJobsOperationAttributes(
+        widget=IPPTupleWidget())
+
+
+class GetSubscriptionsSchema(GetJobsSchema):
+    name = 'Get Subscriptions'
+    operation = 'Get-Subscriptions'
+
+
 create_printer_subscription_schema = CreatePrinterSubscriptionSchema(
     widget=IPPBodyWidget())
 
@@ -195,3 +221,7 @@ cups_get_printers_schema = CupsGetPrintersSchema(widget=IPPBodyWidget())
 cups_move_job_schema = CupsMoveJobSchema(widget=IPPBodyWidget())
 
 cups_reject_jobs_schema = CupsRejectJobsSchema(widget=IPPBodyWidget())
+
+get_jobs_schema = GetJobsSchema(widget=IPPBodyWidget())
+
+get_subscriptions_schema = GetSubscriptionsSchema(widget=IPPBodyWidget())

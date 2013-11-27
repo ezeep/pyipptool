@@ -121,3 +121,36 @@ def test_cups_reject_jobs_request():
     assert 'NAME "CUPS Reject Jobs"' in request, request
     assert 'OPERATION "CUPS-Reject-Jobs"' in request, request
     assert 'ATTR text printer-state-message "You shall not pass"'
+
+
+def test_get_jobs_form():
+    from pyipptool.forms import get_jobs_form
+    request = get_jobs_form.render({'header': {'required_attributes':
+                                               {'limit': 1,
+                                                'requested_attributes':
+                                                'job-uri',
+                                                'which_jobs': 'pending',
+                                                'my_jobs': True}}})
+    assert 'NAME "Get Jobs"' in request
+    assert 'OPERATION "Get-Jobs"' in request
+    assert 'ATTR integer limit 1' in request
+    assert 'ATTR keyword requested-attributes job-uri' in request
+    assert 'ATTR keyword which-jobs pending' in request
+
+
+def test_get_subscriptions_form():
+    from pyipptool.forms import get_subscriptions_form
+    request = get_subscriptions_form.render({'header':
+                                             {'required_attributes':
+                                              {'limit': 1,
+                                               'requested_attributes':
+                                               'job-uri',
+                                               'which_jobs': 'pending',
+                                               'my_jobs': True}}})
+    assert 'NAME "Get Subscriptions"' in request
+    assert 'OPERATION "Get-Subscriptions"' in request
+    assert 'ATTR integer limit 1' in request
+    assert 'ATTR keyword requested-attributes job-uri' in request
+    assert 'ATTR keyword which-jobs pending' in request
+    assert 'ATTR boolean my-jobs 1' in request, request
+    assert 'ATTR boolean my-jobs 1' in request, request
