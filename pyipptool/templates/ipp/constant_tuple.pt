@@ -1,2 +1,3 @@
-<tal:block tal:repeat="child field"
-           tal:replace="child.render(cstruct[child.name])"/>
+<tal:block tal:define="item_template item_template|field.widget.item_template"
+           tal:repeat="child field"
+           tal:replace="child.render_template(item_template, parent=field)"/>
