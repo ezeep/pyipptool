@@ -74,7 +74,8 @@ def create_printer_subscription(printer_uri=None,
 def cups_add_modify_printer_request(printer_uri=None, device_uri=None):
     kw = {'printer_uri': printer_uri, 'device_uri': device_uri}
     request = cups_add_modify_printer_form.render(kw)
-    _call_ipptool(printer_uri, request)
+    response = _call_ipptool(printer_uri, request)
+    assert response['Tests'][0]['StatusCode'] == 'successful-ok', response
     return True
 
 
@@ -91,7 +92,7 @@ def cups_move_job_request(printer_uri=colander.null,
               printer_state_message=printer_state_message)
     request = cups_move_job_form.render(kw)
     response = _call_ipptool(printer_uri, request)
-    print response
+    assert response['Tests'][0]['StatusCode'] == 'successful-ok', response
     return True
 
 
@@ -103,5 +104,6 @@ def cups_reject_jobs_request(printer_uri=None,
                        'requesting_user_name': requesting_user_name}},
               printer_state_message=printer_state_message)
     request = cups_reject_jobs_form.render(kw)
-    _call_ipptool(printer_uri, request)
+    response = _call_ipptool(printer_uri, request)
+    assert response['Tests'][0]['StatusCode'] == 'successful-ok', response
     return True

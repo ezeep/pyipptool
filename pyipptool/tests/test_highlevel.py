@@ -27,6 +27,7 @@ def test_ipptool_create_printer_subscription(_call_ipptool):
 @mock.patch.object(pyipptool, '_call_ipptool')
 def test_cups_add_modify_printer_request(_call_ipptool):
     from pyipptool import cups_add_modify_printer_request
+    _call_ipptool.return_value = {'Tests': [{'StatusCode': 'successful-ok'}]}
     cups_add_modify_printer_request(
         printer_uri='https://localhost:631/classes/PUBLIC-PDF',
         device_uri='cups-pdf:/')
