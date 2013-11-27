@@ -99,7 +99,6 @@ def cups_get_printers_request(printer_uri=None,
                       'requested_user_name': requested_user_name}}}
     request = cups_get_printers_form.render(kw)
     response = _call_ipptool(printer_uri, request)
-    assert response['Tests'][0]['StatusCode'] == 'successful-ok', response
     return response['Tests'][0]['ResponseAttributes']
 
 
