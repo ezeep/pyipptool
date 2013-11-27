@@ -10,15 +10,15 @@ def test_create_printer_subscription_request():
          'notify_lease_expiration_time': 0})
     assert 'NAME "Create Printer Subscription"' in request, request
     assert 'OPERATION "Create-Printer-Subscription"' in request, request
-    assert 'attributes-charset utf-8' in request, request
-    assert 'attributes-natural-language en' in request, request
-    assert 'requesting-user-name ecp_admin' in request, request
+    assert 'ATTR charset attributes-charset utf-8' in request, request
+    assert 'ATTR language attributes-natural-language en' in request, request
+    assert 'ATTR name requesting-user-name ecp_admin' in request, request
     assert 'GROUP subscription-attributes-tag' in request
-    assert 'printer-uri https://localhost:631/classes/PINKY' in request
-    assert 'notify-recipient-uri ezpnotifier://' in request
-    assert 'notify-events all' in request
-    assert 'notify-lease-duration 128' in request
-    assert 'notify-lease-expiration-time 0' in request
+    assert 'ATTR uri printer-uri https://localhost:631/classes/PINKY' in request
+    assert 'ATTR uri notify-recipient-uri ezpnotifier://' in request
+    assert 'ATTR keyword notify-events all' in request
+    assert 'ATTR integer notify-lease-duration 128' in request
+    assert 'ATTR integer notify-lease-expiration-time 0' in request
 
 
 def test_cups_add_modify_class_request():
@@ -39,18 +39,18 @@ def test_cups_add_modify_class_request():
     assert 'NAME "CUPS Add Modify Class"'
     assert 'OPERATION "CUPS-Add-Modify-Class"' in request
     assert 'GROUP printer-object-attributes-tag' in request
-    assert 'device-uri cups-pdf:/' in request
-    assert 'auth-info-required john' in request
-    assert 'job-sheets-default none' in request
-    assert 'port-monitor port' in request
-    assert 'ppd-name printer.ppd' in request
-    assert 'printer-is-accepting-jobs 1' in request, request
-    assert 'printer-info "multiline\ntext"' in request
-    assert 'printer-location "The Office"' in request
-    assert 'printer-more-info http://example.com' in request
-    assert 'printer-state idle' in request
-    assert 'printer-state-message "Ready to print"' in request
-    assert 'requesting-user-name-allowed me' in request
+    assert 'ATTR uri device-uri cups-pdf:/' in request
+    assert 'ATTR keyword auth-info-required john' in request, request
+    assert 'ATTR name job-sheets-default none' in request, request
+    assert 'ATTR name port-monitor port' in request
+    assert 'ATTR name ppd-name printer.ppd' in request
+    assert 'ATTR boolean printer-is-accepting-jobs 1' in request, request
+    assert 'ATTR text printer-info "multiline\ntext"' in request
+    assert 'ATTR text printer-location "The Office"' in request
+    assert 'ATTR uri printer-more-info http://example.com' in request
+    assert 'ATTR enum printer-state idle' in request, request
+    assert 'ATTR text printer-state-message "Ready to print"' in request
+    assert 'ATTR name requesting-user-name-allowed me' in request
 
 
 def test_cups_add_modify_printer_request():
@@ -71,18 +71,18 @@ def test_cups_add_modify_printer_request():
     assert 'NAME "CUPS Add Modify Printer"'
     assert 'OPERATION "CUPS-Add-Modify-Printer"' in request
     assert 'GROUP printer-object-attributes-tag' in request
-    assert 'device-uri cups-pdf:/' in request
-    assert 'auth-info-required john' in request
-    assert 'job-sheets-default none' in request
-    assert 'port-monitor port' in request
-    assert 'ppd-name printer.ppd' in request
-    assert 'printer-is-accepting-jobs 1' in request, request
-    assert 'printer-info "multiline\ntext"' in request
-    assert 'printer-location "The Office"' in request
-    assert 'printer-more-info http://example.com' in request
-    assert 'printer-state idle' in request
-    assert 'printer-state-message "Ready to print"' in request
-    assert 'requesting-user-name-allowed me' in request
+    assert 'ATTR uri device-uri cups-pdf:/' in request
+    assert 'ATTR keyword auth-info-required john' in request
+    assert 'ATTR name job-sheets-default none' in request
+    assert 'ATTR name port-monitor port' in request
+    assert 'ATTR name ppd-name printer.ppd' in request
+    assert 'ATTR boolean printer-is-accepting-jobs 1' in request, request
+    assert 'ATTR text printer-info "multiline\ntext"' in request
+    assert 'ATTR text printer-location "The Office"' in request
+    assert 'ATTR uri printer-more-info http://example.com' in request
+    assert 'ATTR enum printer-state idle' in request
+    assert 'ATTR text printer-state-message "Ready to print"' in request
+    assert 'ATTR name requesting-user-name-allowed me' in request
 
 
 def test_cups_get_printers_request():
@@ -120,4 +120,4 @@ def test_cups_reject_jobs_request():
          'printer_state_message': 'You shall not pass'})
     assert 'NAME "CUPS Reject Jobs"' in request, request
     assert 'OPERATION "CUPS-Reject-Jobs"' in request, request
-    assert 'printer-state-message "You shall not pass"'
+    assert 'ATTR text printer-state-message "You shall not pass"'
