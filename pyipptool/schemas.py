@@ -99,6 +99,11 @@ class CupsAddModifyPrinterSchema(BaseIPPSchema):
         widget=IPPAttributeWidget())
 
 
+class CupsAddModifyClassSchema(CupsAddModifyPrinterSchema):
+    name = 'CUPS Add Modify Class'
+    operation = 'CUPS-Add-Modify-Class'
+
+
 class CreatePrinterSubscriptionSchema(BaseIPPSchema):
     name = 'Create Printer Subscription'
     operation = 'Create-Printer-Subscription'
@@ -116,6 +121,8 @@ class CreatePrinterSubscriptionSchema(BaseIPPSchema):
                                                  widget=IPPDisplayWidget())
 
 
+cups_add_modify_class_schema = CupsAddModifyClassSchema(
+    widget=IPPBodyWidget())
 cups_add_modify_printer_schema = CupsAddModifyPrinterSchema(
     widget=IPPBodyWidget())
 create_printer_subscription_schema = CreatePrinterSubscriptionSchema(
