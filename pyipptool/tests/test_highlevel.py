@@ -16,7 +16,7 @@ def test_ipptool_create_printer_subscription(_call_ipptool):
     assert _call_ipptool._mock_mock_calls[0][1][0] == ('https://localhost:631/'
                                                        'classes/PUBLIC-PDF')
     request = _call_ipptool._mock_mock_calls[0][1][1]
-    assert 'requesting-user-name ecp_admin' in request
+    assert 'requesting-user-name ecp_admin' in request, request
     assert 'printer-uri https://localhost:631/classes/PUBLIC-PDF' in request
     assert 'notify-recipient-uri ezpnotifier://' in request
     assert 'notify-events all' in request
