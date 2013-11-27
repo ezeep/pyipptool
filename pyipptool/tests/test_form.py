@@ -10,8 +10,10 @@ def test_create_printer_subscription_request():
          'notify_lease_expiration_time': 0})
     assert 'NAME "Create Printer Subscription"' in request, request
     assert 'OPERATION "Create-Printer-Subscription"' in request, request
+    assert 'attributes-charset utf-8' in request, request
+    assert 'attributes-natural-language en' in request, request
+    assert 'requesting-user-name ecp_admin' in request, request
     assert 'GROUP subscription-attributes-tag' in request
-    assert 'requesting-user-name ecp_admin' in request
     assert 'printer-uri https://localhost:631/classes/PINKY' in request
     assert 'notify-recipient-uri ezpnotifier://' in request
     assert 'notify-events all' in request

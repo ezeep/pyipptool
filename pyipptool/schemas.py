@@ -53,6 +53,14 @@ class SubscriptionOperationAttributes(OperationAttributes):
                                                widget=IPPAttributeWidget())
 
 
+class MoveJobOperationAttributes(OperationAttributes):
+    printer_uri = colander.SchemaNode(Uri(),
+                                      widget=IPPAttributeWidget())
+    job_id = colander.SchemaNode(colander.Integer(),
+                                 widget=IPPAttributeWidget())
+    job_uri = colander.SchemaNode(Uri(), widget=IPPAttributeWidget())
+
+
 class HeaderIPPSchema(colander.Schema):
     name = colander.SchemaNode(colander.String(), widget=IPPNameWidget())
     operation = colander.SchemaNode(colander.String(), widget=IPPNameWidget())
@@ -104,6 +112,16 @@ class CupsAddModifyClassSchema(CupsAddModifyPrinterSchema):
     operation = 'CUPS-Add-Modify-Class'
 
 
+class CupsMoveJobSchema(BaseIPPSchema):
+    name = 'CUPS Move Job'
+    operation = 'CUPS-Move-Job'
+    object_attributes_tag = 'job-attributes-tag'
+    header = HeaderIPPSchema(widget=IPPConstantTupleWidget())
+    header['required_attributes'] = MoveJobOperationAttributes(
+        widget=IPPTupleWidget())
+    job_printer_uri = colander.SchemaNode(Uri(), widget=IPPAttributeWidget())
+
+
 class CupsRejectJobsSchema(BaseIPPSchema):
     name = 'CUPS Reject Jobs'
     operation = 'CUPS-Reject-Jobs'
@@ -117,6 +135,9 @@ class CreatePrinterSubscriptionSchema(BaseIPPSchema):
     name = 'Create Printer Subscription'
     operation = 'Create-Printer-Subscription'
     object_attributes_tag = 'subscription-attributes-tag'
+    header = HeaderIPPSchema(widget=IPPConstantTupleWidget())
+    header['required_attributes'] = SubscriptionOperationAttributes(
+        widget=IPPTupleWidget())
     notify_recipient_uri = colander.SchemaNode(Uri(),
                                                widget=IPPAttributeWidget())
     notify_events = colander.SchemaNode(Keyword(),
@@ -132,13 +153,13 @@ class CreatePrinterSubscriptionSchema(BaseIPPSchema):
 
 create_printer_subscription_schema = CreatePrinterSubscriptionSchema(
     widget=IPPBodyWidget())
-create_printer_subscription_schema['header']['required_attributes'] =\
-    SubscriptionOperationAttributes(widget=IPPTupleWidget())
 
 cups_add_modify_class_schema = CupsAddModifyClassSchema(
     widget=IPPBodyWidget())
 
 cups_add_modify_printer_schema = CupsAddModifyPrinterSchema(
     widget=IPPBodyWidget())
+
+cups_move_job_schema = CupsMoveJobSchema(widget=IPPBodyWidget())
 
 cups_reject_jobs_schema = CupsRejectJobsSchema(widget=IPPBodyWidget())

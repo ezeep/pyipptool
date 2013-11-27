@@ -60,6 +60,23 @@ def cups_add_modify_printer_request(printer_uri=None, device_uri=None):
     return True
 
 
+def cups_move_job_request(printer_uri=colander.null,
+                          job_id=colander.null,
+                          job_uri=colander.null,
+                          job_printer_uri=None,
+                          printer_state_message=None):
+    kw = dict(header={'required_attributes':
+                      {'printer_uri': printer_uri,
+                       'job_id': job_id,
+                       'job_uri': job_uri}},
+              job_printer_uri=job_printer_uri,
+              printer_state_message=printer_state_message)
+    request = cups_move_job_form.render(kw)
+    response = _call_ipptool(printer_uri, request)
+    print response
+    return True
+
+
 def cups_reject_jobs_request(printer_uri=None,
                              requesting_user_name=None,
                              printer_state_message=colander.null):
