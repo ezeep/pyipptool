@@ -13,7 +13,7 @@ class IPPNameWidget(Widget):
         while field.parent is not None:
             field = field.parent
         value = getattr(field.schema, name)
-        return '{} "{}"'.format(field.name.upper(), value)
+        return '{} "{}"'.format(name.upper(), value)
 
 
 class IPPGroupWidget(Widget):

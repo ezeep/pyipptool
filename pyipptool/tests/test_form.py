@@ -13,6 +13,8 @@ def test_cups_add_modify_printer_request():
          'printer_state': 'idle',
          'printer_state_message': 'Ready to print',
          'requesting_user_name_allowed': 'me'})
+    assert 'NAME "CUPS Add Modify Printer"'
+    assert 'OPERATION "CUPS-Add-Modify-Printer"' in request
     assert 'GROUP printer-object-attributes-tag' in request
     assert 'device-uri cups-pdf:/' in request
     assert 'auth-info-required john' in request
@@ -38,6 +40,8 @@ def test_create_printer_subscription_request():
          'notify_events': 'all',
          'notify_lease_duration': 128,
          'notify_lease_expiration_time': 0})
+    assert 'NAME "Create Printer Subscription"' in request, request
+    assert 'OPERATION "Create-Printer-Subscription"' in request, request
     assert 'GROUP subscription-attributes-tag' in request
     assert 'requesting-user-name ecp_admin' in request
     assert 'printer-uri https://localhost:631/classes/PINKY' in request
