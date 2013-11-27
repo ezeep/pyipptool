@@ -22,6 +22,9 @@ add the following content
 ```config
 [main]
 ipptool_path = /usr/bin/ipptool
+;If authentication is required
+login = admin
+password = secret
 ```
 
 With the path to your installed ipptool

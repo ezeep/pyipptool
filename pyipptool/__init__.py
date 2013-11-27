@@ -3,10 +3,12 @@ import os
 import plistlib
 import subprocess
 import tempfile
+import urlparse
 
 import colander
 from .forms import (create_printer_subscription_form,
                     cups_add_modify_printer_form,
+                    cups_move_job_form,
                     cups_reject_jobs_form)
 
 
@@ -16,11 +18,27 @@ config.read(['/etc/pyipptool/pyipptool.cfg',
 ipptool_path = config.get('main', 'ipptool_path')
 
 
+def authenticate_printer_uri(printer_uri):
+    login = config.get('main', 'login')
+    password = config.get('main', 'password')
+    if login:
+        parsed_url = urlparse.urlparse(printer_uri)
+        authenticated_netloc = '{}:{}@{}'.format(login, password,
+                                                 parsed_url.netloc)
+        authenticated_printer_uri = urlparse.ParseResult(parsed_url[0],
+                                                         authenticated_netloc,
+                                                         *parsed_url[2:])
+        return authenticated_printer_uri.geturl()
+    return printer_uri
+
+
 def _call_ipptool(printer_uri, request):
     with tempfile.NamedTemporaryFile(delete=False) as temp_file:
         temp_file.write(request)
-    process = subprocess.Popen([ipptool_path, printer_uri, '-X',
-                               temp_file.name],
+    process = subprocess.Popen([ipptool_path,
+                                authenticate_printer_uri(printer_uri),
+                                '-X',
+                                temp_file.name],
                                stdin=subprocess.PIPE,
                                stdout=subprocess.PIPE,
                                stderr=subprocess.PIPE)
