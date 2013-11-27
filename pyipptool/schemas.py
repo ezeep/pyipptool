@@ -61,6 +61,27 @@ class MoveJobOperationAttributes(OperationAttributes):
     job_uri = colander.SchemaNode(Uri(), widget=IPPAttributeWidget())
 
 
+class CupsGetPrintersSchemaOperationAttributes(OperationAttributes):
+    first_printer_name = colander.SchemaNode(
+        Name(),
+        widget=IPPAttributeWidget())
+    limit = colander.SchemaNode(
+        colander.Integer(),
+        widget=IPPAttributeWidget())
+    printer_location = colander.SchemaNode(
+        Text(),
+        widget=IPPAttributeWidget())
+    printer_type = colander.SchemaNode(Enum(), widget=IPPAttributeWidget())
+    printer_type_mask = colander.SchemaNode(
+        Enum(),
+        widget=IPPAttributeWidget())
+    requested_attributes = colander.SchemaNode(
+        Keyword(),
+        widget=IPPAttributeWidget())
+    requested_user_name = colander.SchemaNode(Name(),
+                                              widget=IPPAttributeWidget())
+
+
 class HeaderIPPSchema(colander.Schema):
     name = colander.SchemaNode(colander.String(), widget=IPPNameWidget())
     operation = colander.SchemaNode(colander.String(), widget=IPPNameWidget())
@@ -112,6 +133,15 @@ class CupsAddModifyClassSchema(CupsAddModifyPrinterSchema):
     operation = 'CUPS-Add-Modify-Class'
 
 
+class CupsGetPrintersSchema(BaseIPPSchema):
+    name = 'CUPS Get Printers'
+    operation = 'CUPS-Get-Printers'
+    object_attributes_tag = colander.null
+    header = HeaderIPPSchema(widget=IPPConstantTupleWidget())
+    header['required_attributes'] = CupsGetPrintersSchemaOperationAttributes(
+        widget=IPPTupleWidget())
+
+
 class CupsMoveJobSchema(BaseIPPSchema):
     name = 'CUPS Move Job'
     operation = 'CUPS-Move-Job'
@@ -159,6 +189,8 @@ cups_add_modify_class_schema = CupsAddModifyClassSchema(
 
 cups_add_modify_printer_schema = CupsAddModifyPrinterSchema(
     widget=IPPBodyWidget())
+
+cups_get_printers_schema = CupsGetPrintersSchema(widget=IPPBodyWidget())
 
 cups_move_job_schema = CupsMoveJobSchema(widget=IPPBodyWidget())
 

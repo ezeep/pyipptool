@@ -22,6 +22,8 @@ class IPPGroupWidget(Widget):
         while field.parent is not None:
             field = field.parent
         value = getattr(field.schema, name)
+        if value is colander.null:
+            return ''
         return 'GROUP {}'.format(value)
 
 
