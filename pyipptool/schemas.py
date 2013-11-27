@@ -104,6 +104,15 @@ class CupsAddModifyClassSchema(CupsAddModifyPrinterSchema):
     operation = 'CUPS-Add-Modify-Class'
 
 
+class CupsRejectJobsSchema(BaseIPPSchema):
+    name = 'CUPS Reject Jobs'
+    operation = 'CUPS-Reject-Jobs'
+    object_attributes_tag = 'printer-object-attributes-tag'
+    printer_state_message = colander.SchemaNode(
+        Text(),
+        widget=IPPAttributeWidget())
+
+
 class CreatePrinterSubscriptionSchema(BaseIPPSchema):
     name = 'Create Printer Subscription'
     operation = 'Create-Printer-Subscription'
@@ -121,11 +130,15 @@ class CreatePrinterSubscriptionSchema(BaseIPPSchema):
                                                  widget=IPPDisplayWidget())
 
 
-cups_add_modify_class_schema = CupsAddModifyClassSchema(
-    widget=IPPBodyWidget())
-cups_add_modify_printer_schema = CupsAddModifyPrinterSchema(
-    widget=IPPBodyWidget())
 create_printer_subscription_schema = CreatePrinterSubscriptionSchema(
     widget=IPPBodyWidget())
 create_printer_subscription_schema['header']['required_attributes'] =\
     SubscriptionOperationAttributes(widget=IPPTupleWidget())
+
+cups_add_modify_class_schema = CupsAddModifyClassSchema(
+    widget=IPPBodyWidget())
+
+cups_add_modify_printer_schema = CupsAddModifyPrinterSchema(
+    widget=IPPBodyWidget())
+
+cups_reject_jobs_schema = CupsRejectJobsSchema(widget=IPPBodyWidget())

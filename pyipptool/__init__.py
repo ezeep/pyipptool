@@ -6,7 +6,8 @@ import tempfile
 
 import colander
 from .forms import (create_printer_subscription_form,
-                    cups_add_modify_printer_form)
+                    cups_add_modify_printer_form,
+                    cups_reject_jobs_form)
 
 
 config = ConfigParser.SafeConfigParser()
@@ -55,5 +56,17 @@ def create_printer_subscription(printer_uri=None,
 def cups_add_modify_printer_request(printer_uri=None, device_uri=None):
     kw = {'printer_uri': printer_uri, 'device_uri': device_uri}
     request = cups_add_modify_printer_form.render(kw)
+    _call_ipptool(printer_uri, request)
+    return True
+
+
+def cups_reject_jobs_request(printer_uri=None,
+                             requesting_user_name=None,
+                             printer_state_message=colander.null):
+    kw = dict(header={'required_attributes':
+                      {'printer_uri': printer_uri,
+                       'requesting_user_name': requesting_user_name}},
+              printer_state_message=printer_state_message)
+    request = cups_reject_jobs_form.render(kw)
     _call_ipptool(printer_uri, request)
     return True
