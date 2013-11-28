@@ -63,7 +63,7 @@ def create_printer_subscription(printer_uri=None,
     """
     Create a new subscription and return its id
     """
-    kw = dict(header={'required_attributes':
+    kw = dict(header={'operation_attributes':
                       {'printer_uri': printer_uri,
                        'requesting_user_name': requesting_user_name}},
               notify_recipient_uri=notify_recipient_uri,
@@ -91,7 +91,7 @@ def cups_get_printers_request(printer_uri=None,
                               printer_type_mask=colander.null,
                               requested_attributes=colander.null,
                               requested_user_name=colander.null):
-    kw = {'header': {'required_attributes':
+    kw = {'header': {'operation_attributes':
                      {'printer_uri': printer_uri,
                       'first_printer_name': first_printer_name,
                       'limit': limit,
@@ -110,7 +110,7 @@ def cups_move_job_request(printer_uri=colander.null,
                           job_uri=colander.null,
                           job_printer_uri=None,
                           printer_state_message=None):
-    kw = dict(header={'required_attributes':
+    kw = dict(header={'operation_attributes':
                       {'printer_uri': printer_uri,
                        'job_id': job_id,
                        'job_uri': job_uri}},
@@ -125,7 +125,7 @@ def cups_move_job_request(printer_uri=colander.null,
 def cups_reject_jobs_request(printer_uri=None,
                              requesting_user_name=None,
                              printer_state_message=colander.null):
-    kw = dict(header={'required_attributes':
+    kw = dict(header={'operation_attributes':
                       {'printer_uri': printer_uri,
                        'requesting_user_name': requesting_user_name}},
               printer_state_message=printer_state_message)
@@ -140,7 +140,7 @@ def get_jobs_request(printer_uri=None,
                      requested_attributes=colander.null,
                      which_jobs=colander.null,
                      my_jobs=colander.null):
-    kw = dict(header={'required_attributes':
+    kw = dict(header={'operation_attributes':
                       {'printer_uri': printer_uri,
                        'limit': limit,
                        'requested_attributes': requested_attributes,
@@ -156,7 +156,7 @@ def get_subscriptions_request(printer_uri=None,
                               requested_attributes=colander.null,
                               which_jobs=colander.null,
                               my_jobs=colander.null):
-    kw = dict(header={'required_attributes':
+    kw = dict(header={'operation_attributes':
                       {'printer_uri': printer_uri,
                        'limit': limit,
                        'requested_attributes': requested_attributes,

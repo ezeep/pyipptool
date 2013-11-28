@@ -99,7 +99,7 @@ class HeaderIPPSchema(colander.Schema):
     operation = colander.SchemaNode(colander.String(), widget=IPPNameWidget())
     operation_attributes_tag = colander.SchemaNode(colander.String(),
                                                    widget=IPPGroupWidget())
-    required_attributes = OperationAttributes(widget=IPPTupleWidget())
+    operation_attributes = OperationAttributes(widget=IPPTupleWidget())
     object_attributes_tag = colander.SchemaNode(
         colander.String(),
         widget=IPPGroupWidget())
@@ -150,7 +150,7 @@ class CupsGetPrintersSchema(BaseIPPSchema):
     operation = 'CUPS-Get-Printers'
     object_attributes_tag = colander.null
     header = HeaderIPPSchema(widget=IPPConstantTupleWidget())
-    header['required_attributes'] = CupsGetPrintersSchemaOperationAttributes(
+    header['operation_attributes'] = CupsGetPrintersSchemaOperationAttributes(
         widget=IPPTupleWidget())
 
 
@@ -159,7 +159,7 @@ class CupsMoveJobSchema(BaseIPPSchema):
     operation = 'CUPS-Move-Job'
     object_attributes_tag = 'job-attributes-tag'
     header = HeaderIPPSchema(widget=IPPConstantTupleWidget())
-    header['required_attributes'] = MoveJobOperationAttributes(
+    header['operation_attributes'] = MoveJobOperationAttributes(
         widget=IPPTupleWidget())
     job_printer_uri = colander.SchemaNode(Uri(), widget=IPPAttributeWidget())
 
@@ -178,7 +178,7 @@ class CreatePrinterSubscriptionSchema(BaseIPPSchema):
     operation = 'Create-Printer-Subscription'
     object_attributes_tag = 'subscription-attributes-tag'
     header = HeaderIPPSchema(widget=IPPConstantTupleWidget())
-    header['required_attributes'] = SubscriptionOperationAttributes(
+    header['operation_attributes'] = SubscriptionOperationAttributes(
         widget=IPPTupleWidget())
     notify_recipient_uri = colander.SchemaNode(Uri(),
                                                widget=IPPAttributeWidget())
@@ -198,7 +198,7 @@ class GetJobsSchema(BaseIPPSchema):
     operation = 'Get-Jobs'
     object_attributes_tag = colander.null
     header = HeaderIPPSchema(widget=IPPConstantTupleWidget())
-    header['required_attributes'] = GetJobsOperationAttributes(
+    header['operation_attributes'] = GetJobsOperationAttributes(
         widget=IPPTupleWidget())
 
 

@@ -1,7 +1,7 @@
 def test_create_printer_subscription_form():
     from pyipptool.forms import create_printer_subscription_form
     request = create_printer_subscription_form.render(
-        {'header': {'required_attributes':
+        {'header': {'operation_attributes':
                     {'printer_uri': 'https://localhost:631/classes/PIY',
                      'requesting_user_name': 'ecp_admin'}},
          'notify_recipient_uri': 'ezpnotifier://',
@@ -88,7 +88,7 @@ def test_cups_add_modify_printer_form():
 def test_cups_get_printers_form():
     from pyipptool.forms import cups_get_printers_form
     request = cups_get_printers_form.render(
-        {'header': {'required_attributes':
+        {'header': {'operation_attributes':
                     {'printer_uri': 'https://localhost:631/',
                      'first_printer_name': 'DA-Printer',
                      'limit': 2,
@@ -113,7 +113,7 @@ def test_cups_get_printers_form():
 def test_cups_reject_jobs_form():
     from pyipptool.forms import cups_reject_jobs_form
     request = cups_reject_jobs_form.render(
-        {'header': {'required_attributes':
+        {'header': {'operation_attributes':
                     {'printer_uri': ('https://localhost:631/'
                                      'printers/DA-PRINTER'),
                      'requesting_user_name': 'ecp_admin'}},
@@ -125,7 +125,7 @@ def test_cups_reject_jobs_form():
 
 def test_get_jobs_form():
     from pyipptool.forms import get_jobs_form
-    request = get_jobs_form.render({'header': {'required_attributes':
+    request = get_jobs_form.render({'header': {'operation_attributes':
                                                {'limit': 1,
                                                 'requested_attributes':
                                                 'job-uri',
@@ -141,7 +141,7 @@ def test_get_jobs_form():
 def test_get_subscriptions_form():
     from pyipptool.forms import get_subscriptions_form
     request = get_subscriptions_form.render({'header':
-                                             {'required_attributes':
+                                             {'operation_attributes':
                                               {'limit': 1,
                                                'requested_attributes':
                                                'job-uri',
