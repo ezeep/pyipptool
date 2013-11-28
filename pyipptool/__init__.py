@@ -55,7 +55,6 @@ def _call_ipptool(printer_uri, request):
         stdout, stderr = process.communicate()
     finally:
         os.unlink(temp_file.name)
-    assert process.returncode == 0, stderr
     return plistlib.readPlistFromString(stdout)
 
 
