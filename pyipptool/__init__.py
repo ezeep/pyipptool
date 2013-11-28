@@ -8,6 +8,7 @@ import urlparse
 import colander
 from .forms import (cancel_job_form,
                     create_printer_subscription_form,
+                    cups_add_modify_class_form,
                     cups_add_modify_printer_form,
                     cups_get_classes_form,
                     cups_get_printers_form,
@@ -85,6 +86,14 @@ def create_printer_subscription(printer_uri=None,
     request = create_printer_subscription_form.render(kw)
     response = _call_ipptool(printer_uri, request)
     return response['Tests'][0]['notify-subscription-id']
+
+
+def cups_add_modify_class_request(printer_uri=None, device_uri=None):
+    kw = {'printer_uri': printer_uri, 'device_uri': device_uri}
+    request = cups_add_modify_class_form.render(kw)
+    response = _call_ipptool(printer_uri, request)
+    assert response['Tests'][0]['StatusCode'] == 'successful-ok', response
+    return True
 
 
 def cups_add_modify_printer_request(printer_uri=None, device_uri=None):
