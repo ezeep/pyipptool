@@ -170,13 +170,18 @@ class CupsAddModifyClassSchema(CupsAddModifyPrinterSchema):
     operation = 'CUPS-Add-Modify-Class'
 
 
-class CupsGetPrintersSchema(BaseIPPSchema):
-    name = 'CUPS Get Printers'
-    operation = 'CUPS-Get-Printers'
+class CupsGetClassesSchema(BaseIPPSchema):
+    name = 'CUPS Get Classes'
+    operation = 'CUPS-Get-Classes'
     object_attributes_tag = colander.null
     header = HeaderIPPSchema(widget=IPPConstantTupleWidget())
     header['operation_attributes'] = CupsGetPrintersSchemaOperationAttributes(
         widget=IPPTupleWidget())
+
+
+class CupsGetPrintersSchema(CupsGetClassesSchema):
+    name = 'CUPS Get Printers'
+    operation = 'CUPS-Get-Printers'
 
 
 class CupsMoveJobSchema(BaseIPPSchema):
@@ -250,6 +255,8 @@ cups_add_modify_class_schema = CupsAddModifyClassSchema(
 
 cups_add_modify_printer_schema = CupsAddModifyPrinterSchema(
     widget=IPPBodyWidget())
+
+cups_get_classes_schema = CupsGetClassesSchema(widget=IPPBodyWidget())
 
 cups_get_printers_schema = CupsGetPrintersSchema(widget=IPPBodyWidget())
 

@@ -9,6 +9,7 @@ import colander
 from .forms import (cancel_job_form,
                     create_printer_subscription_form,
                     cups_add_modify_printer_form,
+                    cups_get_classes_form,
                     cups_get_printers_form,
                     cups_move_job_form,
                     cups_reject_jobs_form,
@@ -92,6 +93,28 @@ def cups_add_modify_printer_request(printer_uri=None, device_uri=None):
     response = _call_ipptool(printer_uri, request)
     assert response['Tests'][0]['StatusCode'] == 'successful-ok', response
     return True
+
+
+def cups_get_classes_request(printer_uri=None,
+                             first_printer_name=colander.null,
+                             limit=colander.null,
+                             printer_location=colander.null,
+                             printer_type=colander.null,
+                             printer_type_mask=colander.null,
+                             requested_attributes=colander.null,
+                             requested_user_name=colander.null):
+    kw = {'header': {'operation_attributes':
+                     {'printer_uri': printer_uri,
+                      'first_printer_name': first_printer_name,
+                      'limit': limit,
+                      'printer_location': printer_location,
+                      'printer_type': printer_type,
+                      'printer_type_mask': printer_type_mask,
+                      'requested_attributes': requested_attributes,
+                      'requested_user_name': requested_user_name}}}
+    request = cups_get_classes_form.render(kw)
+    response = _call_ipptool(printer_uri, request)
+    return response['Tests'][0]['ResponseAttributes']
 
 
 def cups_get_printers_request(printer_uri=None,

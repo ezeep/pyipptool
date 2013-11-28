@@ -97,6 +97,31 @@ def test_cups_add_modify_printer_form():
     assert 'ATTR name requesting-user-name-allowed me' in request
 
 
+def test_cups_get_classes_form():
+    from pyipptool.forms import cups_get_classes_form
+    request = cups_get_classes_form.render(
+        {'header': {'operation_attributes':
+                    {'printer_uri': 'https://localhost:631/',
+                     'first_printer_name': 'DA-Printer',
+                     'limit': 2,
+                     'printer_location': 'The Office',
+                     'printer_type': 'network',
+                     'printer_type_mask': 'net',
+                     'requested_attributes':
+                        'name printer-object-attributes-tag',
+                     'requested_user_name': 'john'}}})
+    assert 'NAME "CUPS Get Classes"' in request, request
+    assert 'OPERATION "CUPS-Get-Classes"' in request, request
+    assert 'ATTR name first-printer-name DA-Printer' in request, request
+    assert 'ATTR integer limit 2' in request
+    assert 'ATTR text printer-location "The Office"' in request, request
+    assert 'ATTR enum printer-type network' in request
+    assert 'ATTR enum printer-type-mask net' in request
+    assert ('ATTR keyword requested-attributes'
+            ' name printer-object-attributes-tag') in request
+    assert 'ATTR name requested-user-name john' in request
+
+
 def test_cups_get_printers_form():
     from pyipptool.forms import cups_get_printers_form
     request = cups_get_printers_form.render(
