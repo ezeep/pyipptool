@@ -1,3 +1,15 @@
+def test_cancel_job_form():
+    from pyipptool.forms import cancel_job_form
+    request = cancel_job_form.render(
+        {'header': {'operation_attributes':
+                    {'printer_uri': 'https://localhost:631/classes/PIY',
+                     'purge_job': True}}})
+    assert 'NAME "Cancel Job"' in request
+    assert 'OPERATION "Cancel-Job"' in request
+    assert 'ATTR uri printer-uri https://localhost:631/classes/PIY' in request
+    assert 'ATTR boolean purge-job 1' in request
+
+
 def test_create_printer_subscription_form():
     from pyipptool.forms import create_printer_subscription_form
     request = create_printer_subscription_form.render(
