@@ -11,6 +11,7 @@ from .forms import (cancel_job_form,
                     cups_add_modify_class_form,
                     cups_add_modify_printer_form,
                     cups_get_classes_form,
+                    cups_get_ppds_form,
                     cups_get_printers_form,
                     cups_move_job_form,
                     cups_reject_jobs_form,
@@ -122,6 +123,36 @@ def cups_get_classes_request(printer_uri=None,
                       'requested_attributes': requested_attributes,
                       'requested_user_name': requested_user_name}}}
     request = cups_get_classes_form.render(kw)
+    response = _call_ipptool(printer_uri, request)
+    return response['Tests'][0]['ResponseAttributes']
+
+
+def cups_get_ppds_request(printer_uri=None,
+                          exclude_schemes=colander.null,
+                          include_schemes=colander.null,
+                          limit=colander.null,
+                          ppd_make=colander.null,
+                          ppd_make_and_model=colander.null,
+                          ppd_model_number=colander.null,
+                          ppd_natural_language=colander.null,
+                          ppd_product=colander.null,
+                          ppd_psversion=colander.null,
+                          ppd_type=colander.null,
+                          requested_attributes=colander.null):
+    kw = dict(header={'operation_attributes':
+                      {'exclude_schemes': exclude_schemes,
+                       'include_schemes': include_schemes,
+                       'limit': limit,
+                       'ppd_make': ppd_make,
+                       'ppd_make_and_model': ppd_make_and_model,
+                       'ppd_model_number': ppd_model_number,
+                       'ppd_natural_language': ppd_natural_language,
+                       'ppd_product': ppd_product,
+                       'ppd_psversion': ppd_psversion,
+                       'ppd_type': ppd_type,
+                       'requested_attributes': requested_attributes
+                       }})
+    request = cups_get_ppds_form.render(kw)
     response = _call_ipptool(printer_uri, request)
     return response['Tests'][0]['ResponseAttributes']
 

@@ -24,6 +24,10 @@ class Name(colander.String):
     pass
 
 
+class NaturalLanguage(colander.String):
+    pass
+
+
 class Text(colander.String):
     def serialize(self, node, appstruct):
         value = super(Text, self).serialize(node, appstruct)
@@ -79,6 +83,28 @@ class MoveJobOperationAttributes(OperationAttributes):
     job_id = colander.SchemaNode(colander.Integer(),
                                  widget=IPPAttributeWidget())
     job_uri = colander.SchemaNode(Uri(), widget=IPPAttributeWidget())
+
+
+class CupsGetPPDsSchemaOperationAttributes(OperationAttributes):
+    exclude_schemes = colander.SchemaNode(Name(), widget=IPPAttributeWidget())
+    include_schemes = colander.SchemaNode(Name(), widget=IPPAttributeWidget())
+    limit = colander.SchemaNode(
+        colander.Integer(),
+        widget=IPPAttributeWidget())
+    ppd_make = colander.SchemaNode(Text(), widget=IPPAttributeWidget())
+    ppd_make_and_model = colander.SchemaNode(
+        Text(),
+        widget=IPPAttributeWidget())
+    ppd_model_number = colander.SchemaNode(colander.Integer(),
+                                           widget=IPPAttributeWidget())
+    ppd_natural_language = colander.SchemaNode(NaturalLanguage(),
+                                               widget=IPPAttributeWidget())
+    ppd_product = colander.SchemaNode(Text(), widget=IPPAttributeWidget())
+    ppd_psversion = colander.SchemaNode(Text(), widget=IPPAttributeWidget())
+    ppd_type = colander.SchemaNode(Keyword(), widget=IPPAttributeWidget())
+    requested_attributes = colander.SchemaNode(
+        Keyword(),
+        widget=IPPAttributeWidget())
 
 
 class CupsGetPrintersSchemaOperationAttributes(OperationAttributes):
@@ -179,6 +205,15 @@ class CupsGetClassesSchema(BaseIPPSchema):
         widget=IPPTupleWidget())
 
 
+class CupsGetPPDsSchema(BaseIPPSchema):
+    name = 'CUPS Get PPDs'
+    operation = 'CUPS-Get-PPDs'
+    object_attributes_tag = colander.null
+    header = HeaderIPPSchema(widget=IPPConstantTupleWidget())
+    header['operation_attributes'] = CupsGetPPDsSchemaOperationAttributes(
+        widget=IPPTupleWidget())
+
+
 class CupsGetPrintersSchema(CupsGetClassesSchema):
     name = 'CUPS Get Printers'
     operation = 'CUPS-Get-Printers'
@@ -257,6 +292,8 @@ cups_add_modify_printer_schema = CupsAddModifyPrinterSchema(
     widget=IPPBodyWidget())
 
 cups_get_classes_schema = CupsGetClassesSchema(widget=IPPBodyWidget())
+
+cups_get_ppds_schema = CupsGetPPDsSchema(widget=IPPBodyWidget())
 
 cups_get_printers_schema = CupsGetPrintersSchema(widget=IPPBodyWidget())
 

@@ -31,8 +31,10 @@ class IPPAttributeWidget(Widget):
     def serialize(self, field, cstruct=None, readonly=False):
         if cstruct is colander.null:
             return ''
+        attr_name = field.schema.typ.__class__.__name__
+        attr_name = attr_name[0].lower() + attr_name[1:]
         return 'ATTR {attr_type} {attr_name} {attr_value}'.format(
-            attr_type=field.schema.typ.__class__.__name__.lower(),
+            attr_type=attr_name,
             attr_name=field.name.replace('_', '-'),
             attr_value=cstruct)
 

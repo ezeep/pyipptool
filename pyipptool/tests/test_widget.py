@@ -28,7 +28,7 @@ def test_ipp_attribute_widget_with_value():
     schema.typ = DummyType()
     field = DummyField(schema, renderer=rendrer)
     response = widget.serialize(field, 'hello')
-    assert response == 'ATTR dummytype name hello'
+    assert response == 'ATTR dummyType name hello'
 
 
 def test_ipp_display_widget():

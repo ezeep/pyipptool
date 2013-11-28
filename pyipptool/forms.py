@@ -7,6 +7,7 @@ from .schemas import (cancel_job_schema,
                       cups_add_modify_class_schema,
                       cups_add_modify_printer_schema,
                       cups_get_classes_schema,
+                      cups_get_ppds_schema,
                       cups_get_printers_schema,
                       cups_move_job_schema,
                       cups_reject_jobs_schema,
@@ -27,6 +28,7 @@ create_printer_subscription_form = deform.Form(
 cups_add_modify_printer_form = deform.Form(cups_add_modify_printer_schema)
 cups_add_modify_class_form = deform.Form(cups_add_modify_class_schema)
 cups_get_classes_form = deform.Form(cups_get_classes_schema)
+cups_get_ppds_form = deform.Form(cups_get_ppds_schema)
 cups_get_printers_form = deform.Form(cups_get_printers_schema)
 cups_move_job_form = deform.Form(cups_move_job_schema)
 cups_reject_jobs_form = deform.Form(cups_reject_jobs_schema)

@@ -122,6 +122,35 @@ def test_cups_get_classes_form():
     assert 'ATTR name requested-user-name john' in request
 
 
+def test_cups_get_ppds_form():
+    from pyipptool.forms import cups_get_ppds_form
+    request = cups_get_ppds_form.render(
+        {'header': {'operation_attributes':
+                    {'exclude_schemes': 'foo',
+                     'include_schemes': 'bar',
+                     'limit': 3,
+                     'ppd_make': 'Manufaktur',
+                     'ppd_make_and_model': 'Manufaktur XYZ',
+                     'ppd_model_number': '1234',
+                     'ppd_natural_language': 'en',
+                     'ppd_product': 'Generic',
+                     'ppd_psversion': 'PS3',
+                     'ppd_type': 'generic',
+                     'requested_attributes': 'all'}}})
+    assert 'NAME "CUPS Get PPDs"' in request
+    assert 'OPERATION "CUPS-Get-PPDs"' in request
+    assert 'ATTR name exclude-schemes foo' in request
+    assert 'ATTR name include-schemes bar' in request
+    assert 'ATTR text ppd-make "Manufaktur"' in request
+    assert 'ATTR text ppd-make-and-model "Manufaktur XYZ"' in request
+    assert 'ATTR integer ppd-model-number 1234' in request
+    assert 'ATTR naturalLanguage ppd-natural-language en' in request
+    assert 'ATTR text ppd-product "Generic"' in request
+    assert 'ATTR text ppd-psversion "PS3"' in request
+    assert 'ATTR keyword ppd-type generic' in request
+    assert 'ATTR keyword requested-attributes all' in request
+
+
 def test_cups_get_printers_form():
     from pyipptool.forms import cups_get_printers_form
     request = cups_get_printers_form.render(
