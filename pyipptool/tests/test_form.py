@@ -135,6 +135,25 @@ def test_cups_reject_jobs_form():
     assert 'ATTR text printer-state-message "You shall not pass"' in request
 
 
+def test_get_job_attributes_form():
+    from pyipptool.forms import get_job_attributes_form
+    request = get_job_attributes_form.render(
+        {'header':
+         {'operation_attributes':
+          {'printer_uri':
+           'https://localhost:631/printers/DA-PRINTER',
+           'job_id': 2,
+           'requesting_user_name': 'susan',
+           'requested_attributes': 'job-uri'}}})
+    assert 'NAME "Get Job Attributes"' in request
+    assert 'OPERATION "Get-Job-Attributes"' in request
+    assert 'ATTR uri printer-uri https://localhost:631/printers/DA-PRINTER'\
+        in request
+    assert 'ATTR integer job-id 2' in request
+    assert 'ATTR name requesting-user-name susan' in request
+    assert 'ATTR keyword requested-attributes job-uri' in request
+
+
 def test_get_jobs_form():
     from pyipptool.forms import get_jobs_form
     request = get_jobs_form.render({'header': {'operation_attributes':

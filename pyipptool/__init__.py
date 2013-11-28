@@ -12,6 +12,7 @@ from .forms import (cancel_job_form,
                     cups_get_printers_form,
                     cups_move_job_form,
                     cups_reject_jobs_form,
+                    get_job_attributes_form,
                     get_jobs_form,
                     get_subscriptions_form,
                     )
@@ -143,6 +144,22 @@ def cups_reject_jobs_request(printer_uri=None,
     response = _call_ipptool(printer_uri, request)
     assert response['Tests'][0]['StatusCode'] == 'successful-ok', response
     return True
+
+
+def get_job_attributes_request(printer_uri=None,
+                               job_id=colander.null,
+                               job_uri=colander.null,
+                               requesting_user_name=colander.null,
+                               requested_attributes=colander.null):
+    kw = dict(header={'operation_attributes':
+                      {'printer_uri': printer_uri,
+                       'job_id': job_id,
+                       'job_uri': job_uri,
+                       'requesting_user_name': requesting_user_name,
+                       'requested_attributes': requested_attributes}})
+    request = get_job_attributes_form.render(kw)
+    response = _call_ipptool(printer_uri, request)
+    return response['Tests'][0]['ResponseAttributes']
 
 
 def get_jobs_request(printer_uri=None,
