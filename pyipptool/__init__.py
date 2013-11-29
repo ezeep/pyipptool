@@ -97,7 +97,9 @@ def cups_add_modify_class_request(printer_uri=None, device_uri=None):
 
 
 def cups_add_modify_printer_request(printer_uri=None, device_uri=None):
-    kw = {'printer_uri': printer_uri, 'device_uri': device_uri}
+    kw = dict(header={'operation_attributes':
+                      {'printer_uri': printer_uri}},
+              device_uri=device_uri)
     request = cups_add_modify_printer_form.render(kw)
     response = _call_ipptool(printer_uri, request)
     assert response['Tests'][0]['StatusCode'] == 'successful-ok', response

@@ -69,6 +69,8 @@ def test_cups_add_modify_printer_form():
     from pyipptool.forms import cups_add_modify_printer_form
     request = cups_add_modify_printer_form.render(
         {'device_uri': 'cups-pdf:/',
+         'header': {'operation_attributes':
+                    {'printer_uri': 'https://localhost:631/printers/p0'}},
          'auth_info_required': 'john',
          'job_sheets_default': 'none',
          'port_monitor': 'port',
@@ -82,6 +84,7 @@ def test_cups_add_modify_printer_form():
          'requesting_user_name_allowed': 'me'})
     assert 'NAME "CUPS Add Modify Printer"'
     assert 'OPERATION "CUPS-Add-Modify-Printer"' in request
+    assert 'ATTR uri printer-uri https://localhost:631/printers/p0' in request
     assert 'GROUP printer-object-attributes-tag' in request
     assert 'ATTR uri device-uri cups-pdf:/' in request
     assert 'ATTR keyword auth-info-required john' in request
