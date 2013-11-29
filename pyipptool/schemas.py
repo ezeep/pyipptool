@@ -50,17 +50,18 @@ class OperationAttributes(colander.Schema):
         widget=IPPAttributeWidget())
 
 
-class CancelJobOperationAttributes(OperationAttributes):
+class OperationAttributesWithPrinterUri(OperationAttributes):
     printer_uri = colander.SchemaNode(Uri(),
                                       widget=IPPAttributeWidget())
+
+
+class CancelJobOperationAttributes(OperationAttributesWithPrinterUri):
     job_uri = colander.SchemaNode(Uri(), widget=IPPAttributeWidget())
     purge_job = colander.SchemaNode(colander.Boolean(true_val=1, false_val=0),
                                     widget=IPPAttributeWidget())
 
 
-class SubscriptionOperationAttributes(OperationAttributes):
-    printer_uri = colander.SchemaNode(Uri(),
-                                      widget=IPPAttributeWidget())
+class SubscriptionOperationAttributes(OperationAttributesWithPrinterUri):
     requesting_user_name = colander.SchemaNode(Name(),
                                                widget=IPPAttributeWidget())
 
@@ -77,9 +78,7 @@ class GetJobsOperationAttributes(SubscriptionOperationAttributes):
                                   widget=IPPAttributeWidget())
 
 
-class MoveJobOperationAttributes(OperationAttributes):
-    printer_uri = colander.SchemaNode(Uri(),
-                                      widget=IPPAttributeWidget())
+class MoveJobOperationAttributes(OperationAttributesWithPrinterUri):
     job_id = colander.SchemaNode(colander.Integer(),
                                  widget=IPPAttributeWidget())
     job_uri = colander.SchemaNode(Uri(), widget=IPPAttributeWidget())
@@ -136,11 +135,6 @@ class GetJobAttributesOperationAttributes(MoveJobOperationAttributes):
         widget=IPPAttributeWidget())
 
 
-class CupsAddModifyPrinterOperationAttributes(OperationAttributes):
-    printer_uri = colander.SchemaNode(Uri(),
-                                      widget=IPPAttributeWidget())
-
-
 class HeaderIPPSchema(colander.Schema):
     name = colander.SchemaNode(colander.String(), widget=IPPNameWidget())
     operation = colander.SchemaNode(colander.String(), widget=IPPNameWidget())
@@ -171,7 +165,7 @@ class CupsAddModifyPrinterSchema(BaseIPPSchema):
     operation = 'CUPS-Add-Modify-Printer'
 
     header = HeaderIPPSchema(widget=IPPConstantTupleWidget())
-    header['operation_attributes'] = CupsAddModifyPrinterOperationAttributes(
+    header['operation_attributes'] = OperationAttributesWithPrinterUri(
         widget=IPPTupleWidget())
     object_attributes_tag = 'printer-object-attributes-tag'
     auth_info_required = colander.SchemaNode(Keyword(),
