@@ -100,6 +100,17 @@ def test_cups_add_modify_printer_form():
     assert 'ATTR name requesting-user-name-allowed me' in request
 
 
+def test_cups_delete_printer_form():
+    from pyipptool.forms import cups_delete_printer_form
+    request = cups_delete_printer_form.render(
+        {'header': {'operation_attributes':
+                    {'printer_uri': 'https://localhost:631/printers/p0'}}})
+    assert 'NAME "CUPS Delete Printer"' in request
+    assert 'OPERATION "CUPS-Delete-Printer"' in request
+    assert 'GROUP operation-attributes-tag' in request
+    assert 'ATTR uri printer-uri https://localhost:631/printers/p0' in request
+
+
 def test_cups_get_classes_form():
     from pyipptool.forms import cups_get_classes_form
     request = cups_get_classes_form.render(
