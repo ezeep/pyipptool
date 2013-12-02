@@ -194,6 +194,15 @@ class CupsAddModifyPrinterSchema(BaseIPPSchema):
         widget=IPPAttributeWidget())
 
 
+class CupsDeletePrinterSchema(BaseIPPSchema):
+    name = 'CUPS Delete Printer'
+    operation = 'CUPS-Delete-Printer'
+    header = HeaderIPPSchema(widget=IPPConstantTupleWidget())
+    header['operation_attributes'] = OperationAttributesWithPrinterUri(
+        widget=IPPTupleWidget())
+    object_attributes_tag = colander.null
+
+
 class CupsAddModifyClassSchema(CupsAddModifyPrinterSchema):
     name = 'CUPS Add Modify Class'
     operation = 'CUPS-Add-Modify-Class'
@@ -292,6 +301,9 @@ cups_add_modify_class_schema = CupsAddModifyClassSchema(
     widget=IPPBodyWidget())
 
 cups_add_modify_printer_schema = CupsAddModifyPrinterSchema(
+    widget=IPPBodyWidget())
+
+cups_delete_printer_schema = CupsDeletePrinterSchema(
     widget=IPPBodyWidget())
 
 cups_get_classes_schema = CupsGetClassesSchema(widget=IPPBodyWidget())
