@@ -7,14 +7,14 @@ import pyipptool
 def test_ipptool_create_printer_subscription(_call_ipptool):
     from pyipptool import create_printer_subscription
     create_printer_subscription(
+        uri='https://localhost:631/',
         printer_uri='https://localhost:631/classes/PUBLIC-PDF',
         requesting_user_name='ecp_admin',
         notify_recipient_uri='ezpnotifier://',
         notify_events='all',
         notify_lease_duration=0,
         notify_lease_expiration_time=0)
-    assert _call_ipptool._mock_mock_calls[0][1][0] == ('https://localhost:631/'
-                                                       'classes/PUBLIC-PDF')
+    assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
     request = _call_ipptool._mock_mock_calls[0][1][1]
     assert 'requesting-user-name ecp_admin' in request, request
     assert 'printer-uri https://localhost:631/classes/PUBLIC-PDF' in request
@@ -29,9 +29,10 @@ def test_cups_add_modify_printer_request(_call_ipptool):
     from pyipptool import cups_add_modify_printer_request
     _call_ipptool.return_value = {'Tests': [{'StatusCode': 'successful-ok'}]}
     cups_add_modify_printer_request(
+        uri='https://localhost:631/',
         printer_uri='https://localhost:631/classes/PUBLIC-PDF',
         device_uri='cups-pdf:/')
-    assert _call_ipptool._mock_mock_calls[0][1][0] == ('https://localhost:631/'
-                                                       'classes/PUBLIC-PDF')
+    assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
     request = _call_ipptool._mock_mock_calls[0][1][1]
+    assert 'printer-uri https://localhost:631/classes/PUBLIC-PDF' in request
     assert 'device-uri cups-pdf:/' in request
