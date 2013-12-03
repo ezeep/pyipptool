@@ -74,7 +74,7 @@ def release_job(uri,
     assert response['Tests'][0]['StatusCode'] == 'successful-ok', response
 
 
-def cancel_job_request(uri, printer_uri=colander.null, purge_job=colander.null):
+def cancel_job(uri, printer_uri=colander.null, purge_job=colander.null):
     kw = {'header': {'operation_attributes':
                      {'printer_uri': printer_uri,
                       'purge_job': purge_job}}}
@@ -105,7 +105,7 @@ def create_printer_subscription(uri,
     return response['Tests'][0]['notify-subscription-id']
 
 
-def cups_add_modify_class_request(uri, printer_uri=None, device_uri=None):
+def cups_add_modify_class(uri, printer_uri=None, device_uri=None):
     kw = {'printer_uri': printer_uri, 'device_uri': device_uri}
     request = cups_add_modify_class_form.render(kw)
     response = _call_ipptool(uri, request)
@@ -113,7 +113,7 @@ def cups_add_modify_class_request(uri, printer_uri=None, device_uri=None):
     return True
 
 
-def cups_add_modify_printer_request(uri, printer_uri=None, device_uri=None):
+def cups_add_modify_printer(uri, printer_uri=None, device_uri=None):
     kw = {'header': {'operation_attributes':
                      {'printer_uri': printer_uri}},
           'device_uri': device_uri}
@@ -139,15 +139,15 @@ def cups_delete_class(uri, printer_uri=None):
     return True
 
 
-def cups_get_classes_request(uri,
-                             printer_uri=None,
-                             first_printer_name=colander.null,
-                             limit=colander.null,
-                             printer_location=colander.null,
-                             printer_type=colander.null,
-                             printer_type_mask=colander.null,
-                             requested_attributes=colander.null,
-                             requested_user_name=colander.null):
+def cups_get_classes(uri,
+                     printer_uri=None,
+                     first_printer_name=colander.null,
+                     limit=colander.null,
+                     printer_location=colander.null,
+                     printer_type=colander.null,
+                     printer_type_mask=colander.null,
+                     requested_attributes=colander.null,
+                     requested_user_name=colander.null):
     kw = {'header': {'operation_attributes':
                      {'printer_uri': printer_uri,
                       'first_printer_name': first_printer_name,
@@ -162,19 +162,19 @@ def cups_get_classes_request(uri,
     return response['Tests'][0]['ResponseAttributes']
 
 
-def cups_get_ppds_request(uri,
-                          printer_uri=None,
-                          exclude_schemes=colander.null,
-                          include_schemes=colander.null,
-                          limit=colander.null,
-                          ppd_make=colander.null,
-                          ppd_make_and_model=colander.null,
-                          ppd_model_number=colander.null,
-                          ppd_natural_language=colander.null,
-                          ppd_product=colander.null,
-                          ppd_psversion=colander.null,
-                          ppd_type=colander.null,
-                          requested_attributes=colander.null):
+def cups_get_ppds(uri,
+                  printer_uri=None,
+                  exclude_schemes=colander.null,
+                  include_schemes=colander.null,
+                  limit=colander.null,
+                  ppd_make=colander.null,
+                  ppd_make_and_model=colander.null,
+                  ppd_model_number=colander.null,
+                  ppd_natural_language=colander.null,
+                  ppd_product=colander.null,
+                  ppd_psversion=colander.null,
+                  ppd_type=colander.null,
+                  requested_attributes=colander.null):
     kw = {'header': {'operation_attributes':
                      {'exclude_schemes': exclude_schemes,
                       'include_schemes': include_schemes,
@@ -193,15 +193,15 @@ def cups_get_ppds_request(uri,
     return response['Tests'][0]['ResponseAttributes']
 
 
-def cups_get_printers_request(uri,
-                              printer_uri=None,
-                              first_printer_name=colander.null,
-                              limit=colander.null,
-                              printer_location=colander.null,
-                              printer_type=colander.null,
-                              printer_type_mask=colander.null,
-                              requested_attributes=colander.null,
-                              requested_user_name=colander.null):
+def cups_get_printers(uri,
+                      printer_uri=None,
+                      first_printer_name=colander.null,
+                      limit=colander.null,
+                      printer_location=colander.null,
+                      printer_type=colander.null,
+                      printer_type_mask=colander.null,
+                      requested_attributes=colander.null,
+                      requested_user_name=colander.null):
     kw = {'header': {'operation_attributes':
                      {'printer_uri': printer_uri,
                       'first_printer_name': first_printer_name,
@@ -216,12 +216,12 @@ def cups_get_printers_request(uri,
     return response['Tests'][0]['ResponseAttributes']
 
 
-def cups_move_job_request(uri,
-                          printer_uri=colander.null,
-                          job_id=colander.null,
-                          job_uri=colander.null,
-                          job_printer_uri=None,
-                          printer_state_message=None):
+def cups_move_job(uri,
+                  printer_uri=colander.null,
+                  job_id=colander.null,
+                  job_uri=colander.null,
+                  job_printer_uri=None,
+                  printer_state_message=None):
     kw = {'header': {'operation_attributes':
                      {'printer_uri': printer_uri,
                       'job_id': job_id,
@@ -234,10 +234,10 @@ def cups_move_job_request(uri,
     return True
 
 
-def cups_reject_jobs_request(uri,
-                             printer_uri=None,
-                             requesting_user_name=None,
-                             printer_state_message=colander.null):
+def cups_reject_jobs(uri,
+                     printer_uri=None,
+                     requesting_user_name=None,
+                     printer_state_message=colander.null):
     kw = {'header': {'operation_attributes':
                      {'printer_uri': printer_uri,
                       'requesting_user_name': requesting_user_name}},
@@ -248,12 +248,12 @@ def cups_reject_jobs_request(uri,
     return True
 
 
-def get_job_attributes_request(uri,
-                               printer_uri=None,
-                               job_id=colander.null,
-                               job_uri=colander.null,
-                               requesting_user_name=colander.null,
-                               requested_attributes=colander.null):
+def get_job_attributes(uri,
+                       printer_uri=None,
+                       job_id=colander.null,
+                       job_uri=colander.null,
+                       requesting_user_name=colander.null,
+                       requested_attributes=colander.null):
     kw = {'header': {'operation_attributes':
                      {'printer_uri': printer_uri,
                       'job_id': job_id,
@@ -265,12 +265,12 @@ def get_job_attributes_request(uri,
     return response['Tests'][0]['ResponseAttributes']
 
 
-def get_jobs_request(uri,
-                     printer_uri=None,
-                     limit=colander.null,
-                     requested_attributes=colander.null,
-                     which_jobs=colander.null,
-                     my_jobs=colander.null):
+def get_jobs(uri,
+             printer_uri=None,
+             limit=colander.null,
+             requested_attributes=colander.null,
+             which_jobs=colander.null,
+             my_jobs=colander.null):
     kw = {'header': {'operation_attributes':
                      {'printer_uri': printer_uri,
                       'limit': limit,
@@ -282,12 +282,12 @@ def get_jobs_request(uri,
     return response['Tests'][0]['ResponseAttributes']
 
 
-def get_subscriptions_request(uri,
-                              printer_uri=None,
-                              limit=colander.null,
-                              requested_attributes=colander.null,
-                              which_jobs=colander.null,
-                              my_jobs=colander.null):
+def get_subscriptions(uri,
+                      printer_uri=None,
+                      limit=colander.null,
+                      requested_attributes=colander.null,
+                      which_jobs=colander.null,
+                      my_jobs=colander.null):
     kw = {'header': {'operation_attributes':
                      {'printer_uri': printer_uri,
                       'limit': limit,
