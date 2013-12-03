@@ -10,6 +10,28 @@ def test_cancel_job_form():
     assert 'ATTR boolean purge-job 1' in request
 
 
+def test_release_job_form_with_job_id():
+    from pyipptool.forms import release_job_form
+    request = release_job_form.render(
+        {'header': {'operation_attributes':
+                    {'printer_uri': 'https://localhost:631/classes/PIY',
+                     'job_id': 7}}})
+    assert 'NAME "Release Job"' in request
+    assert 'OPERATION "Release-Job"' in request
+    assert 'ATTR uri printer-uri https://localhost:631/classes/PIY' in request
+    assert 'ATTR integer job-id 7' in request
+
+
+def test_release_job_form_with_job_uri():
+    from pyipptool.forms import release_job_form
+    request = release_job_form.render(
+        {'header': {'operation_attributes':
+                    {'job_uri': 'https://localhost:631/jobs/7'}}})
+    assert 'NAME "Release Job"' in request
+    assert 'OPERATION "Release-Job"' in request
+    assert 'ATTR uri job-uri https://localhost:631/jobs/7' in request
+
+
 def test_create_printer_subscription_form():
     from pyipptool.forms import create_printer_subscription_form
     request = create_printer_subscription_form.render(

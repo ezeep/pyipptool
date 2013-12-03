@@ -55,6 +55,16 @@ class OperationAttributesWithPrinterUri(OperationAttributes):
                                       widget=IPPAttributeWidget())
 
 
+class OperationAttributesWithJobUri(OperationAttributes):
+    job_uri = colander.SchemaNode(Uri(), widget=IPPAttributeWidget())
+
+
+class JobOperationAttributes(OperationAttributesWithPrinterUri,
+                             OperationAttributesWithJobUri):
+    job_id = colander.SchemaNode(colander.Integer(),
+                                 widget=IPPAttributeWidget())
+
+
 class CancelJobOperationAttributes(OperationAttributesWithPrinterUri):
     job_uri = colander.SchemaNode(Uri(), widget=IPPAttributeWidget())
     purge_job = colander.SchemaNode(colander.Boolean(true_val=1, false_val=0),
@@ -158,6 +168,15 @@ class CancelJobSchema(BaseIPPSchema):
     header = HeaderIPPSchema(widget=IPPConstantTupleWidget())
     header['operation_attributes'] = CancelJobOperationAttributes(
         widget=IPPTupleWidget())
+
+
+class ReleaseJobSchema(BaseIPPSchema):
+    name = 'Release Job'
+    operation = 'Release-Job'
+    header = HeaderIPPSchema(widget=IPPConstantTupleWidget())
+    header['operation_attributes'] = JobOperationAttributes(
+        widget=IPPTupleWidget())
+    object_attributes_tag = colander.null
 
 
 class CupsAddModifyPrinterSchema(BaseIPPSchema):
@@ -299,6 +318,9 @@ class GetSubscriptionsSchema(GetJobsSchema):
 
 
 cancel_job_schema = CancelJobSchema(widget=IPPBodyWidget())
+
+release_job_schema = ReleaseJobSchema(widget=IPPBodyWidget())
+
 create_printer_subscription_schema = CreatePrinterSubscriptionSchema(
     widget=IPPBodyWidget())
 

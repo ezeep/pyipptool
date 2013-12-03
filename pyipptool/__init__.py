@@ -7,6 +7,7 @@ import urlparse
 
 import colander
 from .forms import (cancel_job_form,
+                    release_job_form,
                     create_printer_subscription_form,
                     cups_add_modify_class_form,
                     cups_add_modify_printer_form,
@@ -58,6 +59,19 @@ def _call_ipptool(printer_uri, request):
     finally:
         os.unlink(temp_file.name)
     return plistlib.readPlistFromString(stdout)
+
+
+def release_job(uri,
+                printer_uri=colander.null,
+                job_id=colander.null,
+                job_uri=colander.null):
+    kw = {'header': {'operation_attributes':
+                     {'printer_uri': printer_uri,
+                      'job_id': job_id,
+                      'job_uri': job_uri}}}
+    request = release_job_form.render(kw)
+    response = _call_ipptool(uri, request)
+    assert response['Tests'][0]['StatusCode'] == 'successful-ok', response
 
 
 def cancel_job_request(printer_uri=None, purge_job=colander.null):
