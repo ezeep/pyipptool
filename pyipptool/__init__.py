@@ -74,9 +74,15 @@ def release_job(uri,
     assert response['Tests'][0]['StatusCode'] == 'successful-ok', response
 
 
-def cancel_job(uri, printer_uri=colander.null, purge_job=colander.null):
+def cancel_job(uri,
+               printer_uri=colander.null,
+               job_id=colander.null,
+               job_uri=colander.null,
+               purge_job=colander.null):
     kw = {'header': {'operation_attributes':
                      {'printer_uri': printer_uri,
+                      'job_id': job_id,
+                      'job_uri': job_uri,
                       'purge_job': purge_job}}}
     request = cancel_job_form.render(kw)
     response = _call_ipptool(uri, request)

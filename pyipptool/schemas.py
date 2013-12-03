@@ -65,8 +65,7 @@ class JobOperationAttributes(OperationAttributesWithPrinterUri,
                                  widget=IPPAttributeWidget())
 
 
-class CancelJobOperationAttributes(OperationAttributesWithPrinterUri):
-    job_uri = colander.SchemaNode(Uri(), widget=IPPAttributeWidget())
+class CancelJobOperationAttributes(JobOperationAttributes):
     purge_job = colander.SchemaNode(colander.Boolean(true_val=1, false_val=0),
                                     widget=IPPAttributeWidget())
 
