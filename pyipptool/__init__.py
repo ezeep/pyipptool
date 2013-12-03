@@ -11,6 +11,7 @@ from .forms import (cancel_job_form,
                     cups_add_modify_class_form,
                     cups_add_modify_printer_form,
                     cups_delete_printer_form,
+                    cups_delete_class_form,
                     cups_get_classes_form,
                     cups_get_ppds_form,
                     cups_get_printers_form,
@@ -110,6 +111,14 @@ def cups_add_modify_printer_request(printer_uri=None, device_uri=None):
 def cups_delete_printer(printer_uri=None):
     kw = {'header': {'operation_attributes': {'printer_uri': printer_uri}}}
     request = cups_delete_printer_form.render(kw)
+    response = _call_ipptool(printer_uri, request)
+    assert response['Tests'][0]['StatusCode'] == 'successful-ok', response
+    return True
+
+
+def cups_delete_class(printer_uri=None):
+    kw = {'header': {'operation_attributes': {'printer_uri': printer_uri}}}
+    request = cups_delete_class_form.render(kw)
     response = _call_ipptool(printer_uri, request)
     assert response['Tests'][0]['StatusCode'] == 'successful-ok', response
     return True
