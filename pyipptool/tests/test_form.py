@@ -111,6 +111,17 @@ def test_cups_delete_printer_form():
     assert 'ATTR uri printer-uri https://localhost:631/printers/p0' in request
 
 
+def test_cups_delete_class_form():
+    from pyipptool.forms import cups_delete_class_form
+    request = cups_delete_class_form.render(
+        {'header': {'operation_attributes':
+                    {'printer_uri': 'https://localhost:631/classes/p0'}}})
+    assert 'NAME "CUPS Delete Class"' in request
+    assert 'OPERATION "CUPS-Delete-Class"' in request
+    assert 'GROUP operation-attributes-tag' in request
+    assert 'ATTR uri printer-uri https://localhost:631/classes/p0' in request
+
+
 def test_cups_get_classes_form():
     from pyipptool.forms import cups_get_classes_form
     request = cups_get_classes_form.render(

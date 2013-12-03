@@ -208,6 +208,11 @@ class CupsAddModifyClassSchema(CupsAddModifyPrinterSchema):
     operation = 'CUPS-Add-Modify-Class'
 
 
+class CupsDeleteClassSchema(CupsDeletePrinterSchema):
+    name = 'CUPS Delete Class'
+    operation = 'CUPS-Delete-Class'
+
+
 class CupsGetClassesSchema(BaseIPPSchema):
     name = 'CUPS Get Classes'
     operation = 'CUPS-Get-Classes'
@@ -304,6 +309,9 @@ cups_add_modify_printer_schema = CupsAddModifyPrinterSchema(
     widget=IPPBodyWidget())
 
 cups_delete_printer_schema = CupsDeletePrinterSchema(
+    widget=IPPBodyWidget())
+
+cups_delete_class_schema = CupsDeleteClassSchema(
     widget=IPPBodyWidget())
 
 cups_get_classes_schema = CupsGetClassesSchema(widget=IPPBodyWidget())
