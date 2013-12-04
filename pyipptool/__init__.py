@@ -22,6 +22,7 @@ from .forms import (cancel_job_form,
                     cups_reject_jobs_form,
                     get_job_attributes_form,
                     get_jobs_form,
+                    get_printer_attributes_form,
                     get_subscriptions_form,
                     )
 
@@ -312,6 +313,19 @@ def get_jobs(uri,
                       'which_jobs': which_jobs,
                       'my_jobs': my_jobs}}}
     request = get_jobs_form.render(kw)
+    response = _call_ipptool(uri, request)
+    return response['Tests'][0]['ResponseAttributes']
+
+
+def get_printer_attributes(uri,
+                           printer_uri=None,
+                           requesting_user_name=colander.null,
+                           requested_attributes=colander.null):
+    kw = {'header': {'operation_attributes':
+                     {'printer_uri': printer_uri,
+                      'requesting_user_name': requesting_user_name,
+                      'requested_attributes': requested_attributes}}}
+    request = get_printer_attributes_form.render(kw)
     response = _call_ipptool(uri, request)
     return response['Tests'][0]['ResponseAttributes']
 

@@ -274,6 +274,22 @@ def test_get_jobs_form():
     assert 'ATTR keyword which-jobs pending' in request
 
 
+def test_get_printer_attributes_form():
+    from pyipptool.forms import get_printer_attributes_form
+    request = get_printer_attributes_form.render(
+        {'header':
+         {'operation_attributes':
+          {'printer_uri':
+           'https://localhost:631/printers/p0',
+           'requesting_user_name': 'yoda',
+           'requested_attributes': 'printer-name'}}})
+    assert 'NAME "Get Printer Attributes"' in request
+    assert 'OPERATION "Get-Printer-Attributes"' in request
+    assert 'ATTR uri printer-uri https://localhost:631/printers/p0' in request
+    assert 'ATTR name requesting-user-name yoda' in request
+    assert 'ATTR keyword requested-attributes printer-name' in request
+
+
 def test_get_subscriptions_form():
     from pyipptool.forms import get_subscriptions_form
     request = get_subscriptions_form.render({'header':
