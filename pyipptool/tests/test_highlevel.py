@@ -7,7 +7,7 @@ import pyipptool
 def test_ipptool_create_printer_subscription(_call_ipptool):
     from pyipptool import create_printer_subscription
     create_printer_subscription(
-        uri='https://localhost:631/',
+        'https://localhost:631/',
         printer_uri='https://localhost:631/classes/PUBLIC-PDF',
         requesting_user_name='ecp_admin',
         notify_recipient_uri='ezpnotifier://',
@@ -29,7 +29,7 @@ def test_cups_add_modify_printer(_call_ipptool):
     from pyipptool import cups_add_modify_printer
     _call_ipptool.return_value = {'Tests': [{'StatusCode': 'successful-ok'}]}
     cups_add_modify_printer(
-        uri='https://localhost:631/',
+        'https://localhost:631/',
         printer_uri='https://localhost:631/classes/PUBLIC-PDF',
         device_uri='cups-pdf:/')
     assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
