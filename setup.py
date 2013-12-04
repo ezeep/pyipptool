@@ -35,6 +35,7 @@ setup(
     description='ipptool python wrapper',
     url='https://github.com/ezeep/pyipptool',
     long_description=description,
+    license=' Apache Software License',
     packages=('pyipptool',),
     install_requires=('deform',),
     tests_require=('mock', 'pytest'),
