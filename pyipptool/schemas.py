@@ -65,6 +65,17 @@ class JobOperationAttributes(OperationAttributesWithPrinterUri,
                                  widget=IPPAttributeWidget())
 
 
+class GetDevicesOperationAttributes(OperationAttributes):
+    exclude_schemes = colander.SchemaNode(Name(), widget=IPPAttributeWidget())
+    include_schemes = colander.SchemaNode(Name(), widget=IPPAttributeWidget())
+    limit = colander.SchemaNode(
+        colander.Integer(),
+        widget=IPPAttributeWidget())
+    requested_attributes = colander.SchemaNode(
+        Keyword(),
+        widget=IPPAttributeWidget())
+
+
 class CancelJobOperationAttributes(JobOperationAttributes):
     purge_job = colander.SchemaNode(colander.Boolean(true_val=1, false_val=0),
                                     widget=IPPAttributeWidget())
@@ -112,6 +123,13 @@ class CupsGetPPDsSchemaOperationAttributes(OperationAttributes):
     ppd_type = colander.SchemaNode(Keyword(), widget=IPPAttributeWidget())
     requested_attributes = colander.SchemaNode(
         Keyword(),
+        widget=IPPAttributeWidget())
+
+
+class CupsGetDevicesSchemaOperationAttributes(GetDevicesOperationAttributes):
+    device_class = colander.SchemaNode(Keyword(), widget=IPPAttributeWidget())
+    timeout = colander.SchemaNode(
+        colander.Integer(),
         widget=IPPAttributeWidget())
 
 
@@ -240,6 +258,15 @@ class CupsGetClassesSchema(BaseIPPSchema):
         widget=IPPTupleWidget())
 
 
+class CupsGetDevicesSchema(BaseIPPSchema):
+    name = 'CUPS Get Devices'
+    operation = 'CUPS-Get-Devices'
+    header = HeaderIPPSchema(widget=IPPConstantTupleWidget())
+    header['operation_attributes'] = CupsGetDevicesSchemaOperationAttributes(
+        widget=IPPTupleWidget())
+    object_attributes_tag = colander.null
+
+
 class CupsGetPPDsSchema(BaseIPPSchema):
     name = 'CUPS Get PPDs'
     operation = 'CUPS-Get-PPDs'
@@ -336,6 +363,8 @@ cups_delete_class_schema = CupsDeleteClassSchema(
     widget=IPPBodyWidget())
 
 cups_get_classes_schema = CupsGetClassesSchema(widget=IPPBodyWidget())
+
+cups_get_devices_schema = CupsGetDevicesSchema(widget=IPPBodyWidget())
 
 cups_get_ppds_schema = CupsGetPPDsSchema(widget=IPPBodyWidget())
 
