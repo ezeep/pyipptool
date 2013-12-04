@@ -2,8 +2,8 @@ pyipptool
 =========
 
 .. image::
-   https://magnum.travis-ci.com/ezeep/pyipptool.png?token=1cZ3Jy2DStcoTAvezSS8&branch=master
-   :target: https://magnum.travis-ci.com/ezeep/pyipptool
+   https://travis-ci.org/ezeep/pyipptool.png?branch=master
+   :target: https://travis-ci.org/ezeep/pyipptool
 
 Convenient ipp request generator to interrogate CUPS or IPP devices with the help of ipptool_.
 
