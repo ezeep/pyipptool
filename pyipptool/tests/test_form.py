@@ -3,10 +3,14 @@ def test_cancel_job_form():
     request = cancel_job_form.render(
         {'header': {'operation_attributes':
                     {'printer_uri': 'https://localhost:631/classes/PIY',
+                     'job_id': 8,
+                     'job_uri': 'https://localhost:631/jobs/8',
                      'purge_job': True}}})
     assert 'NAME "Cancel Job"' in request
     assert 'OPERATION "Cancel-Job"' in request
     assert 'ATTR uri printer-uri https://localhost:631/classes/PIY' in request
+    assert 'ATTR integer job-id 8' in request
+    assert 'ATTR uri job-uri https://localhost:631/jobs/8' in request
     assert 'ATTR boolean purge-job 1' in request
 
 
