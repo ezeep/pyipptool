@@ -16,7 +16,7 @@ class PyTest(TestCommand):
         sys.exit(errno)
 
 
-version = '0.1.dev'
+version = '0.2.dev'
 
 
 def read_that_file(path):
@@ -24,7 +24,8 @@ def read_that_file(path):
         return open_file.read()
 
 
-description = read_that_file('README.rst') + read_that_file('LICENCE.txt')
+description = '\n'.join((read_that_file('README.rst'),
+                         read_that_file('LICENCE.txt')))
 
 setup(
     name='pyipptool',
@@ -32,6 +33,7 @@ setup(
     author='Nicolas Delaby',
     author_email='nicolas.delaby@ezeep.com',
     description='ipptool python wrapper',
+    url='https://github.com/ezeep/pyipptool',
     long_description=description,
     packages=('pyipptool',),
     install_requires=('deform',),

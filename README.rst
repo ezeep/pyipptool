@@ -29,7 +29,7 @@ Configuration
 
 Add the following content in  ``~/.pyipptool.cfg`` or ``/etc/pyipptool/pyipptol.cfg``.
 
-.. code-block:: configuration
+.. code-block:: ini
 
     [main]
     ipptool_path = /usr/bin/ipptool
