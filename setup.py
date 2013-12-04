@@ -16,7 +16,7 @@ class PyTest(TestCommand):
         sys.exit(errno)
 
 
-version = '0.2.dev'
+version = '0.3.dev'
 
 
 def read_that_file(path):
@@ -25,7 +25,7 @@ def read_that_file(path):
 
 
 description = '\n'.join((read_that_file('README.rst'),
-                         read_that_file('LICENCE.txt')))
+                         read_that_file('LICENSE.txt')))
 
 setup(
     name='pyipptool',
