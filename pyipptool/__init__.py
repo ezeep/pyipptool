@@ -1,4 +1,5 @@
 import ConfigParser
+import functools
 import os
 import plistlib
 import subprocess
@@ -6,6 +7,7 @@ import tempfile
 import urlparse
 
 import colander
+
 from .forms import (cancel_job_form,
                     release_job_form,
                     create_printer_subscription_form,
@@ -111,22 +113,48 @@ def create_printer_subscription(uri,
     return response['Tests'][0]['notify-subscription-id']
 
 
-def cups_add_modify_class(uri, printer_uri=None, device_uri=None):
-    kw = {'printer_uri': printer_uri, 'device_uri': device_uri}
-    request = cups_add_modify_class_form.render(kw)
-    response = _call_ipptool(uri, request)
-    assert response['Tests'][0]['StatusCode'] == 'successful-ok', response
-    return True
-
-
-def cups_add_modify_printer(uri, printer_uri=None, device_uri=None):
+def _cups_add_modify(form, uri, printer_uri=None,
+                     auth_info_required=colander.null,
+                     job_sheets_default=colander.null,
+                     device_uri=colander.null,
+                     port_monitor=colander.null,
+                     ppd_name=colander.null,
+                     printer_is_accepting_jobs=colander.null,
+                     printer_info=colander.null,
+                     printer_location=colander.null,
+                     printer_more_info=colander.null,
+                     printer_state=colander.null,
+                     printer_state_message=colander.null,
+                     requesting_user_name_allowed=colander.null,
+                     requesting_user_name_denied=colander.null):
     kw = {'header': {'operation_attributes':
                      {'printer_uri': printer_uri}},
-          'device_uri': device_uri}
-    request = cups_add_modify_printer_form.render(kw)
+          'auth_info_required': auth_info_required,
+          'job_sheets_default': job_sheets_default,
+          'device_uri': device_uri,
+          'port_monitor': port_monitor,
+          'ppd_name': ppd_name,
+          'printer_is_accepting_jobs': printer_is_accepting_jobs,
+          'printer_info': printer_info,
+          'printer_location': printer_location,
+          'printer_more_info': printer_more_info,
+          'printer_state': printer_state,
+          'printer_state_message': printer_state_message,
+          'requesting_user_name_allowed ': requesting_user_name_allowed,
+          'requesting_user_name_denied': requesting_user_name_denied,
+          }
+
+    request = form.render(kw)
     response = _call_ipptool(uri, request)
     assert response['Tests'][0]['StatusCode'] == 'successful-ok', response
     return True
+
+
+cups_add_modify_class = functools.partial(_cups_add_modify,
+                                          cups_add_modify_class_form)
+
+cups_add_modify_printer = functools.partial(_cups_add_modify,
+                                            cups_add_modify_printer_form)
 
 
 def cups_delete_printer(uri, printer_uri=None):
