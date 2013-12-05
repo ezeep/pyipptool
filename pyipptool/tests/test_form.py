@@ -76,7 +76,7 @@ def test_cups_add_modify_class_form():
          'requesting_user_name_allowed': 'me'})
     assert 'NAME "CUPS Add Modify Class"'
     assert 'OPERATION "CUPS-Add-Modify-Class"' in request
-    assert 'GROUP printer-object-attributes-tag' in request
+    assert 'GROUP printer-attributes-tag' in request
     assert 'ATTR uri device-uri cups-pdf:/' in request
     assert 'ATTR keyword auth-info-required john' in request, request
     assert 'ATTR name job-sheets-default none' in request, request
@@ -111,7 +111,7 @@ def test_cups_add_modify_printer_form():
     assert 'NAME "CUPS Add Modify Printer"'
     assert 'OPERATION "CUPS-Add-Modify-Printer"' in request
     assert 'ATTR uri printer-uri https://localhost:631/printers/p0' in request
-    assert 'GROUP printer-object-attributes-tag' in request
+    assert 'GROUP printer-attributes-tag' in request
     assert 'ATTR uri device-uri cups-pdf:/' in request
     assert 'ATTR keyword auth-info-required john' in request
     assert 'ATTR name job-sheets-default none' in request
@@ -158,7 +158,7 @@ def test_cups_get_classes_form():
                      'printer_type': 'network',
                      'printer_type_mask': 'net',
                      'requested_attributes':
-                        'name printer-object-attributes-tag',
+                        'name printer-attributes-tag',
                      'requested_user_name': 'john'}}})
     assert 'NAME "CUPS Get Classes"' in request, request
     assert 'OPERATION "CUPS-Get-Classes"' in request, request
@@ -168,7 +168,7 @@ def test_cups_get_classes_form():
     assert 'ATTR enum printer-type network' in request
     assert 'ATTR enum printer-type-mask net' in request
     assert ('ATTR keyword requested-attributes'
-            ' name printer-object-attributes-tag') in request
+            ' name printer-attributes-tag') in request
     assert 'ATTR name requested-user-name john' in request
 
 
@@ -231,7 +231,7 @@ def test_cups_get_printers_form():
                      'printer_type': 'network',
                      'printer_type_mask': 'net',
                      'requested_attributes':
-                        'name printer-object-attributes-tag',
+                        'name printer-attributes-tag',
                      'requested_user_name': 'john'}}})
     assert 'NAME "CUPS Get Printers"' in request, request
     assert 'OPERATION "CUPS-Get-Printers"' in request, request
@@ -241,7 +241,7 @@ def test_cups_get_printers_form():
     assert 'ATTR enum printer-type network' in request
     assert 'ATTR enum printer-type-mask net' in request
     assert ('ATTR keyword requested-attributes'
-            ' name printer-object-attributes-tag') in request
+            ' name printer-attributes-tag') in request
     assert 'ATTR name requested-user-name john' in request
 
 

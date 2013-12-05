@@ -212,7 +212,7 @@ class CupsAddModifyPrinterSchema(BaseIPPSchema):
     header = HeaderIPPSchema(widget=IPPConstantTupleWidget())
     header['operation_attributes'] = OperationAttributesWithPrinterUri(
         widget=IPPTupleWidget())
-    object_attributes_tag = 'printer-object-attributes-tag'
+    object_attributes_tag = 'printer-attributes-tag'
     auth_info_required = colander.SchemaNode(Keyword(),
                                              widget=IPPAttributeWidget())
     job_sheets_default = colander.SchemaNode(Name(),
@@ -303,7 +303,7 @@ class CupsMoveJobSchema(BaseIPPSchema):
 class CupsRejectJobsSchema(BaseIPPSchema):
     name = 'CUPS Reject Jobs'
     operation = 'CUPS-Reject-Jobs'
-    object_attributes_tag = 'printer-object-attributes-tag'
+    object_attributes_tag = 'printer-attributes-tag'
     printer_state_message = colander.SchemaNode(
         Text(),
         widget=IPPAttributeWidget())
