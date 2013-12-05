@@ -174,7 +174,6 @@ def cups_delete_class(uri, printer_uri=None):
 
 
 def cups_get_classes(uri,
-                     printer_uri=None,
                      first_printer_name=colander.null,
                      limit=colander.null,
                      printer_location=colander.null,
@@ -183,8 +182,7 @@ def cups_get_classes(uri,
                      requested_attributes=colander.null,
                      requested_user_name=colander.null):
     kw = {'header': {'operation_attributes':
-                     {'printer_uri': printer_uri,
-                      'first_printer_name': first_printer_name,
+                     {'first_printer_name': first_printer_name,
                       'limit': limit,
                       'printer_location': printer_location,
                       'printer_type': printer_type,
@@ -197,7 +195,6 @@ def cups_get_classes(uri,
 
 
 def cups_get_ppds(uri,
-                  printer_uri=None,
                   exclude_schemes=colander.null,
                   include_schemes=colander.null,
                   limit=colander.null,
@@ -228,7 +225,6 @@ def cups_get_ppds(uri,
 
 
 def cups_get_printers(uri,
-                      printer_uri=None,
                       first_printer_name=colander.null,
                       limit=colander.null,
                       printer_location=colander.null,
@@ -237,8 +233,7 @@ def cups_get_printers(uri,
                       requested_attributes=colander.null,
                       requested_user_name=colander.null):
     kw = {'header': {'operation_attributes':
-                     {'printer_uri': printer_uri,
-                      'first_printer_name': first_printer_name,
+                     {'first_printer_name': first_printer_name,
                       'limit': limit,
                       'printer_location': printer_location,
                       'printer_type': printer_type,

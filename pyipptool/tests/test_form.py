@@ -152,8 +152,7 @@ def test_cups_get_classes_form():
     from pyipptool.forms import cups_get_classes_form
     request = cups_get_classes_form.render(
         {'header': {'operation_attributes':
-                    {'printer_uri': 'https://localhost:631/',
-                     'first_printer_name': 'DA-Printer',
+                    {'first_printer_name': 'DA-Printer',
                      'limit': 2,
                      'printer_location': 'The Office',
                      'printer_type': 'network',
@@ -206,8 +205,7 @@ def test_cups_get_printers_form():
     from pyipptool.forms import cups_get_printers_form
     request = cups_get_printers_form.render(
         {'header': {'operation_attributes':
-                    {'printer_uri': 'https://localhost:631/',
-                     'first_printer_name': 'DA-Printer',
+                    {'first_printer_name': 'DA-Printer',
                      'limit': 2,
                      'printer_location': 'The Office',
                      'printer_type': 'network',
