@@ -16,6 +16,7 @@ from .forms import (cancel_job_form,
                     cups_delete_printer_form,
                     cups_delete_class_form,
                     cups_get_classes_form,
+                    cups_get_devices_form,
                     cups_get_ppds_form,
                     cups_get_printers_form,
                     cups_move_job_form,
@@ -190,6 +191,25 @@ def cups_get_classes(uri,
                       'requested_attributes': requested_attributes,
                       'requested_user_name': requested_user_name}}}
     request = cups_get_classes_form.render(kw)
+    response = _call_ipptool(uri, request)
+    return response['Tests'][0]['ResponseAttributes']
+
+
+def cups_get_devices(uri,
+                     device_class=colander.null,
+                     exclude_schemes=colander.null,
+                     include_schemes=colander.null,
+                     limit=colander.null,
+                     requested_attributes=colander.null,
+                     timeout=colander.null):
+    kw = {'header': {'operation_attributes':
+                     {'device_class': device_class,
+                      'exclude_schemes': exclude_schemes,
+                      'include-schemes': include_schemes,
+                      'limit': limit,
+                      'requested_attributes': requested_attributes,
+                      'timeout': timeout}}}
+    request = cups_get_devices_form.render(kw)
     response = _call_ipptool(uri, request)
     return response['Tests'][0]['ResponseAttributes']
 

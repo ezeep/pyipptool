@@ -172,6 +172,26 @@ def test_cups_get_classes_form():
     assert 'ATTR name requested-user-name john' in request
 
 
+def test_cups_get_devices_form():
+    from pyipptool.forms import cups_get_devices_form
+    request = cups_get_devices_form.render(
+        {'header': {'operation_attributes':
+                    {'device_class': 'fermionic',
+                     'exclude_schemes': 'foo',
+                     'include_schemes': 'bar',
+                     'limit': 3,
+                     'requested_attributes': 'all',
+                     'timeout': 12}}})
+    assert 'NAME "CUPS Get Devices"' in request
+    assert 'OPERATION "CUPS-Get-Devices"' in request
+    assert 'ATTR keyword device-class fermionic' in request
+    assert 'ATTR name exclude-schemes foo' in request
+    assert 'ATTR name include-schemes bar' in request
+    assert 'ATTR integer limit 3' in request
+    assert 'ATTR keyword requested-attributes all' in request
+    assert 'ATTR integer timeout 12' in request
+
+
 def test_cups_get_ppds_form():
     from pyipptool.forms import cups_get_ppds_form
     request = cups_get_ppds_form.render(
