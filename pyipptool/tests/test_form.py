@@ -282,7 +282,8 @@ def test_get_jobs_form():
     request = get_jobs_form.render(
         {'header':
          {'operation_attributes':
-          {'requesting_user_name': 'yoda',
+          {'printer_uri': 'https://localhost:631/printers/p0',
+           'requesting_user_name': 'yoda',
            'limit': 1,
            'requested_attributes':
            'job-uri',
@@ -290,6 +291,7 @@ def test_get_jobs_form():
            'my_jobs': True}}})
     assert 'NAME "Get Jobs"' in request
     assert 'OPERATION "Get-Jobs"' in request
+    assert 'ATTR uri printer-uri https://localhost:631/printers/p0' in request
     assert 'ATTR name requesting-user-name yoda' in request
     assert 'ATTR integer limit 1' in request
     assert 'ATTR keyword requested-attributes job-uri' in request
