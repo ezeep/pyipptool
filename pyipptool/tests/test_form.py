@@ -279,14 +279,18 @@ def test_get_job_attributes_form():
 
 def test_get_jobs_form():
     from pyipptool.forms import get_jobs_form
-    request = get_jobs_form.render({'header': {'operation_attributes':
-                                               {'limit': 1,
-                                                'requested_attributes':
-                                                'job-uri',
-                                                'which_jobs': 'pending',
-                                                'my_jobs': True}}})
+    request = get_jobs_form.render(
+        {'header':
+         {'operation_attributes':
+          {'requesting_user_name': 'yoda',
+           'limit': 1,
+           'requested_attributes':
+           'job-uri',
+           'which_jobs': 'pending',
+           'my_jobs': True}}})
     assert 'NAME "Get Jobs"' in request
     assert 'OPERATION "Get-Jobs"' in request
+    assert 'ATTR name requesting-user-name yoda' in request
     assert 'ATTR integer limit 1' in request
     assert 'ATTR keyword requested-attributes job-uri' in request
     assert 'ATTR keyword which-jobs pending' in request

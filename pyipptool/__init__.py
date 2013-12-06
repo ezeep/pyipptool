@@ -317,12 +317,14 @@ def get_job_attributes(uri,
 
 def get_jobs(uri,
              printer_uri=None,
+             requesting_user_name=colander.null,
              limit=colander.null,
              requested_attributes=colander.null,
              which_jobs=colander.null,
              my_jobs=colander.null):
     kw = {'header': {'operation_attributes':
                      {'printer_uri': printer_uri,
+                      'requesting_user_name': requesting_user_name,
                       'limit': limit,
                       'requested_attributes': requested_attributes,
                       'which_jobs': which_jobs,
