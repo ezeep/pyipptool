@@ -343,3 +343,16 @@ def test_pause_printer_form():
     assert 'OPERATION "Pause-Printer"' in request
     assert 'ATTR uri printer-uri ipp://server:port/printers/name' in request
     assert 'ATTR name requesting-user-name yoda' in request
+
+
+def test_resume_printer_form():
+    from pyipptool.forms import resume_printer_form
+    request = resume_printer_form.render(
+        {'header':
+         {'operation_attributes':
+          {'printer_uri': 'ipp://server:port/printers/name',
+           'requesting_user_name': 'yoda'}}})
+    assert 'NAME "Resume Printer"' in request
+    assert 'OPERATION "Resume-Printer"' in request
+    assert 'ATTR uri printer-uri ipp://server:port/printers/name' in request
+    assert 'ATTR name requesting-user-name yoda' in request

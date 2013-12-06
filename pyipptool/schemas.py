@@ -370,6 +370,15 @@ class PausePrinterSchema(BaseIPPSchema):
     object_attributes_tag = colander.null
 
 
+class ResumePrinterSchema(PausePrinterSchema):
+    name = 'Resume Printer'
+    operation = 'Resume-Printer'
+    header = HeaderIPPSchema(widget=IPPConstantTupleWidget())
+    header['operation_attributes'] = SubscriptionOperationAttributes(
+        widget=IPPTupleWidget())
+    object_attributes_tag = colander.null
+
+
 cancel_job_schema = CancelJobSchema(widget=IPPBodyWidget())
 
 release_job_schema = ReleaseJobSchema(widget=IPPBodyWidget())
@@ -411,3 +420,5 @@ get_printer_attributes_schema = GetPrinterAttributesSchema(
 get_subscriptions_schema = GetSubscriptionsSchema(widget=IPPBodyWidget())
 
 pause_printer_schema = PausePrinterSchema(widget=IPPBodyWidget())
+
+resume_printer_schema = ResumePrinterSchema(widget=IPPBodyWidget())
