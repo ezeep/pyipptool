@@ -25,6 +25,7 @@ from .forms import (cancel_job_form,
                     get_jobs_form,
                     get_printer_attributes_form,
                     get_subscriptions_form,
+                    pause_printer_form,
                     )
 
 
@@ -360,5 +361,16 @@ def get_subscriptions(uri,
                       'which_jobs': which_jobs,
                       'my_jobs': my_jobs}}}
     request = get_subscriptions_form.render(kw)
+    response = _call_ipptool(uri, request)
+    return response['Tests'][0]['ResponseAttributes']
+
+
+def pause_printer(uri,
+                  printer_uri=None,
+                  requesting_user_name=colander.null):
+    kw = {'header': {'operation_attributes':
+                     {'printer_uri': printer_uri,
+                      'requesting_user_name': requesting_user_name}}}
+    request = pause_printer_form.render(kw)
     response = _call_ipptool(uri, request)
     return response['Tests'][0]['ResponseAttributes']
