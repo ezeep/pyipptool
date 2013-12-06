@@ -205,22 +205,15 @@ class ReleaseJobSchema(BaseIPPSchema):
     object_attributes_tag = colander.null
 
 
-class CupsAddModifyPrinterSchema(BaseIPPSchema):
-    name = 'CUPS Add Modify Printer'
-    operation = 'CUPS-Add-Modify-Printer'
-
+class BaseCupsAddModifyIPPSchema(BaseIPPSchema):
     header = HeaderIPPSchema(widget=IPPConstantTupleWidget())
     header['operation_attributes'] = OperationAttributesWithPrinterUri(
         widget=IPPTupleWidget())
+
     object_attributes_tag = 'printer-attributes-tag'
     auth_info_required = colander.SchemaNode(Keyword(),
                                              widget=IPPAttributeWidget())
-    job_sheets_default = colander.SchemaNode(Name(),
-                                             widget=IPPAttributeWidget())
-    device_uri = colander.SchemaNode(Uri(),
-                                     widget=IPPAttributeWidget())
-    port_monitor = colander.SchemaNode(Name(), widget=IPPAttributeWidget())
-    ppd_name = colander.SchemaNode(Name(), widget=IPPAttributeWidget())
+
     printer_is_accepting_jobs = colander.SchemaNode(
         colander.Boolean(false_val=0, true_val=1),
         widget=IPPAttributeWidget())
@@ -239,6 +232,18 @@ class CupsAddModifyPrinterSchema(BaseIPPSchema):
         widget=IPPAttributeWidget())
 
 
+class CupsAddModifyPrinterSchema(BaseCupsAddModifyIPPSchema):
+    name = 'CUPS Add Modify Printer'
+    operation = 'CUPS-Add-Modify-Printer'
+
+    job_sheets_default = colander.SchemaNode(Name(),
+                                             widget=IPPAttributeWidget())
+    device_uri = colander.SchemaNode(Uri(),
+                                     widget=IPPAttributeWidget())
+    port_monitor = colander.SchemaNode(Name(), widget=IPPAttributeWidget())
+    ppd_name = colander.SchemaNode(Name(), widget=IPPAttributeWidget())
+
+
 class CupsDeletePrinterSchema(BaseIPPSchema):
     name = 'CUPS Delete Printer'
     operation = 'CUPS-Delete-Printer'
@@ -248,9 +253,10 @@ class CupsDeletePrinterSchema(BaseIPPSchema):
     object_attributes_tag = colander.null
 
 
-class CupsAddModifyClassSchema(CupsAddModifyPrinterSchema):
+class CupsAddModifyClassSchema(BaseCupsAddModifyIPPSchema):
     name = 'CUPS Add Modify Class'
     operation = 'CUPS-Add-Modify-Class'
+    member_uris = colander.SchemaNode(Uri(), widget=IPPAttributeWidget())
 
 
 class CupsDeleteClassSchema(CupsDeletePrinterSchema):
