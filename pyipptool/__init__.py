@@ -366,23 +366,18 @@ def get_subscriptions(uri,
     return response['Tests'][0]['ResponseAttributes']
 
 
-def pause_printer(uri,
-                  printer_uri=None,
-                  requesting_user_name=colander.null):
+def _pause_or_resume_printer(form, uri, printer_uri=None,
+                             requesting_user_name=colander.null):
     kw = {'header': {'operation_attributes':
                      {'printer_uri': printer_uri,
                       'requesting_user_name': requesting_user_name}}}
-    request = pause_printer_form.render(kw)
+    request = form.render(kw)
     response = _call_ipptool(uri, request)
     return response['Tests'][0]['ResponseAttributes']
 
 
-def resume_printer(uri,
-                   printer_uri=None,
-                   requesting_user_name=colander.null):
-    kw = {'header': {'operation_attributes':
-                     {'printer_uri': printer_uri,
-                      'requesting_user_name': requesting_user_name}}}
-    request = resume_printer_form.render(kw)
-    response = _call_ipptool(uri, request)
-    return response['Tests'][0]['ResponseAttributes']
+pause_printer = functools.partial(_pause_or_resume_printer,
+                                  pause_printer_form)
+
+resume_printer = functools.partial(_pause_or_resume_printer,
+                                   resume_printer_form)
