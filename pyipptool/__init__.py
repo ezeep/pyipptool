@@ -1,4 +1,5 @@
 import ConfigParser
+import functools
 import os
 import plistlib
 import subprocess
