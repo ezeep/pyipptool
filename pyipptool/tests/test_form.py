@@ -61,12 +61,11 @@ def test_create_printer_subscription_form():
 
 def test_cups_add_modify_class_form():
     from pyipptool.forms import cups_add_modify_class_form
+    m_uri_0 = 'ipp://localhost:631/printers/p0'
+    m_uri_1 = 'ipp://localhost:631/classes/c0'
     request = cups_add_modify_class_form.render(
-        {'device_uri': 'cups-pdf:/',
-         'auth_info_required': 'john',
-         'job_sheets_default': 'none',
-         'port_monitor': 'port',
-         'ppd_name': 'printer.ppd',
+        {'auth_info_required': 'john',
+         'member_uris': '%s,%s' % (m_uri_0, m_uri_1),
          'printer_is_accepting_jobs': True,
          'printer_info': 'multiline\ntext',
          'printer_location': 'The Office',
@@ -77,11 +76,8 @@ def test_cups_add_modify_class_form():
     assert 'NAME "CUPS Add Modify Class"'
     assert 'OPERATION "CUPS-Add-Modify-Class"' in request
     assert 'GROUP printer-attributes-tag' in request
-    assert 'ATTR uri device-uri cups-pdf:/' in request
+    assert 'ATTR uri member-uris %s,%s' % (m_uri_0, m_uri_1) in request
     assert 'ATTR keyword auth-info-required john' in request, request
-    assert 'ATTR name job-sheets-default none' in request, request
-    assert 'ATTR name port-monitor port' in request
-    assert 'ATTR name ppd-name printer.ppd' in request
     assert 'ATTR boolean printer-is-accepting-jobs 1' in request, request
     assert 'ATTR text printer-info "multiline\ntext"' in request
     assert 'ATTR text printer-location "The Office"' in request
