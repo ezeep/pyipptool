@@ -19,6 +19,8 @@ from .schemas import (cancel_job_schema,
                       get_jobs_schema,
                       get_printer_attributes_schema,
                       get_subscriptions_schema,
+                      pause_printer_schema,
+                      resume_printer_schema,
                       )
 
 default_dir = resource_filename('pyipptool', 'templates/')
@@ -45,3 +47,5 @@ get_job_attributes_form = deform.Form(get_job_attributes_schema)
 get_jobs_form = deform.Form(get_jobs_schema)
 get_printer_attributes_form = deform.Form(get_printer_attributes_schema)
 get_subscriptions_form = deform.Form(get_subscriptions_schema)
+pause_printer_form = deform.Form(pause_printer_schema)
+resume_printer_form = deform.Form(resume_printer_schema)

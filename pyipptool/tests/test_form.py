@@ -326,3 +326,29 @@ def test_get_subscriptions_form():
     assert 'ATTR keyword which-jobs pending' in request
     assert 'ATTR boolean my-jobs 1' in request, request
     assert 'ATTR boolean my-jobs 1' in request, request
+
+
+def test_pause_printer_form():
+    from pyipptool.forms import pause_printer_form
+    request = pause_printer_form.render(
+        {'header':
+         {'operation_attributes':
+          {'printer_uri': 'ipp://server:port/printers/name',
+           'requesting_user_name': 'yoda'}}})
+    assert 'NAME "Pause Printer"' in request
+    assert 'OPERATION "Pause-Printer"' in request
+    assert 'ATTR uri printer-uri ipp://server:port/printers/name' in request
+    assert 'ATTR name requesting-user-name yoda' in request
+
+
+def test_resume_printer_form():
+    from pyipptool.forms import resume_printer_form
+    request = resume_printer_form.render(
+        {'header':
+         {'operation_attributes':
+          {'printer_uri': 'ipp://server:port/printers/name',
+           'requesting_user_name': 'yoda'}}})
+    assert 'NAME "Resume Printer"' in request
+    assert 'OPERATION "Resume-Printer"' in request
+    assert 'ATTR uri printer-uri ipp://server:port/printers/name' in request
+    assert 'ATTR name requesting-user-name yoda' in request
