@@ -70,6 +70,7 @@ def test_cups_add_modify_class_form():
          'printer_info': 'multiline\ntext',
          'printer_location': 'The Office',
          'printer_more_info': 'http://example.com',
+         'printer_op_policy': 'brain',
          'printer_state': 'idle',
          'printer_state_message': 'Ready to print',
          'requesting_user_name_allowed': 'me'})
@@ -82,6 +83,7 @@ def test_cups_add_modify_class_form():
     assert 'ATTR text printer-info "multiline\ntext"' in request
     assert 'ATTR text printer-location "The Office"' in request
     assert 'ATTR uri printer-more-info http://example.com' in request
+    assert 'ATTR name printer-op-policy brain' in request
     assert 'ATTR enum printer-state idle' in request, request
     assert 'ATTR text printer-state-message "Ready to print"' in request
     assert 'ATTR name requesting-user-name-allowed me' in request
@@ -101,6 +103,7 @@ def test_cups_add_modify_printer_form():
          'printer_info': 'multiline\ntext',
          'printer_location': 'The Office',
          'printer_more_info': 'http://example.com',
+         'printer_op_policy': 'pinky',
          'printer_state': 'idle',
          'printer_state_message': 'Ready to print',
          'requesting_user_name_allowed': 'me'})
@@ -117,6 +120,7 @@ def test_cups_add_modify_printer_form():
     assert 'ATTR text printer-info "multiline\ntext"' in request
     assert 'ATTR text printer-location "The Office"' in request
     assert 'ATTR uri printer-more-info http://example.com' in request
+    assert 'ATTR name printer-op-policy pinky' in request
     assert 'ATTR enum printer-state idle' in request
     assert 'ATTR text printer-state-message "Ready to print"' in request
     assert 'ATTR name requesting-user-name-allowed me' in request

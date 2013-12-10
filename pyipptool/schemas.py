@@ -220,6 +220,7 @@ class BaseCupsAddModifyIPPSchema(BaseIPPSchema):
     printer_info = colander.SchemaNode(Text(), widget=IPPAttributeWidget())
     printer_location = colander.SchemaNode(Text(), widget=IPPAttributeWidget())
     printer_more_info = colander.SchemaNode(Uri(), widget=IPPAttributeWidget())
+    printer_op_policy = colander.SchemaNode(Name(), widget=IPPAttributeWidget())
     printer_state = colander.SchemaNode(Enum(), widget=IPPAttributeWidget())
     printer_state_message = colander.SchemaNode(
         Text(),
