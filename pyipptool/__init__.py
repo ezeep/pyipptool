@@ -27,6 +27,8 @@ from .forms import (cancel_job_form,
                     get_subscriptions_form,
                     pause_printer_form,
                     resume_printer_form,
+                    hold_new_jobs_form,
+                    release_held_new_jobs_form,
                     )
 
 
@@ -411,3 +413,27 @@ pause_printer = functools.partial(_pause_or_resume_printer,
 
 resume_printer = functools.partial(_pause_or_resume_printer,
                                    resume_printer_form)
+
+
+def _hold_or_release_new_jobs(form, uri, printer_uri=None,
+                              requesting_user_name=colander.null,
+                              printer_message_from_operator=colander.null):
+    kw = {
+        'header': {
+            'operation_attributes': {
+                'printer_uri': printer_uri,
+                'requesting_user_name': requesting_user_name,
+                'printer_message_from_operator': printer_message_from_operator
+            }
+        }
+    }
+    request = form.render(kw)
+    response = _call_ipptool(uri, request)
+    return response['Tests'][0]['ResponseAttributes']
+
+
+hold_new_jobs = functools.partial(_hold_or_release_new_jobs,
+                                  hold_new_jobs_form)
+
+release_held_new_jobs = functools.partial(_hold_or_release_new_jobs,
+                                          release_held_new_jobs_form)
