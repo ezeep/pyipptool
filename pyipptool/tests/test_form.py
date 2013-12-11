@@ -356,3 +356,33 @@ def test_resume_printer_form():
     assert 'OPERATION "Resume-Printer"' in request
     assert 'ATTR uri printer-uri ipp://server:port/printers/name' in request
     assert 'ATTR name requesting-user-name yoda' in request
+
+
+def test_hold_new_jobs_form():
+    from pyipptool.forms import hold_new_jobs_form
+    request = hold_new_jobs_form.render(
+        {'header':
+         {'operation_attributes':
+          {'printer_uri': 'ipp://server:port/printers/name',
+           'requesting_user_name': 'yoda',
+           'printer_message_from_operator': 'freeze jobs'}}})
+    assert 'NAME "Hold New Jobs"' in request
+    assert 'OPERATION "Hold-New-Jobs"' in request
+    assert 'ATTR uri printer-uri ipp://server:port/printers/name' in request
+    assert 'ATTR name requesting-user-name yoda' in request
+    assert 'ATTR text printer-message-from-operator "freeze jobs"' in request
+
+
+def test_release_held_new_jobs_form():
+    from pyipptool.forms import release_held_new_jobs_form
+    request = release_held_new_jobs_form.render(
+        {'header':
+         {'operation_attributes':
+          {'printer_uri': 'ipp://server:port/printers/name',
+           'requesting_user_name': 'yoda',
+           'printer_message_from_operator': 'melt jobs'}}})
+    assert 'NAME "Release Held New Jobs"' in request
+    assert 'OPERATION "Release-Held-New-Jobs"' in request
+    assert 'ATTR uri printer-uri ipp://server:port/printers/name' in request
+    assert 'ATTR name requesting-user-name yoda' in request
+    assert 'ATTR text printer-message-from-operator "melt jobs"' in request
