@@ -333,7 +333,7 @@ def cups_reject_jobs(uri,
 
 
 def get_job_attributes(uri,
-                       printer_uri=None,
+                       printer_uri=colander.null,
                        job_id=colander.null,
                        job_uri=colander.null,
                        requesting_user_name=colander.null,

@@ -36,3 +36,29 @@ def test_cups_add_modify_printer(_call_ipptool):
     request = _call_ipptool._mock_mock_calls[0][1][1]
     assert 'printer-uri https://localhost:631/classes/PUBLIC-PDF' in request
     assert 'device-uri cups-pdf:/' in request
+
+
+@mock.patch.object(pyipptool, '_call_ipptool')
+def test_get_job_attributes_with_job_id(_call_ipptool):
+    from pyipptool import get_job_attributes
+    get_job_attributes(
+        'https://localhost:631/',
+        printer_uri='https://localhost:631/classes/PUBLIC-PDF',
+        job_id=2)
+    assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
+    request = _call_ipptool._mock_mock_calls[0][1][1]
+    assert 'printer-uri https://localhost:631/classes/PUBLIC-PDF' in request
+    assert 'job-id 2' in request
+    assert 'job-uri' not in request
+
+
+@mock.patch.object(pyipptool, '_call_ipptool')
+def test_get_job_attributes_with_job_uri(_call_ipptool):
+    from pyipptool import get_job_attributes
+    get_job_attributes(
+        'https://localhost:631/',
+        job_uri='https://localhost:631/jobs/2')
+    assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
+    request = _call_ipptool._mock_mock_calls[0][1][1]
+    assert 'job-uri https://localhost:631/jobs/2' in request
+    assert 'printer-uri' not in request
