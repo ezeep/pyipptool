@@ -39,6 +39,14 @@ config.read(['/etc/pyipptool/pyipptool.cfg',
              os.path.join(os.path.expanduser('~'), '.pyipptool.cfg')])
 IPPTOOL_PATH = config.get('main', 'ipptool_path')
 try:
+    LOGIN = config.get('main', 'login')
+except ConfigParser.NoOptionError:
+    LOGIN = ''
+try:
+    PASSWORD = config.get('main', 'password')
+except ConfigParser.NoOptionError:
+    PASSWORD = ''
+try:
     GRACEFUL_SHUTDOWN_TIME = config.get('main', 'graceful_shutdown_time')
 except ConfigParser.NoOptionError:
     GRACEFUL_SHUTDOWN_TIME = 1
@@ -53,17 +61,9 @@ class TimeoutError(Exception):
 
 
 def authenticate_uri(uri):
-    try:
-        login = config.get('main', 'login')
-    except ConfigParser.NoOptionError:
-        login = ''
-    try:
-        password = config.get('main', 'password')
-    except ConfigParser.NoOptionError:
-        password = ''
-    if login and password:
+    if LOGIN and PASSWORD:
         parsed_url = urlparse.urlparse(uri)
-        authenticated_netloc = '{}:{}@{}'.format(login, password,
+        authenticated_netloc = '{}:{}@{}'.format(LOGIN, PASSWORD,
                                                  parsed_url.netloc)
         authenticated_uri = urlparse.ParseResult(parsed_url[0],
                                                  authenticated_netloc,
