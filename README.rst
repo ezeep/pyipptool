@@ -36,6 +36,9 @@ Add the following content in  ``~/.pyipptool.cfg`` or ``/etc/pyipptool/pyipptol.
     ;If authentication is required
     login = admin
     password = secret
+    graceful_shutdown_time = 2
+    timeout = 10
+
 
 Where ``ipptool_path`` points to the absolute path of your installed ipptool
 
