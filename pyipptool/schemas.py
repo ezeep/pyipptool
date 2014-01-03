@@ -109,12 +109,7 @@ class MoveJobOperationAttributes(OperationAttributesWithPrinterUri):
     job_uri = colander.SchemaNode(Uri(), widget=IPPAttributeWidget())
 
 
-class CupsGetPPDsSchemaOperationAttributes(OperationAttributes):
-    exclude_schemes = colander.SchemaNode(Name(), widget=IPPAttributeWidget())
-    include_schemes = colander.SchemaNode(Name(), widget=IPPAttributeWidget())
-    limit = colander.SchemaNode(
-        colander.Integer(),
-        widget=IPPAttributeWidget())
+class CupsGetPPDsSchemaOperationAttributes(GetDevicesOperationAttributes):
     ppd_make = colander.SchemaNode(Text(), widget=IPPAttributeWidget())
     ppd_make_and_model = colander.SchemaNode(
         Text(),
@@ -126,9 +121,6 @@ class CupsGetPPDsSchemaOperationAttributes(OperationAttributes):
     ppd_product = colander.SchemaNode(Text(), widget=IPPAttributeWidget())
     ppd_psversion = colander.SchemaNode(Text(), widget=IPPAttributeWidget())
     ppd_type = colander.SchemaNode(Keyword(), widget=IPPAttributeWidget())
-    requested_attributes = colander.SchemaNode(
-        Keyword(),
-        widget=IPPAttributeWidget())
 
 
 class CupsGetDevicesSchemaOperationAttributes(GetDevicesOperationAttributes):

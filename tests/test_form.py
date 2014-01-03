@@ -219,6 +219,7 @@ def test_cups_get_ppds_form():
     assert 'ATTR text ppd-psversion "PS3"' in request
     assert 'ATTR keyword ppd-type generic' in request
     assert 'ATTR keyword requested-attributes all' in request
+    assert 'ATTR integer limit 3' in request
 
 
 def test_cups_get_printers_form():
