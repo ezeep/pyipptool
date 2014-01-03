@@ -71,7 +71,7 @@ def test_cups_add_modify_class_form():
          'printer_location': 'The Office',
          'printer_more_info': 'http://example.com',
          'printer_op_policy': 'brain',
-         'printer_state': 'idle',
+         'printer_state': '3',
          'printer_state_message': 'Ready to print',
          'requesting_user_name_allowed': 'me'})
     assert 'NAME "CUPS Add Modify Class"'
@@ -84,7 +84,7 @@ def test_cups_add_modify_class_form():
     assert 'ATTR text printer-location "The Office"' in request
     assert 'ATTR uri printer-more-info http://example.com' in request
     assert 'ATTR name printer-op-policy brain' in request
-    assert 'ATTR enum printer-state idle' in request, request
+    assert 'ATTR enum printer-state 3' in request, request
     assert 'ATTR text printer-state-message "Ready to print"' in request
     assert 'ATTR name requesting-user-name-allowed me' in request
 
@@ -104,7 +104,7 @@ def test_cups_add_modify_printer_form():
          'printer_location': 'The Office',
          'printer_more_info': 'http://example.com',
          'printer_op_policy': 'pinky',
-         'printer_state': 'idle',
+         'printer_state': '3',
          'printer_state_message': 'Ready to print',
          'requesting_user_name_allowed': 'me'})
     assert 'NAME "CUPS Add Modify Printer"'
@@ -121,7 +121,7 @@ def test_cups_add_modify_printer_form():
     assert 'ATTR text printer-location "The Office"' in request
     assert 'ATTR uri printer-more-info http://example.com' in request
     assert 'ATTR name printer-op-policy pinky' in request
-    assert 'ATTR enum printer-state idle' in request
+    assert 'ATTR enum printer-state 3' in request
     assert 'ATTR text printer-state-message "Ready to print"' in request
     assert 'ATTR name requesting-user-name-allowed me' in request
 
@@ -155,8 +155,8 @@ def test_cups_get_classes_form():
                     {'first_printer_name': 'DA-Printer',
                      'limit': 2,
                      'printer_location': 'The Office',
-                     'printer_type': 'network',
-                     'printer_type_mask': 'net',
+                     'printer_type': '2',
+                     'printer_type_mask': '8',
                      'requested_attributes':
                         'name printer-attributes-tag',
                      'requested_user_name': 'john'}}})
@@ -165,8 +165,8 @@ def test_cups_get_classes_form():
     assert 'ATTR name first-printer-name DA-Printer' in request, request
     assert 'ATTR integer limit 2' in request
     assert 'ATTR text printer-location "The Office"' in request, request
-    assert 'ATTR enum printer-type network' in request
-    assert 'ATTR enum printer-type-mask net' in request
+    assert 'ATTR enum printer-type 2' in request
+    assert 'ATTR enum printer-type-mask 8' in request
     assert ('ATTR keyword requested-attributes'
             ' name printer-attributes-tag') in request
     assert 'ATTR name requested-user-name john' in request
@@ -229,8 +229,8 @@ def test_cups_get_printers_form():
                     {'first_printer_name': 'DA-Printer',
                      'limit': 2,
                      'printer_location': 'The Office',
-                     'printer_type': 'network',
-                     'printer_type_mask': 'net',
+                     'printer_type': '2',
+                     'printer_type_mask': '8',
                      'requested_attributes':
                         'name printer-attributes-tag',
                      'requested_user_name': 'john'}}})
@@ -239,8 +239,8 @@ def test_cups_get_printers_form():
     assert 'ATTR name first-printer-name DA-Printer' in request, request
     assert 'ATTR integer limit 2' in request
     assert 'ATTR text printer-location "The Office"' in request, request
-    assert 'ATTR enum printer-type network' in request
-    assert 'ATTR enum printer-type-mask net' in request
+    assert 'ATTR enum printer-type 2' in request
+    assert 'ATTR enum printer-type-mask 8' in request
     assert ('ATTR keyword requested-attributes'
             ' name printer-attributes-tag') in request
     assert 'ATTR name requested-user-name john' in request
