@@ -306,12 +306,14 @@ def test_get_printer_attributes_form():
           {'printer_uri':
            'https://localhost:631/printers/p0',
            'requesting_user_name': 'yoda',
-           'requested_attributes': 'printer-name'}}})
+           'requested_attributes': ('printer-name',
+                                    'operations-supported')}}})
     assert 'NAME "Get Printer Attributes"' in request
     assert 'OPERATION "Get-Printer-Attributes"' in request
     assert 'ATTR uri printer-uri https://localhost:631/printers/p0' in request
     assert 'ATTR name requesting-user-name yoda' in request
-    assert 'ATTR keyword requested-attributes printer-name' in request
+    assert 'ATTR keyword requested-attributes'
+    ' printer-name,operations-supported' in request
 
 
 def test_get_subscriptions_form():
