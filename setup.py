@@ -38,7 +38,7 @@ setup(
     license=' Apache Software License',
     packages=('pyipptool',),
     install_requires=('deform',),
-    tests_require=('mock', 'pytest'),
+    tests_require=('mock', 'pytest', 'pytest-cov'),
     include_package_data=True,
     test_suite='tests',
     cmdclass = {'test': PyTest},
