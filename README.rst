@@ -5,6 +5,10 @@ pyipptool
    https://travis-ci.org/ezeep/pyipptool.png?branch=master
    :target: https://travis-ci.org/ezeep/pyipptool
 
+.. image:: https://coveralls.io/repos/ezeep/pyipptool/badge.png
+  :target: https://coveralls.io/r/ezeep/pyipptool
+
+
 Convenient ipp request generator to interrogate CUPS or IPP devices with the help of ipptool_.
 
 .. _ipptool: http://www.cups.org/documentation.php/doc-1.7/man-ipptool.html
