@@ -4,7 +4,8 @@ python:
 
 install:
     - "python setup.py install"
-    - "echo \"[main]\nipptool_path = /usr/bin/ipptool\" > ~/.pyipptool.cfg"
+    - "curl http://www.cups.org/software/ipptool/ipptool-20130731-linux-ubuntu-x86_64.tar.gz | tar xvzf -"
+    - "echo \"[main]\nipptool_path = \"$TRAVIS_BUILD_DIR\"/ipptool-20130731/ipptool\" > ~/.pyipptool.cfg"
 
 script: "python setup.py test"
 

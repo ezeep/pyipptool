@@ -4,6 +4,8 @@ import os
 import plistlib
 import subprocess
 import tempfile
+import time
+import threading
 import urlparse
 
 import colander
@@ -35,13 +37,31 @@ from .forms import (cancel_job_form,
 config = ConfigParser.SafeConfigParser()
 config.read(['/etc/pyipptool/pyipptool.cfg',
              os.path.join(os.path.expanduser('~'), '.pyipptool.cfg')])
-ipptool_path = config.get('main', 'ipptool_path')
+IPPTOOL_PATH = config.get('main', 'ipptool_path')
+try:
+    GRACEFUL_SHUTDOWN_TIME = config.get('main', 'graceful_shutdown_time')
+except ConfigParser.NoOptionError:
+    GRACEFUL_SHUTDOWN_TIME = 1
+try:
+    TIMEOUT = config.get('main', 'timeout')
+except ConfigParser.NoOptionError:
+    TIMEOUT = 5
+
+
+class TimeoutError(Exception):
+    pass
 
 
 def authenticate_uri(uri):
-    login = config.get('main', 'login')
-    password = config.get('main', 'password')
-    if login:
+    try:
+        login = config.get('main', 'login')
+    except ConfigParser.NoOptionError:
+        login = ''
+    try:
+        password = config.get('main', 'password')
+    except ConfigParser.NoOptionError:
+        password = ''
+    if login and password:
         parsed_url = urlparse.urlparse(uri)
         authenticated_netloc = '{}:{}@{}'.format(login, password,
                                                  parsed_url.netloc)
@@ -52,20 +72,40 @@ def authenticate_uri(uri):
     return uri
 
 
+def timeout_handler(process, future):
+    future.append(True)
+    beginning = time.time()
+    process.terminate()
+    while process.poll() is None:
+        if time.time() - beginning > GRACEFUL_SHUTDOWN_TIME:
+            try:
+                process.kill()
+            except OSError:
+                pass
+            break
+        time.sleep(.1)
+
+
 def _call_ipptool(uri, request):
     with tempfile.NamedTemporaryFile(delete=False) as temp_file:
         temp_file.write(request)
-    process = subprocess.Popen([ipptool_path,
+    process = subprocess.Popen([IPPTOOL_PATH,
                                 authenticate_uri(uri),
                                 '-X',
                                 temp_file.name],
                                stdin=subprocess.PIPE,
                                stdout=subprocess.PIPE,
                                stderr=subprocess.PIPE)
+    future = []
+    timer = threading.Timer(TIMEOUT, timeout_handler, (process, future))
+    timer.start()
     try:
         stdout, stderr = process.communicate()
     finally:
         os.unlink(temp_file.name)
+    timer.cancel()
+    if future:
+        raise TimeoutError
     return plistlib.readPlistFromString(stdout)
 
 

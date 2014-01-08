@@ -1,4 +1,11 @@
+import BaseHTTPServer
+import SocketServer
+import functools
+import threading
+import time
+
 import mock
+import pytest
 
 import pyipptool
 
@@ -62,3 +69,51 @@ def test_get_job_attributes_with_job_uri(_call_ipptool):
     request = _call_ipptool._mock_mock_calls[0][1][1]
     assert 'job-uri https://localhost:631/jobs/2' in request
     assert 'printer-uri' not in request
+
+
+def patch_timeout(value):
+    def wrapper(fn):
+        @functools.wraps(fn)
+        def inner(*args, **kw):
+            import pyipptool
+            previous = pyipptool.TIMEOUT
+            pyipptool.TIMEOUT = value
+            try:
+                return fn(*args, **kw)
+            finally:
+                pyipptool.TIMEOUT = previous
+        return inner
+    return wrapper
+
+
+@patch_timeout(1)
+def test_timeout():
+    from pyipptool import TimeoutError, _call_ipptool
+    from pyipptool.forms import get_subscriptions_form
+    PORT = 6789
+
+    class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
+        """
+        HTTP Handler that will make ipptool waiting
+        """
+
+        def do_POST(self):
+            time.sleep(2)
+            assassin = threading.Thread(target=self.server.shutdown)
+            assassin.daemon = True
+            assassin.start()
+
+    httpd = SocketServer.TCPServer(("", PORT), Handler)
+
+    thread = threading.Thread(target=httpd.serve_forever)
+    thread.daemon = True
+    thread.start()
+    # time.sleep(.1)  # Warmup
+
+    request = get_subscriptions_form.render(
+        {'header':
+         {'operation_attributes':
+          {'printer_uri':
+           'http://localhost:%s/printers/fake' % PORT}}})
+    with pytest.raises(TimeoutError):
+        _call_ipptool('http://localhost:%s/' % PORT, request)
