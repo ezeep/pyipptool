@@ -109,6 +109,24 @@ class MoveJobOperationAttributes(OperationAttributesWithPrinterUri):
     job_uri = colander.SchemaNode(Uri(), widget=IPPAttributeWidget())
 
 
+class GetSubscriptionsAttributes(OperationAttributesWithPrinterUri):
+    requesting_user_name = colander.SchemaNode(
+        Name(),
+        widget=IPPAttributeWidget())
+    notify_job_id = colander.SchemaNode(
+        colander.Integer(),
+        widget=IPPAttributeWidget())
+    limit = colander.SchemaNode(
+        colander.Integer(),
+        widget=IPPAttributeWidget())
+    requested_attributes = colander.SchemaNode(
+        Keyword(),
+        widget=IPPAttributeWidget())
+    my_subscriptions = colander.SchemaNode(
+        colander.Boolean(false_val=0, true_val=1),
+        widget=IPPAttributeWidget())
+
+
 class CupsGetPPDsSchemaOperationAttributes(GetDevicesOperationAttributes):
     ppd_make = colander.SchemaNode(Text(), widget=IPPAttributeWidget())
     ppd_make_and_model = colander.SchemaNode(
@@ -360,9 +378,13 @@ class GetPrinterAttributesSchema(BaseIPPSchema):
     object_attributes_tag = colander.null
 
 
-class GetSubscriptionsSchema(GetJobsSchema):
+class GetSubscriptionsSchema(BaseIPPSchema):
     name = 'Get Subscriptions'
     operation = 'Get-Subscriptions'
+    header = HeaderIPPSchema(widget=IPPConstantTupleWidget())
+    header['operation_attributes'] = GetSubscriptionsAttributes(
+        widget=IPPTupleWidget())
+    object_attributes_tag = colander.null
 
 
 class PausePrinterSchema(BaseIPPSchema):

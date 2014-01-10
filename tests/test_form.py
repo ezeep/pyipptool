@@ -319,20 +319,23 @@ def test_get_printer_attributes_form():
 
 def test_get_subscriptions_form():
     from pyipptool.forms import get_subscriptions_form
-    request = get_subscriptions_form.render({'header':
-                                             {'operation_attributes':
-                                              {'limit': 1,
-                                               'requested_attributes':
-                                               'job-uri',
-                                               'which_jobs': 'pending',
-                                               'my_jobs': True}}})
+    request = get_subscriptions_form.render(
+        {'header':
+         {'operation_attributes':
+          {'printer_uri': 'https://localhost:631/printers/p0',
+           'requesting_user_name': 'yoda',
+           'notify_job_id': 3,
+           'limit': 1,
+           'requested_attributes': 'notify-recipient-uri',
+           'my_subscriptions': True}}})
     assert 'NAME "Get Subscriptions"' in request
     assert 'OPERATION "Get-Subscriptions"' in request
+    assert 'ATTR uri printer-uri https://localhost:631/printers/p0' in request
+    assert 'ATTR name requesting-user-name yoda' in request
+    assert 'ATTR integer notify-job-id 3' in request
     assert 'ATTR integer limit 1' in request
-    assert 'ATTR keyword requested-attributes job-uri' in request
-    assert 'ATTR keyword which-jobs pending' in request
-    assert 'ATTR boolean my-jobs 1' in request, request
-    assert 'ATTR boolean my-jobs 1' in request, request
+    assert 'ATTR keyword requested-attributes notify-recipient-uri' in request
+    assert 'ATTR boolean my-subscriptions 1' in request
 
 
 def test_pause_printer_form():

@@ -423,16 +423,18 @@ def get_printer_attributes(uri,
 
 def get_subscriptions(uri,
                       printer_uri=None,
+                      requesting_user_name=colander.null,
+                      notify_job_id=colander.null,
                       limit=colander.null,
                       requested_attributes=colander.null,
-                      which_jobs=colander.null,
-                      my_jobs=colander.null):
+                      my_subscriptions=colander.null):
     kw = {'header': {'operation_attributes':
                      {'printer_uri': printer_uri,
+                      'requesting_user_name': requesting_user_name,
+                      'notify_job_id': notify_job_id,
                       'limit': limit,
                       'requested_attributes': requested_attributes,
-                      'which_jobs': which_jobs,
-                      'my_jobs': my_jobs}}}
+                      'my_subscriptions': my_subscriptions}}}
     request = get_subscriptions_form.render(kw)
     response = _call_ipptool(uri, request)
     return response['Tests'][0]['ResponseAttributes']
