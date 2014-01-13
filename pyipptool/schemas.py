@@ -86,6 +86,12 @@ class SubscriptionOperationAttributes(OperationAttributesWithPrinterUri):
                                                widget=IPPAttributeWidget())
 
 
+class CancelSubscriptionOperationAttributes(SubscriptionOperationAttributes):
+    notify_subscription_id = colander.SchemaNode(
+        colander.Integer(),
+        widget=IPPAttributeWidget())
+
+
 class HoldNewJobsOperationAttributes(SubscriptionOperationAttributes):
     printer_message_from_operator = colander.SchemaNode(
         Text(), widget=IPPAttributeWidget())
@@ -418,6 +424,15 @@ class ReleaseHeldNewJobsSchema(HoldNewJobsSchema):
     operation = 'Release-Held-New-Jobs'
 
 
+class CancelSubscriptionSchema(BaseIPPSchema):
+    name = 'Cancel Subscription'
+    operation = 'Cancel-Subscription'
+    header = HeaderIPPSchema(widget=IPPConstantTupleWidget())
+    header['operation_attributes'] = CancelSubscriptionOperationAttributes(
+        widget=IPPTupleWidget())
+    object_attributes_tag = colander.null
+
+
 cancel_job_schema = CancelJobSchema(widget=IPPBodyWidget())
 
 release_job_schema = ReleaseJobSchema(widget=IPPBodyWidget())
@@ -465,3 +480,5 @@ resume_printer_schema = ResumePrinterSchema(widget=IPPBodyWidget())
 hold_new_jobs_schema = HoldNewJobsSchema(widget=IPPBodyWidget())
 
 release_held_new_jobs_schema = ReleaseHeldNewJobsSchema(widget=IPPBodyWidget())
+
+cancel_subscription_schema = CancelSubscriptionSchema(widget=IPPBodyWidget())

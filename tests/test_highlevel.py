@@ -272,3 +272,13 @@ def test_resume_printer(_call_ipptool):
     _call_ipptool.return_value = {'Tests': [{'ResponseAttributes': ''}]}
     resume_printer('https://localhost:631/', printer_uri='')
     assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
+
+
+@mock.patch.object(pyipptool, '_call_ipptool')
+def test_cancel_subscription(_call_ipptool):
+    from pyipptool import cancel_subscription
+    _call_ipptool.return_value = {'Tests': [{'ResponseAttributes': ''}]}
+    cancel_subscription('https://localhost:631/',
+                        printer_uri='',
+                        notify_subscription_id=3)
+    assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
