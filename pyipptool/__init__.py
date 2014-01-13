@@ -31,6 +31,7 @@ from .forms import (cancel_job_form,
                     resume_printer_form,
                     hold_new_jobs_form,
                     release_held_new_jobs_form,
+                    cancel_subscription_form,
                     )
 
 
@@ -436,6 +437,20 @@ def get_subscriptions(uri,
                       'requested_attributes': requested_attributes,
                       'my_subscriptions': my_subscriptions}}}
     request = get_subscriptions_form.render(kw)
+    response = _call_ipptool(uri, request)
+    return response['Tests'][0]['ResponseAttributes']
+
+
+def cancel_subscription(uri,
+                        printer_uri=None,
+                        requesting_user_name=colander.null,
+                        notify_subscription_id=None):
+    kw = {'header':
+          {'operation_attributes':
+           {'printer_uri': printer_uri,
+            'requesting_user_name': requesting_user_name,
+            'notify_subscription_id': notify_subscription_id}}}
+    request = cancel_subscription_form.render(kw)
     response = _call_ipptool(uri, request)
     return response['Tests'][0]['ResponseAttributes']
 

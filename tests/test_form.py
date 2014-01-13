@@ -392,3 +392,18 @@ def test_release_held_new_jobs_form():
     assert 'ATTR uri printer-uri ipp://server:port/printers/name' in request
     assert 'ATTR name requesting-user-name yoda' in request
     assert 'ATTR text printer-message-from-operator "melt jobs"' in request
+
+
+def test_cancel_subscription_form():
+    from pyipptool.forms import cancel_subscription_form
+    request = cancel_subscription_form.render(
+        {'header':
+         {'operation_attributes':
+          {'printer_uri': 'ipp://server:port/printers/name',
+           'requesting_user_name': 'yoda',
+           'notify_subscription_id': 5}}})
+    assert 'NAME "Cancel Subscription"' in request
+    assert 'OPERATION "Cancel-Subscription"' in request
+    assert 'ATTR uri printer-uri ipp://server:port/printers/name' in request
+    assert 'ATTR name requesting-user-name yoda' in request
+    assert 'ATTR integer notify-subscription-id 5' in request, request
