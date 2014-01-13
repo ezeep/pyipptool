@@ -48,11 +48,11 @@ try:
 except ConfigParser.NoOptionError:
     PASSWORD = ''
 try:
-    GRACEFUL_SHUTDOWN_TIME = config.get('main', 'graceful_shutdown_time')
+    GRACEFUL_SHUTDOWN_TIME = config.getint('main', 'graceful_shutdown_time')
 except ConfigParser.NoOptionError:
     GRACEFUL_SHUTDOWN_TIME = 1
 try:
-    TIMEOUT = config.get('main', 'timeout')
+    TIMEOUT = config.getint('main', 'timeout')
 except ConfigParser.NoOptionError:
     TIMEOUT = 5
 
