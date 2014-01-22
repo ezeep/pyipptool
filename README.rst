@@ -9,7 +9,7 @@ pyipptool
   :target: https://coveralls.io/r/ezeep/pyipptool
 
 
-Convenient ipp request generator to interrogate CUPS or IPP devices with the help of ipptool_.
+Convenient IPP request generator for python to interrogate CUPS or IPP devices, with the help of ipptool_.
 
 .. _ipptool: http://www.cups.org/documentation.php/doc-1.7/man-ipptool.html
 
