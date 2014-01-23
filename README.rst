@@ -55,6 +55,7 @@ Create an infinite time subscription for printer-XYZ class for the ``rss`` notif
 
     >>> from pyipptool import create_printer_subscription
     >>> create_printer_subscription(
+            'http://localhost:631/',
             printer_uri='http://localhost:631/classes/printer-XYZ',
             requesting_user_name='admin',
             notify_recipient_uri='rss://',
