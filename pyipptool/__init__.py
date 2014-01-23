@@ -157,7 +157,7 @@ def create_printer_subscription(uri,
           'notify_lease_expiration_time': notify_lease_expiration_time}
     request = create_printer_subscription_form.render(kw)
     response = _call_ipptool(uri, request)
-    return response['Tests'][0]['notify-subscription-id']
+    return response['Tests'][0]['ResponseAttributes'][1]['notify-subscription-id']
 
 
 def cups_add_modify_printer(uri,
