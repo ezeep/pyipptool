@@ -8,6 +8,10 @@ pyipptool
 .. image:: https://coveralls.io/repos/ezeep/pyipptool/badge.png
   :target: https://coveralls.io/r/ezeep/pyipptool
 
+.. image:: https://pypip.in/v/pyipptool/badge.png
+   :target: https://crate.io/packages/pyipptool/
+   :alt: Latest PyPI version
+
 
 Convenient IPP request generator for python to interrogate CUPS or IPP devices, with the help of ipptool_.
 
