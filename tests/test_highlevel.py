@@ -1,5 +1,6 @@
 import BaseHTTPServer
 import SocketServer
+import socket
 import threading
 import time
 
@@ -74,7 +75,6 @@ def test_timeout():
     from pyipptool import wrapper
     from pyipptool.core import TimeoutError
     from pyipptool.forms import get_subscriptions_form
-    PORT = 6789
 
     class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
         """
@@ -82,12 +82,23 @@ def test_timeout():
         """
 
         def do_POST(self):
-            time.sleep(2)
+            time.sleep(.5)
             assassin = threading.Thread(target=self.server.shutdown)
             assassin.daemon = True
             assassin.start()
 
-    httpd = SocketServer.TCPServer(("", PORT), Handler)
+    PORT = 6789
+    while True:
+        try:
+            httpd = SocketServer.TCPServer(("", PORT), Handler)
+        except socket.error as exe:
+            if exe.errno == 98:
+                PORT += 1
+            else:
+                raise
+        else:
+            break
+    httpd.allow_reuse_address = True
 
     thread = threading.Thread(target=httpd.serve_forever)
     thread.daemon = True
@@ -100,7 +111,7 @@ def test_timeout():
            'http://localhost:%s/printers/fake' % PORT}}})
 
     old_timeout = wrapper.config['timeout']
-    wrapper.config['timeout'] = 1
+    wrapper.config['timeout'] = .1
     try:
         with pytest.raises(TimeoutError):
             wrapper._call_ipptool('http://localhost:%s/' % PORT, request)
