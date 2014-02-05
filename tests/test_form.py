@@ -1,3 +1,6 @@
+import pytest
+
+
 def test_cancel_job_form():
     from pyipptool.forms import cancel_job_form
     request = cancel_job_form.render(
@@ -124,6 +127,18 @@ def test_cups_add_modify_printer_form():
     assert 'ATTR enum printer-state 3' in request
     assert 'ATTR text printer-state-message "Ready to print"' in request
     assert 'ATTR name requesting-user-name-allowed me' in request
+
+
+def test_cups_add_modify_printer_form_with_None():
+    from pyipptool.forms import cups_add_modify_printer_form
+    with pytest.raises(ValueError) as exec_info:
+        cups_add_modify_printer_form.render(
+            {'device_uri': 'cups-pdf:/',
+             'header': {'operation_attributes':
+                        {'printer_uri': 'https://localhost:631/printers/p0'}},
+             'printer_state_message': None})
+    assert exec_info.value.message == ("None value provided for"
+                                       " 'printer_state_message'")
 
 
 def test_cups_delete_printer_form():
