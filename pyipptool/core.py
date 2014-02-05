@@ -100,7 +100,7 @@ class IPPToolWrapper(object):
                           'job_uri': job_uri}}}
         request = release_job_form.render(kw)
         response = self._call_ipptool(uri, request)
-        assert response['Tests'][0]['StatusCode'] == 'successful-ok', response
+        return response['Tests'][0]
 
     def cancel_job(self, uri,
                    printer_uri=colander.null,
@@ -114,7 +114,7 @@ class IPPToolWrapper(object):
                           'purge_job': purge_job}}}
         request = cancel_job_form.render(kw)
         response = self._call_ipptool(uri, request)
-        assert response['Tests'][0]['StatusCode'] == 'successful-ok', response
+        return response['Tests'][0]
 
     def create_printer_subscription(
             self,
@@ -137,8 +137,7 @@ class IPPToolWrapper(object):
               'notify_lease_expiration_time': notify_lease_expiration_time}
         request = create_printer_subscription_form.render(kw)
         response = self._call_ipptool(uri, request)
-        return response['Tests'][0]['ResponseAttributes'][1][
-            'notify-subscription-id']
+        return response['Tests'][0]
 
     def cups_add_modify_printer(self, uri,
                                 printer_uri=None,
@@ -176,8 +175,7 @@ class IPPToolWrapper(object):
 
         request = cups_add_modify_printer_form.render(kw)
         response = self._call_ipptool(uri, request)
-        assert response['Tests'][0]['StatusCode'] == 'successful-ok', response
-        return True
+        return response['Tests'][0]
 
     def cups_add_modify_class(self, uri,
                               printer_uri=None,
@@ -209,22 +207,19 @@ class IPPToolWrapper(object):
 
         request = cups_add_modify_class_form.render(kw)
         response = self._call_ipptool(uri, request)
-        assert response['Tests'][0]['StatusCode'] == 'successful-ok', response
-        return True
+        return response['Tests'][0]
 
     def cups_delete_printer(self, uri, printer_uri=None):
         kw = {'header': {'operation_attributes': {'printer_uri': printer_uri}}}
         request = cups_delete_printer_form.render(kw)
         response = self._call_ipptool(uri, request)
-        assert response['Tests'][0]['StatusCode'] == 'successful-ok', response
-        return True
+        return response['Tests'][0]
 
     def cups_delete_class(self, uri, printer_uri=None):
         kw = {'header': {'operation_attributes': {'printer_uri': printer_uri}}}
         request = cups_delete_class_form.render(kw)
         response = self._call_ipptool(uri, request)
-        assert response['Tests'][0]['StatusCode'] == 'successful-ok', response
-        return True
+        return response['Tests'][0]
 
     def cups_get_classes(self, uri,
                          first_printer_name=colander.null,
@@ -244,7 +239,7 @@ class IPPToolWrapper(object):
                          'requested_user_name': requested_user_name}}}
         request = cups_get_classes_form.render(kw)
         response = self._call_ipptool(uri, request)
-        return response['Tests'][0]['ResponseAttributes']
+        return response['Tests'][0]
 
     def cups_get_devices(self, uri,
                          device_class=colander.null,
@@ -262,7 +257,7 @@ class IPPToolWrapper(object):
                          'timeout': timeout}}}
         request = cups_get_devices_form.render(kw)
         response = self._call_ipptool(uri, request)
-        return response['Tests'][0]['ResponseAttributes']
+        return response['Tests'][0]
 
     def cups_get_ppds(self, uri,
                       exclude_schemes=colander.null,
@@ -291,7 +286,7 @@ class IPPToolWrapper(object):
                          }}}
         request = cups_get_ppds_form.render(kw)
         response = self._call_ipptool(uri, request)
-        return response['Tests'][0]['ResponseAttributes']
+        return response['Tests'][0]
 
     def cups_get_printers(self, uri,
                           first_printer_name=colander.null,
@@ -311,7 +306,7 @@ class IPPToolWrapper(object):
                          'requested_user_name': requested_user_name}}}
         request = cups_get_printers_form.render(kw)
         response = self._call_ipptool(uri, request)
-        return response['Tests'][0]['ResponseAttributes']
+        return response['Tests'][0]
 
     def cups_move_job(self, uri,
                       printer_uri=colander.null,
@@ -327,8 +322,7 @@ class IPPToolWrapper(object):
               'printer_state_message': printer_state_message}
         request = cups_move_job_form.render(kw)
         response = self._call_ipptool(uri, request)
-        assert response['Tests'][0]['StatusCode'] == 'successful-ok', response
-        return True
+        return response['Tests'][0]
 
     def cups_reject_jobs(self, uri,
                          printer_uri=None,
@@ -340,8 +334,7 @@ class IPPToolWrapper(object):
               'printer_state_message': printer_state_message}
         request = cups_reject_jobs_form.render(kw)
         response = self._call_ipptool(uri, request)
-        assert response['Tests'][0]['StatusCode'] == 'successful-ok', response
-        return True
+        return response['Tests'][0]
 
     def get_job_attributes(self, uri,
                            printer_uri=colander.null,
@@ -357,7 +350,7 @@ class IPPToolWrapper(object):
                          'requested_attributes': requested_attributes}}}
         request = get_job_attributes_form.render(kw)
         response = self._call_ipptool(uri, request)
-        return response['Tests'][0]['ResponseAttributes']
+        return response['Tests'][0]
 
     def get_jobs(self, uri,
                  printer_uri=None,
@@ -375,7 +368,7 @@ class IPPToolWrapper(object):
                          'my_jobs': my_jobs}}}
         request = get_jobs_form.render(kw)
         response = self._call_ipptool(uri, request)
-        return response['Tests'][0]['ResponseAttributes']
+        return response['Tests'][0]
 
     def get_printer_attributes(self, uri,
                                printer_uri=None,
@@ -387,7 +380,7 @@ class IPPToolWrapper(object):
                          'requested_attributes': requested_attributes}}}
         request = get_printer_attributes_form.render(kw)
         response = self._call_ipptool(uri, request)
-        return response['Tests'][0]['ResponseAttributes']
+        return response['Tests'][0]
 
     def get_subscriptions(self, uri,
                           printer_uri=None,
@@ -405,7 +398,7 @@ class IPPToolWrapper(object):
                          'my_subscriptions': my_subscriptions}}}
         request = get_subscriptions_form.render(kw)
         response = self._call_ipptool(uri, request)
-        return response['Tests'][0]['ResponseAttributes']
+        return response['Tests'][0]
 
     def cancel_subscription(self, uri,
                             printer_uri=None,
@@ -418,7 +411,7 @@ class IPPToolWrapper(object):
                 'notify_subscription_id': notify_subscription_id}}}
         request = cancel_subscription_form.render(kw)
         response = self._call_ipptool(uri, request)
-        return response['Tests'][0]['ResponseAttributes']
+        return response['Tests'][0]
 
     def _pause_or_resume_printer(self, form, uri, printer_uri=None,
                                  requesting_user_name=colander.null):
@@ -427,7 +420,7 @@ class IPPToolWrapper(object):
                          'requesting_user_name': requesting_user_name}}}
         request = form.render(kw)
         response = self._call_ipptool(uri, request)
-        return response['Tests'][0]['ResponseAttributes']
+        return response['Tests'][0]
 
     def pause_printer(self, *args, **kw):
         return self._pause_or_resume_printer(pause_printer_form, *args, **kw)
@@ -447,7 +440,7 @@ class IPPToolWrapper(object):
                  }}}
         request = form.render(kw)
         response = self._call_ipptool(uri, request)
-        return response['Tests'][0]['ResponseAttributes']
+        return response['Tests'][0]
 
     def hold_new_jobs(self, *args, **kw):
         return self._hold_or_release_new_jobs(hold_new_jobs_form, *args, **kw)
