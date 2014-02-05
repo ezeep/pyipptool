@@ -31,6 +31,8 @@ class IPPAttributeWidget(Widget):
     def serialize(self, field, cstruct=None, readonly=False):
         if cstruct is colander.null:
             return ''
+        if cstruct is None:
+            raise ValueError('None value provided for {!r}'.format(field.name))
         if isinstance(cstruct, (tuple, list)):
             cstruct = ','.join(cstruct)
         attr_name = field.schema.typ.__class__.__name__
