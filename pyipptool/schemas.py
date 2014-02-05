@@ -30,9 +30,11 @@ class NaturalLanguage(colander.String):
 
 class Text(colander.String):
     def serialize(self, node, appstruct):
-        value = super(Text, self).serialize(node, appstruct)
-        if value is colander.null:
+        if appstruct is None:
+            raise ValueError('None value provided for {!r}'.format(node.name))
+        if appstruct is colander.null:
             return colander.null
+        value = super(Text, self).serialize(node, appstruct)
         return '"{}"'.format(value)
 
 
