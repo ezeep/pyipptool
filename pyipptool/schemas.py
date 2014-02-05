@@ -4,6 +4,14 @@ from .widgets import (IPPAttributeWidget, IPPBodyWidget, IPPDisplayWidget,
                       IPPConstantTupleWidget)
 
 
+class StringOrTuple(colander.String):
+    def serialize(self, node, appstruct):
+        if isinstance(appstruct, (tuple, list)):
+            return super(StringOrTuple, self).serialize(node,
+                                                        ','.join(appstruct))
+        return super(StringOrTuple, self).serialize(node, appstruct)
+
+
 class Charset(colander.String):
     pass
 
@@ -12,7 +20,7 @@ class Enum(colander.String):
     pass
 
 
-class Keyword(colander.String):
+class Keyword(StringOrTuple):
     pass
 
 

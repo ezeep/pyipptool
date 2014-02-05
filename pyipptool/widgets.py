@@ -33,8 +33,6 @@ class IPPAttributeWidget(Widget):
             return ''
         if cstruct is None:
             raise ValueError('None value provided for {!r}'.format(field.name))
-        if isinstance(cstruct, (tuple, list)):
-            cstruct = ','.join(cstruct)
         attr_name = field.schema.typ.__class__.__name__
         attr_name = attr_name[0].lower() + attr_name[1:]
         return 'ATTR {attr_type} {attr_name} {attr_value}'.format(

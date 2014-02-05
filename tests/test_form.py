@@ -172,8 +172,8 @@ def test_cups_get_classes_form():
                      'printer_location': 'The Office',
                      'printer_type': '2',
                      'printer_type_mask': '8',
-                     'requested_attributes':
-                        'name printer-attributes-tag',
+                     'requested_attributes': ('name',
+                                              'printer-attributes-tag'),
                      'requested_user_name': 'john'}}})
     assert 'NAME "CUPS Get Classes"' in request, request
     assert 'OPERATION "CUPS-Get-Classes"' in request, request
@@ -182,8 +182,8 @@ def test_cups_get_classes_form():
     assert 'ATTR text printer-location "The Office"' in request, request
     assert 'ATTR enum printer-type 2' in request
     assert 'ATTR enum printer-type-mask 8' in request
-    assert ('ATTR keyword requested-attributes'
-            ' name printer-attributes-tag') in request
+    assert 'ATTR keyword requested-attributes'\
+            ' name,printer-attributes-tag' in request, request
     assert 'ATTR name requested-user-name john' in request
 
 
@@ -246,8 +246,8 @@ def test_cups_get_printers_form():
                      'printer_location': 'The Office',
                      'printer_type': '2',
                      'printer_type_mask': '8',
-                     'requested_attributes':
-                        'name printer-attributes-tag',
+                     'requested_attributes': ('name',
+                                              'printer-attributes-tag'),
                      'requested_user_name': 'john'}}})
     assert 'NAME "CUPS Get Printers"' in request, request
     assert 'OPERATION "CUPS-Get-Printers"' in request, request
@@ -256,8 +256,8 @@ def test_cups_get_printers_form():
     assert 'ATTR text printer-location "The Office"' in request, request
     assert 'ATTR enum printer-type 2' in request
     assert 'ATTR enum printer-type-mask 8' in request
-    assert ('ATTR keyword requested-attributes'
-            ' name printer-attributes-tag') in request
+    assert 'ATTR keyword requested-attributes'\
+            ' name,printer-attributes-tag' in request, request
     assert 'ATTR name requested-user-name john' in request
 
 
@@ -301,8 +301,7 @@ def test_get_jobs_form():
           {'printer_uri': 'https://localhost:631/printers/p0',
            'requesting_user_name': 'yoda',
            'limit': 1,
-           'requested_attributes':
-           'job-uri',
+           'requested_attributes': 'job-uri',
            'which_jobs': 'pending',
            'my_jobs': True}}})
     assert 'NAME "Get Jobs"' in request
@@ -312,6 +311,7 @@ def test_get_jobs_form():
     assert 'ATTR integer limit 1' in request
     assert 'ATTR keyword requested-attributes job-uri' in request
     assert 'ATTR keyword which-jobs pending' in request
+    assert 'ATTR keyword requested-attributes job-uri' in request
 
 
 def test_get_printer_attributes_form():
@@ -322,14 +322,13 @@ def test_get_printer_attributes_form():
           {'printer_uri':
            'https://localhost:631/printers/p0',
            'requesting_user_name': 'yoda',
-           'requested_attributes': ('printer-name',
-                                    'operations-supported')}}})
+           'requested_attributes': ('printer-name', 'operations-supported')}}})
     assert 'NAME "Get Printer Attributes"' in request
     assert 'OPERATION "Get-Printer-Attributes"' in request
     assert 'ATTR uri printer-uri https://localhost:631/printers/p0' in request
     assert 'ATTR name requesting-user-name yoda' in request
-    assert 'ATTR keyword requested-attributes'
-    ' printer-name,operations-supported' in request
+    assert 'ATTR keyword requested-attributes'\
+        ' printer-name,operations-supported' in request
 
 
 def test_get_subscriptions_form():
