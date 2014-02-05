@@ -1,5 +1,6 @@
 import BaseHTTPServer
 import SocketServer
+import socket
 import threading
 import time
 
@@ -33,7 +34,7 @@ def test_ipptool_create_printer_subscription(_call_ipptool):
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_cups_add_modify_printer(_call_ipptool):
     from pyipptool import cups_add_modify_printer
-    _call_ipptool.return_value = {'Tests': [{'StatusCode': 'successful-ok'}]}
+    _call_ipptool.return_value = {'Tests': [{}]}
     cups_add_modify_printer(
         'https://localhost:631/',
         printer_uri='https://localhost:631/classes/PUBLIC-PDF',
@@ -74,7 +75,6 @@ def test_timeout():
     from pyipptool import wrapper
     from pyipptool.core import TimeoutError
     from pyipptool.forms import get_subscriptions_form
-    PORT = 6789
 
     class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
         """
@@ -82,12 +82,23 @@ def test_timeout():
         """
 
         def do_POST(self):
-            time.sleep(2)
+            time.sleep(.5)
             assassin = threading.Thread(target=self.server.shutdown)
             assassin.daemon = True
             assassin.start()
 
-    httpd = SocketServer.TCPServer(("", PORT), Handler)
+    PORT = 6789
+    while True:
+        try:
+            httpd = SocketServer.TCPServer(("", PORT), Handler)
+        except socket.error as exe:
+            if exe.errno == 98:
+                PORT += 1
+            else:
+                raise
+        else:
+            break
+    httpd.allow_reuse_address = True
 
     thread = threading.Thread(target=httpd.serve_forever)
     thread.daemon = True
@@ -100,7 +111,7 @@ def test_timeout():
            'http://localhost:%s/printers/fake' % PORT}}})
 
     old_timeout = wrapper.config['timeout']
-    wrapper.config['timeout'] = 1
+    wrapper.config['timeout'] = .1
     try:
         with pytest.raises(TimeoutError):
             wrapper._call_ipptool('http://localhost:%s/' % PORT, request)
@@ -121,7 +132,7 @@ def test_authentication():
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_release_job(_call_ipptool):
     from pyipptool import release_job
-    _call_ipptool.return_value = {'Tests': [{'StatusCode': 'successful-ok'}]}
+    _call_ipptool.return_value = {'Tests': [{}]}
     release_job('https://localhost:631/')
     assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
 
@@ -129,7 +140,7 @@ def test_release_job(_call_ipptool):
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_cancel_job(_call_ipptool):
     from pyipptool import cancel_job
-    _call_ipptool.return_value = {'Tests': [{'StatusCode': 'successful-ok'}]}
+    _call_ipptool.return_value = {'Tests': [{}]}
     cancel_job('https://localhost:631/')
     assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
 
@@ -137,7 +148,7 @@ def test_cancel_job(_call_ipptool):
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_cups_add_modify_class(_call_ipptool):
     from pyipptool import cups_add_modify_class
-    _call_ipptool.return_value = {'Tests': [{'StatusCode': 'successful-ok'}]}
+    _call_ipptool.return_value = {'Tests': [{}]}
     cups_add_modify_class('https://localhost:631/',
                           printer_uri='')
     assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
@@ -146,7 +157,7 @@ def test_cups_add_modify_class(_call_ipptool):
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_cups_delete_printer(_call_ipptool):
     from pyipptool import cups_delete_printer
-    _call_ipptool.return_value = {'Tests': [{'StatusCode': 'successful-ok'}]}
+    _call_ipptool.return_value = {'Tests': [{}]}
     cups_delete_printer('https://localhost:631/')
     assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
 
@@ -154,7 +165,7 @@ def test_cups_delete_printer(_call_ipptool):
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_cups_delete_class(_call_ipptool):
     from pyipptool import cups_delete_class
-    _call_ipptool.return_value = {'Tests': [{'StatusCode': 'successful-ok'}]}
+    _call_ipptool.return_value = {'Tests': [{}]}
     cups_delete_class('https://localhost:631/')
     assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
 
@@ -162,7 +173,7 @@ def test_cups_delete_class(_call_ipptool):
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_cups_get_classes(_call_ipptool):
     from pyipptool import cups_get_classes
-    _call_ipptool.return_value = {'Tests': [{'ResponseAttributes': ''}]}
+    _call_ipptool.return_value = {'Tests': [{}]}
     cups_get_classes('https://localhost:631/')
     assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
 
@@ -170,7 +181,7 @@ def test_cups_get_classes(_call_ipptool):
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_cups_get_printers(_call_ipptool):
     from pyipptool import cups_get_printers
-    _call_ipptool.return_value = {'Tests': [{'ResponseAttributes': ''}]}
+    _call_ipptool.return_value = {'Tests': [{}]}
     cups_get_printers('https://localhost:631/')
     assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
 
@@ -178,7 +189,7 @@ def test_cups_get_printers(_call_ipptool):
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_cups_get_devices(_call_ipptool):
     from pyipptool import cups_get_devices
-    _call_ipptool.return_value = {'Tests': [{'ResponseAttributes': ''}]}
+    _call_ipptool.return_value = {'Tests': [{}]}
     cups_get_devices('https://localhost:631/')
     assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
 
@@ -186,7 +197,7 @@ def test_cups_get_devices(_call_ipptool):
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_cups_get_ppds(_call_ipptool):
     from pyipptool import cups_get_ppds
-    _call_ipptool.return_value = {'Tests': [{'ResponseAttributes': ''}]}
+    _call_ipptool.return_value = {'Tests': [{}]}
     cups_get_ppds('https://localhost:631/')
     assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
 
@@ -194,7 +205,7 @@ def test_cups_get_ppds(_call_ipptool):
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_cups_move_job(_call_ipptool):
     from pyipptool import cups_move_job
-    _call_ipptool.return_value = {'Tests': [{'StatusCode': 'successful-ok'}]}
+    _call_ipptool.return_value = {'Tests': [{}]}
     cups_move_job('https://localhost:631/')
     assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
 
@@ -202,7 +213,7 @@ def test_cups_move_job(_call_ipptool):
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_cups_reject_jobs(_call_ipptool):
     from pyipptool import cups_reject_jobs
-    _call_ipptool.return_value = {'Tests': [{'StatusCode': 'successful-ok'}]}
+    _call_ipptool.return_value = {'Tests': [{}]}
     cups_reject_jobs('https://localhost:631/')
     assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
 
@@ -210,7 +221,7 @@ def test_cups_reject_jobs(_call_ipptool):
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_get_jobs(_call_ipptool):
     from pyipptool import get_jobs
-    _call_ipptool.return_value = {'Tests': [{'ResponseAttributes': ''}]}
+    _call_ipptool.return_value = {'Tests': [{}]}
     get_jobs('https://localhost:631/', printer_uri='')
     assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
 
@@ -218,7 +229,7 @@ def test_get_jobs(_call_ipptool):
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_get_printer_attributes(_call_ipptool):
     from pyipptool import get_printer_attributes
-    _call_ipptool.return_value = {'Tests': [{'ResponseAttributes': ''}]}
+    _call_ipptool.return_value = {'Tests': [{}]}
     get_printer_attributes('https://localhost:631/', printer_uri='')
     assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
 
@@ -226,7 +237,7 @@ def test_get_printer_attributes(_call_ipptool):
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_get_subscriptions(_call_ipptool):
     from pyipptool import get_subscriptions
-    _call_ipptool.return_value = {'Tests': [{'ResponseAttributes': ''}]}
+    _call_ipptool.return_value = {'Tests': [{}]}
     get_subscriptions('https://localhost:631/', printer_uri='')
     assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
 
@@ -234,7 +245,7 @@ def test_get_subscriptions(_call_ipptool):
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_pause_printer(_call_ipptool):
     from pyipptool import pause_printer
-    _call_ipptool.return_value = {'Tests': [{'ResponseAttributes': ''}]}
+    _call_ipptool.return_value = {'Tests': [{}]}
     pause_printer('https://localhost:631/', printer_uri='')
     assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
 
@@ -242,7 +253,7 @@ def test_pause_printer(_call_ipptool):
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_hold_new_jobs(_call_ipptool):
     from pyipptool import hold_new_jobs
-    _call_ipptool.return_value = {'Tests': [{'ResponseAttributes': ''}]}
+    _call_ipptool.return_value = {'Tests': [{}]}
     hold_new_jobs('https://localhost:631/', printer_uri='')
     assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
 
@@ -250,7 +261,7 @@ def test_hold_new_jobs(_call_ipptool):
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_release_held_new_jobs(_call_ipptool):
     from pyipptool import release_held_new_jobs
-    _call_ipptool.return_value = {'Tests': [{'ResponseAttributes': ''}]}
+    _call_ipptool.return_value = {'Tests': [{}]}
     release_held_new_jobs('https://localhost:631/', printer_uri='')
     assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
 
@@ -258,7 +269,7 @@ def test_release_held_new_jobs(_call_ipptool):
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_resume_printer(_call_ipptool):
     from pyipptool import resume_printer
-    _call_ipptool.return_value = {'Tests': [{'ResponseAttributes': ''}]}
+    _call_ipptool.return_value = {'Tests': [{}]}
     resume_printer('https://localhost:631/', printer_uri='')
     assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
 
@@ -266,7 +277,7 @@ def test_resume_printer(_call_ipptool):
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_cancel_subscription(_call_ipptool):
     from pyipptool import cancel_subscription
-    _call_ipptool.return_value = {'Tests': [{'ResponseAttributes': ''}]}
+    _call_ipptool.return_value = {'Tests': [{}]}
     cancel_subscription('https://localhost:631/',
                         printer_uri='',
                         notify_subscription_id=3)
