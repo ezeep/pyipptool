@@ -119,7 +119,7 @@ def test_timeout():
         try:
             httpd = SocketServer.TCPServer(("", PORT), Handler)
         except socket.error as exe:
-            if exe.errno == 98:
+            if exe.errno in (48, 98):
                 PORT += 1
             else:
                 raise
