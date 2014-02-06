@@ -46,7 +46,7 @@ class Text(colander.String):
         return '"{}"'.format(value)
 
 
-class Uri(colander.String):
+class Uri(StringOrTuple):
     pass
 
 

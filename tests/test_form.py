@@ -68,7 +68,7 @@ def test_cups_add_modify_class_form():
     m_uri_1 = 'ipp://localhost:631/classes/c0'
     request = cups_add_modify_class_form.render(
         {'auth_info_required': 'john',
-         'member_uris': '%s,%s' % (m_uri_0, m_uri_1),
+         'member_uris': (m_uri_0, m_uri_1),
          'printer_is_accepting_jobs': True,
          'printer_info': 'multiline\ntext',
          'printer_location': 'The Office',
