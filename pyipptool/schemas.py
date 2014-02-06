@@ -96,6 +96,12 @@ class SubscriptionOperationAttributes(OperationAttributesWithPrinterUri):
                                                widget=IPPAttributeWidget())
 
 
+class CreateJobSubscriptionsOperationAttributes(
+        SubscriptionOperationAttributes):
+    notify_job_id = colander.SchemaNode(colander.Integer(),
+                                        widget=IPPAttributeWidget())
+
+
 class CancelSubscriptionOperationAttributes(SubscriptionOperationAttributes):
     notify_subscription_id = colander.SchemaNode(
         colander.Integer(),
@@ -347,6 +353,31 @@ class CupsRejectJobsSchema(BaseIPPSchema):
         widget=IPPAttributeWidget())
 
 
+class CreateJobSubscriptionsSchema(BaseIPPSchema):
+    name = 'Create Job Subscriptions'
+    operation = 'Create-Job-Subscriptions'
+    object_attributes_tag = 'subscription-attributes-tag'
+    header = HeaderIPPSchema(widget=IPPConstantTupleWidget())
+    header['operation_attributes'] = CreateJobSubscriptionsOperationAttributes(
+        widget=IPPTupleWidget())
+    notify_recipient_uri = colander.SchemaNode(Uri(),
+                                               widget=IPPAttributeWidget())
+    notify_pull_method = colander.SchemaNode(Keyword(),
+                                             widget=IPPAttributeWidget())
+    notify_events = colander.SchemaNode(Keyword(),
+                                        widget=IPPAttributeWidget())
+    notify_attributes = colander.SchemaNode(Keyword(),
+                                            widget=IPPAttributeWidget())
+    notify_charset = colander.SchemaNode(Charset(),
+                                         default='utf-8',
+                                         widget=IPPAttributeWidget())
+    notify_natural_language = colander.SchemaNode(Language(),
+                                                  default='en',
+                                                  widget=IPPAttributeWidget())
+    notify_time_interval = colander.SchemaNode(colander.Integer(),
+                                               widget=IPPAttributeWidget())
+
+
 class CreatePrinterSubscriptionSchema(BaseIPPSchema):
     name = 'Create Printer Subscription'
     operation = 'Create-Printer-Subscription'
@@ -446,6 +477,9 @@ class CancelSubscriptionSchema(BaseIPPSchema):
 cancel_job_schema = CancelJobSchema(widget=IPPBodyWidget())
 
 release_job_schema = ReleaseJobSchema(widget=IPPBodyWidget())
+
+create_job_subscriptions_schema = CreateJobSubscriptionsSchema(
+    widget=IPPBodyWidget())
 
 create_printer_subscription_schema = CreatePrinterSubscriptionSchema(
     widget=IPPBodyWidget())

@@ -44,8 +44,8 @@ def test_create_printer_subscription_form():
     request = create_printer_subscription_form.render(
         {'header': {'operation_attributes':
                     {'printer_uri': 'https://localhost:631/classes/PIY',
-                     'requesting_user_name': 'ecp_admin'}},
-         'notify_recipient_uri': 'ezpnotifier://',
+                     'requesting_user_name': 'admin'}},
+         'notify_recipient_uri': 'rss://',
          'notify_events': 'all',
          'notify_lease_duration': 128,
          'notify_lease_expiration_time': 0})
@@ -53,13 +53,41 @@ def test_create_printer_subscription_form():
     assert 'OPERATION "Create-Printer-Subscription"' in request, request
     assert 'ATTR charset attributes-charset utf-8' in request, request
     assert 'ATTR language attributes-natural-language en' in request, request
-    assert 'ATTR name requesting-user-name ecp_admin' in request, request
+    assert 'ATTR name requesting-user-name admin' in request, request
     assert 'GROUP subscription-attributes-tag' in request
     assert 'ATTR uri printer-uri https://localhost:631/classes/PIY' in request
-    assert 'ATTR uri notify-recipient-uri ezpnotifier://' in request
+    assert 'ATTR uri notify-recipient-uri rss://' in request
     assert 'ATTR keyword notify-events all' in request
     assert 'ATTR integer notify-lease-duration 128' in request
     assert 'ATTR integer notify-lease-expiration-time 0' in request
+
+
+def test_create_job_subscriptions_form_for_pull_delivery_method():
+    from pyipptool.forms import create_job_subscriptions_form
+    request = create_job_subscriptions_form.render(
+        {'header': {'operation_attributes':
+                    {'printer_uri': 'https://localhost:631/printer/p',
+                     'requesting_user_name': 'admin',
+                     'notify_job_id': 12}},
+         'notify_recipient_uri': 'rss://',
+         'notify_events': ('job-completed', 'job-created', 'job-progress'),
+         'notify_attributes': 'notify-subscriber-user-name',
+         'notify_charset': 'utf-8',
+         'notify_natural_language': 'de',
+         'notify_time_interval': 1})
+    assert 'NAME "Create Job Subscriptions"' in request
+    assert 'OPERATION "Create-Job-Subscriptions"' in request
+    assert 'ATTR charset attributes-charset utf-8' in request
+    assert 'ATTR language attributes-natural-language en' in request
+    assert 'ATTR name requesting-user-name admin' in request
+    assert 'GROUP subscription-attributes-tag' in request
+    assert 'ATTR uri printer-uri https://localhost:631/printer/p' in request
+    assert 'ATTR integer notify-job-id 12' in request
+    assert 'ATTR uri notify-recipient-uri rss://' in request
+    assert 'ATTR keyword notify-events job-completed,job-created,job-progress' in request
+    assert 'ATTR charset notify-charset utf-8' in request
+    assert 'ATTR language notify-natural-language de' in request
+    assert 'ATTR integer notify-time-interval 1' in request
 
 
 def test_cups_add_modify_class_form():
@@ -182,8 +210,8 @@ def test_cups_get_classes_form():
     assert 'ATTR text printer-location "The Office"' in request, request
     assert 'ATTR enum printer-type 2' in request
     assert 'ATTR enum printer-type-mask 8' in request
-    assert 'ATTR keyword requested-attributes'\
-            ' name,printer-attributes-tag' in request, request
+    assert ('ATTR keyword requested-attributes'
+            ' name,printer-attributes-tag' in request, request)
     assert 'ATTR name requested-user-name john' in request
 
 
@@ -256,8 +284,8 @@ def test_cups_get_printers_form():
     assert 'ATTR text printer-location "The Office"' in request, request
     assert 'ATTR enum printer-type 2' in request
     assert 'ATTR enum printer-type-mask 8' in request
-    assert 'ATTR keyword requested-attributes'\
-            ' name,printer-attributes-tag' in request, request
+    assert ('ATTR keyword requested-attributes'
+            ' name,printer-attributes-tag' in request, request)
     assert 'ATTR name requested-user-name john' in request
 
 
@@ -267,7 +295,7 @@ def test_cups_reject_jobs_form():
         {'header': {'operation_attributes':
                     {'printer_uri': ('https://localhost:631/'
                                      'printers/DA-PRINTER'),
-                     'requesting_user_name': 'ecp_admin'}},
+                     'requesting_user_name': 'admin'}},
          'printer_state_message': 'You shall not pass'})
     assert 'NAME "CUPS Reject Jobs"' in request, request
     assert 'OPERATION "CUPS-Reject-Jobs"' in request, request

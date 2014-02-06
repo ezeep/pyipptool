@@ -35,6 +35,7 @@ def read_config(paths=('/etc/opt/pyipptool/pyipptool.cfg',
 config = read_config()
 
 wrapper = IPPToolWrapper(config)
+create_job_subscriptions = wrapper.create_job_subscriptions
 create_printer_subscription = wrapper. create_printer_subscription
 cancel_job = wrapper.cancel_job
 release_job = wrapper.release_job
