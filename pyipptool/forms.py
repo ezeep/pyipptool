@@ -4,7 +4,7 @@ import deform.template
 
 from .schemas import (cancel_job_schema,
                       release_job_schema,
-                      create_job_subscriptions_schema,
+                      create_job_subscription_schema,
                       create_printer_subscription_schema,
                       cups_add_modify_class_schema,
                       cups_add_modify_printer_schema,
@@ -35,8 +35,8 @@ deform.Form.set_default_renderer(renderer)
 
 cancel_job_form = deform.Form(cancel_job_schema)
 release_job_form = deform.Form(release_job_schema)
-create_job_subscriptions_form = deform.Form(
-    create_job_subscriptions_schema)
+create_job_subscription_form = deform.Form(
+    create_job_subscription_schema)
 create_printer_subscription_form = deform.Form(
     create_printer_subscription_schema)
 cups_add_modify_printer_form = deform.Form(cups_add_modify_printer_schema)

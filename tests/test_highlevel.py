@@ -11,9 +11,9 @@ import pyipptool
 
 
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
-def test_ipptool_create_job_subscriptions_pull_delivery_method(_call_ipptool):
-    from pyipptool import create_job_subscriptions
-    create_job_subscriptions(
+def test_ipptool_create_job_subscription_pull_delivery_method(_call_ipptool):
+    from pyipptool import create_job_subscription
+    create_job_subscription(
         'https://localhost:631/',
         printer_uri='https://localhost:631/printer/p',
         requesting_user_name='ecp_admin',
