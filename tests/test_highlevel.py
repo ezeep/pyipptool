@@ -109,7 +109,7 @@ def test_timeout():
         """
 
         def do_POST(self):
-            time.sleep(.5)
+            time.sleep(.2)
             assassin = threading.Thread(target=self.server.shutdown)
             assassin.daemon = True
             assassin.start()
