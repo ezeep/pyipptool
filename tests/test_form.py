@@ -47,8 +47,11 @@ def test_create_printer_subscription_form():
                      'requesting_user_name': 'admin'}},
          'notify_recipient_uri': 'rss://',
          'notify_events': 'all',
+         'notify_attributes': 'notify-subscriber-user-name',
+         'notify_charset': 'utf-8',
+         'notify_natural_language': 'de',
          'notify_lease_duration': 128,
-         'notify_lease_expiration_time': 0})
+         'notify_time_interval': 1})
     assert 'NAME "Create Printer Subscription"' in request, request
     assert 'OPERATION "Create-Printer-Subscription"' in request, request
     assert 'ATTR charset attributes-charset utf-8' in request, request
@@ -58,8 +61,10 @@ def test_create_printer_subscription_form():
     assert 'ATTR uri printer-uri https://localhost:631/classes/PIY' in request
     assert 'ATTR uri notify-recipient-uri rss://' in request
     assert 'ATTR keyword notify-events all' in request
+    assert 'ATTR charset notify-charset utf-8' in request
+    assert 'ATTR language notify-natural-language de' in request
     assert 'ATTR integer notify-lease-duration 128' in request
-    assert 'ATTR integer notify-lease-expiration-time 0' in request
+    assert 'ATTR integer notify-time-interval 1' in request
 
 
 def test_create_job_subscription_form_for_pull_delivery_method():

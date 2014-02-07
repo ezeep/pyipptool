@@ -1,7 +1,6 @@
 import colander
-from .widgets import (IPPAttributeWidget, IPPBodyWidget, IPPDisplayWidget,
-                      IPPGroupWidget, IPPNameWidget, IPPTupleWidget,
-                      IPPConstantTupleWidget)
+from .widgets import (IPPAttributeWidget, IPPBodyWidget, IPPGroupWidget,
+                      IPPNameWidget, IPPTupleWidget, IPPConstantTupleWidget)
 
 
 class StringOrTuple(colander.String):
@@ -353,13 +352,11 @@ class CupsRejectJobsSchema(BaseIPPSchema):
         widget=IPPAttributeWidget())
 
 
-class CreateJobSubscriptionSchema(BaseIPPSchema):
-    name = 'Create Job Subscription'
-    operation = 'Create-Job-Subscription'
-    object_attributes_tag = 'subscription-attributes-tag'
+class CreateSubscriptionSchema(BaseIPPSchema):
     header = HeaderIPPSchema(widget=IPPConstantTupleWidget())
-    header['operation_attributes'] = CreateJobSubscriptionOperationAttributes(
+    header['operation_attributes'] = SubscriptionOperationAttributes(
         widget=IPPTupleWidget())
+    object_attributes_tag = 'subscription-attributes-tag'
     notify_recipient_uri = colander.SchemaNode(Uri(),
                                                widget=IPPAttributeWidget())
     notify_pull_method = colander.SchemaNode(Keyword(),
@@ -369,33 +366,26 @@ class CreateJobSubscriptionSchema(BaseIPPSchema):
     notify_attributes = colander.SchemaNode(Keyword(),
                                             widget=IPPAttributeWidget())
     notify_charset = colander.SchemaNode(Charset(),
-                                         default='utf-8',
                                          widget=IPPAttributeWidget())
     notify_natural_language = colander.SchemaNode(Language(),
-                                                  default='en',
                                                   widget=IPPAttributeWidget())
     notify_time_interval = colander.SchemaNode(colander.Integer(),
                                                widget=IPPAttributeWidget())
 
 
-class CreatePrinterSubscriptionSchema(BaseIPPSchema):
+class CreateJobSubscriptionSchema(CreateSubscriptionSchema):
+    name = 'Create Job Subscription'
+    operation = 'Create-Job-Subscription'
+    header = HeaderIPPSchema(widget=IPPConstantTupleWidget())
+    header['operation_attributes'] = CreateJobSubscriptionOperationAttributes(
+        widget=IPPTupleWidget())
+
+
+class CreatePrinterSubscriptionSchema(CreateSubscriptionSchema):
     name = 'Create Printer Subscription'
     operation = 'Create-Printer-Subscription'
-    object_attributes_tag = 'subscription-attributes-tag'
-    header = HeaderIPPSchema(widget=IPPConstantTupleWidget())
-    header['operation_attributes'] = SubscriptionOperationAttributes(
-        widget=IPPTupleWidget())
-    notify_recipient_uri = colander.SchemaNode(Uri(),
-                                               widget=IPPAttributeWidget())
-    notify_events = colander.SchemaNode(Keyword(),
-                                        widget=IPPAttributeWidget())
     notify_lease_duration = colander.SchemaNode(colander.Integer(),
                                                 widget=IPPAttributeWidget())
-    notify_lease_expiration_time = colander.SchemaNode(
-        colander.Integer(),
-        widget=IPPAttributeWidget())
-    notify_subscription_id = colander.SchemaNode(colander.String(),
-                                                 widget=IPPDisplayWidget())
 
 
 class GetJobAttributesSchema(BaseIPPSchema):
