@@ -368,10 +368,8 @@ class CreateJobSubscriptionSchema(BaseIPPSchema):
     notify_attributes = colander.SchemaNode(Keyword(),
                                             widget=IPPAttributeWidget())
     notify_charset = colander.SchemaNode(Charset(),
-                                         default='utf-8',
                                          widget=IPPAttributeWidget())
     notify_natural_language = colander.SchemaNode(Language(),
-                                                  default='en',
                                                   widget=IPPAttributeWidget())
     notify_time_interval = colander.SchemaNode(colander.Integer(),
                                                widget=IPPAttributeWidget())
