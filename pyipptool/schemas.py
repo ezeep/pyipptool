@@ -1,7 +1,6 @@
 import colander
-from .widgets import (IPPAttributeWidget, IPPBodyWidget, IPPDisplayWidget,
-                      IPPGroupWidget, IPPNameWidget, IPPTupleWidget,
-                      IPPConstantTupleWidget)
+from .widgets import (IPPAttributeWidget, IPPBodyWidget, IPPGroupWidget,
+                      IPPNameWidget, IPPTupleWidget, IPPConstantTupleWidget)
 
 
 class StringOrTuple(colander.String):
@@ -401,8 +400,6 @@ class CreatePrinterSubscriptionSchema(BaseIPPSchema):
                                                 widget=IPPAttributeWidget())
     notify_time_interval = colander.SchemaNode(colander.Integer(),
                                                widget=IPPAttributeWidget())
-    notify_subscription_id = colander.SchemaNode(colander.String(),
-                                                 widget=IPPDisplayWidget())
 
 
 class GetJobAttributesSchema(BaseIPPSchema):
