@@ -1,38 +1,8 @@
-import ConfigParser
-import os
-
+from .config import get_config
 from .core import IPPToolWrapper
 
 
-def read_config(paths=('/etc/opt/pyipptool/pyipptool.cfg',
-                       os.path.join(os.path.expanduser('~'),
-                                    '.pyipptool.cfg'))):
-    config = {}
-    fs_config = ConfigParser.ConfigParser()
-    fs_config.read(paths)
-    config['ipptool_path'] = fs_config.get('main', 'ipptool_path')
-    try:
-        config['login'] = fs_config.get('main', 'login')
-    except ConfigParser.NoOptionError:
-        pass
-    try:
-        config['password'] = fs_config.get('main', 'password')
-    except ConfigParser.NoOptionError:
-        pass
-    try:
-        config['graceful_shutdown_time'] = fs_config.getint(
-            'main',
-            'graceful_shutdown_time')
-    except ConfigParser.NoOptionError:
-        config['graceful_shutdown_time'] = 2
-    try:
-        config['timeout'] = fs_config.getint('main', 'timeout')
-    except ConfigParser.NoOptionError:
-        config['timeout'] = 10
-    return config
-
-
-config = read_config()
+config = get_config()
 
 wrapper = IPPToolWrapper(config)
 create_job_subscriptions = wrapper.create_job_subscriptions
