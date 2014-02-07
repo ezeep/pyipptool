@@ -64,8 +64,7 @@ Create an infinite time subscription for printer-XYZ class for the ``rss`` notif
             requesting_user_name='admin',
             notify_recipient_uri='rss://',
             notify_events='all',
-            notify_lease_duration=0,
-            notify_lease_expiration_time=0)
+            notify_lease_duration=0)
     {'Name': 'Create Printer Subscription',
      'Operation': 'Create-Printer-Subscription',
      'RequestAttributes': [{'attributes-charset': 'utf-8',
@@ -74,7 +73,6 @@ Create an infinite time subscription for printer-XYZ class for the ``rss`` notif
                             'requesting-user-name': 'admin'},
                            {'notify-events': 'all',
                             'notify-lease-duration': 0,
-                            'notify-lease-expiration-time': 0,
                             'notify-recipient-uri': 'rss://'}],
      'ResponseAttributes': [{'attributes-charset': 'utf-8',
                              'attributes-natural-language': 'en'},

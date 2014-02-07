@@ -152,10 +152,14 @@ class IPPToolWrapper(object):
             uri,
             printer_uri=None,
             requesting_user_name=None,
-            notify_recipient_uri=None,
-            notify_events=None,
+            notify_recipient_uri=colander.null,
+            notify_pull_method=colander.null,
+            notify_events=colander.null,
+            notify_attributes=colander.null,
+            notify_charset=colander.null,
+            notify_natural_language=colander.null,
             notify_lease_duration=colander.null,
-            notify_lease_expiration_time=colander.null):
+            notify_time_interval=colander.null):
         """
         Create a new subscription and return its id
         """
@@ -163,9 +167,13 @@ class IPPToolWrapper(object):
                          {'printer_uri': printer_uri,
                           'requesting_user_name': requesting_user_name}},
               'notify_recipient_uri': notify_recipient_uri,
+              'notify_pull_method': notify_pull_method,
               'notify_events': notify_events,
+              'notify_attributes': notify_attributes,
+              'notify_charset': notify_charset,
+              'notify_natural_language': notify_natural_language,
               'notify_lease_duration': notify_lease_duration,
-              'notify_lease_expiration_time': notify_lease_expiration_time}
+              'notify_time_interval': notify_time_interval}
         request = create_printer_subscription_form.render(kw)
         response = self._call_ipptool(uri, request)
         return response['Tests'][0]

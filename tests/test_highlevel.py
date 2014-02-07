@@ -46,16 +46,22 @@ def test_ipptool_create_printer_subscription(_call_ipptool):
         requesting_user_name='ecp_admin',
         notify_recipient_uri='ezpnotifier://',
         notify_events='all',
+        notify_attributes='notify-subscriber-user-name',
+        notify_charset='utf-8',
+        notify_natural_language='de',
         notify_lease_duration=0,
-        notify_lease_expiration_time=0)
+        notify_time_interval=1)
     assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
     request = _call_ipptool._mock_mock_calls[0][1][1]
     assert 'requesting-user-name ecp_admin' in request, request
     assert 'printer-uri https://localhost:631/classes/PUBLIC-PDF' in request
     assert 'notify-recipient-uri ezpnotifier://' in request
     assert 'notify-events all' in request
+    assert 'notify-attributes notify-subscriber-user-name' in request
+    assert 'notify-charset utf-8' in request
+    assert 'notify-natural-language de' in request
     assert 'notify-lease-duration 0' in request
-    assert 'notify-lease-expiration-time 0' in request
+    assert 'notify-time-interval 1' in request
 
 
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')

@@ -387,13 +387,20 @@ class CreatePrinterSubscriptionSchema(BaseIPPSchema):
         widget=IPPTupleWidget())
     notify_recipient_uri = colander.SchemaNode(Uri(),
                                                widget=IPPAttributeWidget())
+    notify_pull_method = colander.SchemaNode(Keyword(),
+                                             widget=IPPAttributeWidget())
     notify_events = colander.SchemaNode(Keyword(),
                                         widget=IPPAttributeWidget())
+    notify_attributes = colander.SchemaNode(Keyword(),
+                                            widget=IPPAttributeWidget())
+    notify_charset = colander.SchemaNode(Charset(),
+                                         widget=IPPAttributeWidget())
+    notify_natural_language = colander.SchemaNode(Language(),
+                                                  widget=IPPAttributeWidget())
     notify_lease_duration = colander.SchemaNode(colander.Integer(),
                                                 widget=IPPAttributeWidget())
-    notify_lease_expiration_time = colander.SchemaNode(
-        colander.Integer(),
-        widget=IPPAttributeWidget())
+    notify_time_interval = colander.SchemaNode(colander.Integer(),
+                                               widget=IPPAttributeWidget())
     notify_subscription_id = colander.SchemaNode(colander.String(),
                                                  widget=IPPDisplayWidget())
 
