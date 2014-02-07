@@ -16,9 +16,9 @@ def test_ipptool_create_job_subscription_pull_delivery_method(_call_ipptool):
     create_job_subscription(
         'https://localhost:631/',
         printer_uri='https://localhost:631/printer/p',
-        requesting_user_name='ecp_admin',
+        requesting_user_name='admin',
         notify_job_id=108,
-        notify_recipient_uri='ezpnotifier://',
+        notify_recipient_uri='rss://',
         notify_events=('job-completed', 'job-created', 'job-progress'),
         notify_attributes='notify-subscriber-user-name',
         notify_charset='utf-8',
@@ -27,9 +27,9 @@ def test_ipptool_create_job_subscription_pull_delivery_method(_call_ipptool):
     assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
     request = _call_ipptool._mock_mock_calls[0][1][1]
     assert 'printer-uri https://localhost:631/printer/p' in request
-    assert 'requesting-user-name ecp_admin' in request
+    assert 'requesting-user-name admin' in request
     assert 'notify-job-id 108' in request
-    assert 'notify-recipient-uri ezpnotifier://' in request
+    assert 'notify-recipient-uri rss://' in request
     assert 'notify-events job-completed,job-created,job-progress' in request
     assert 'notify-attributes notify-subscriber-user-name' in request
     assert 'notify-charset utf-8' in request
@@ -43,8 +43,8 @@ def test_ipptool_create_printer_subscription(_call_ipptool):
     create_printer_subscription(
         'https://localhost:631/',
         printer_uri='https://localhost:631/classes/PUBLIC-PDF',
-        requesting_user_name='ecp_admin',
-        notify_recipient_uri='ezpnotifier://',
+        requesting_user_name='admin',
+        notify_recipient_uri='rss://',
         notify_events='all',
         notify_attributes='notify-subscriber-user-name',
         notify_charset='utf-8',
@@ -53,9 +53,9 @@ def test_ipptool_create_printer_subscription(_call_ipptool):
         notify_time_interval=1)
     assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
     request = _call_ipptool._mock_mock_calls[0][1][1]
-    assert 'requesting-user-name ecp_admin' in request, request
+    assert 'requesting-user-name admin' in request, request
     assert 'printer-uri https://localhost:631/classes/PUBLIC-PDF' in request
-    assert 'notify-recipient-uri ezpnotifier://' in request
+    assert 'notify-recipient-uri rss://' in request
     assert 'notify-events all' in request
     assert 'notify-attributes notify-subscriber-user-name' in request
     assert 'notify-charset utf-8' in request
