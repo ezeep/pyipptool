@@ -96,7 +96,7 @@ class SubscriptionOperationAttributes(OperationAttributesWithPrinterUri):
                                                widget=IPPAttributeWidget())
 
 
-class CreateJobSubscriptionsOperationAttributes(
+class CreateJobSubscriptionOperationAttributes(
         SubscriptionOperationAttributes):
     notify_job_id = colander.SchemaNode(colander.Integer(),
                                         widget=IPPAttributeWidget())
@@ -353,12 +353,12 @@ class CupsRejectJobsSchema(BaseIPPSchema):
         widget=IPPAttributeWidget())
 
 
-class CreateJobSubscriptionsSchema(BaseIPPSchema):
-    name = 'Create Job Subscriptions'
-    operation = 'Create-Job-Subscriptions'
+class CreateJobSubscriptionSchema(BaseIPPSchema):
+    name = 'Create Job Subscription'
+    operation = 'Create-Job-Subscription'
     object_attributes_tag = 'subscription-attributes-tag'
     header = HeaderIPPSchema(widget=IPPConstantTupleWidget())
-    header['operation_attributes'] = CreateJobSubscriptionsOperationAttributes(
+    header['operation_attributes'] = CreateJobSubscriptionOperationAttributes(
         widget=IPPTupleWidget())
     notify_recipient_uri = colander.SchemaNode(Uri(),
                                                widget=IPPAttributeWidget())
@@ -478,7 +478,7 @@ cancel_job_schema = CancelJobSchema(widget=IPPBodyWidget())
 
 release_job_schema = ReleaseJobSchema(widget=IPPBodyWidget())
 
-create_job_subscriptions_schema = CreateJobSubscriptionsSchema(
+create_job_subscription_schema = CreateJobSubscriptionSchema(
     widget=IPPBodyWidget())
 
 create_printer_subscription_schema = CreatePrinterSubscriptionSchema(

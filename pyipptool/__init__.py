@@ -5,7 +5,7 @@ from .core import IPPToolWrapper
 config = get_config()
 
 wrapper = IPPToolWrapper(config)
-create_job_subscriptions = wrapper.create_job_subscriptions
+create_job_subscription = wrapper.create_job_subscription
 create_printer_subscription = wrapper. create_printer_subscription
 cancel_job = wrapper.cancel_job
 release_job = wrapper.release_job

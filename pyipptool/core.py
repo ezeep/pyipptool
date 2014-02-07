@@ -10,7 +10,7 @@ import colander
 
 from .forms import (cancel_job_form,
                     release_job_form,
-                    create_job_subscriptions_form,
+                    create_job_subscription_form,
                     create_printer_subscription_form,
                     cups_add_modify_class_form,
                     cups_add_modify_printer_form,
@@ -117,20 +117,20 @@ class IPPToolWrapper(object):
         response = self._call_ipptool(uri, request)
         return response['Tests'][0]
 
-    def create_job_subscriptions(self,
-                                 uri,
-                                 printer_uri=None,
-                                 requesting_user_name=None,
-                                 notify_job_id=None,
-                                 notify_recipient_uri=colander.null,
-                                 notify_pull_method=colander.null,
-                                 notify_events=colander.null,
-                                 notify_attributes=colander.null,
-                                 notify_charset=colander.null,
-                                 notify_natural_language=colander.null,
-                                 notify_time_interval=colander.null):
+    def create_job_subscription(self,
+                                uri,
+                                printer_uri=None,
+                                requesting_user_name=None,
+                                notify_job_id=None,
+                                notify_recipient_uri=colander.null,
+                                notify_pull_method=colander.null,
+                                notify_events=colander.null,
+                                notify_attributes=colander.null,
+                                notify_charset=colander.null,
+                                notify_natural_language=colander.null,
+                                notify_time_interval=colander.null):
         """
-        Create one or more Per-Job Subscription objects.
+        Create a per-job subscription object.
         """
         kw = {'header': {'operation_attributes':
                          {'printer_uri': printer_uri,
@@ -143,7 +143,7 @@ class IPPToolWrapper(object):
               'notify_charset': notify_charset,
               'notify_natural_language': notify_natural_language,
               'notify_time_interval': notify_time_interval}
-        request = create_job_subscriptions_form.render(kw)
+        request = create_job_subscription_form.render(kw)
         response = self._call_ipptool(uri, request)
         return response['Tests'][0]
 

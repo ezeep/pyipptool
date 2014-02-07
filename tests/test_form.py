@@ -62,9 +62,9 @@ def test_create_printer_subscription_form():
     assert 'ATTR integer notify-lease-expiration-time 0' in request
 
 
-def test_create_job_subscriptions_form_for_pull_delivery_method():
-    from pyipptool.forms import create_job_subscriptions_form
-    request = create_job_subscriptions_form.render(
+def test_create_job_subscription_form_for_pull_delivery_method():
+    from pyipptool.forms import create_job_subscription_form
+    request = create_job_subscription_form.render(
         {'header': {'operation_attributes':
                     {'printer_uri': 'https://localhost:631/printer/p',
                      'requesting_user_name': 'admin',
@@ -75,8 +75,8 @@ def test_create_job_subscriptions_form_for_pull_delivery_method():
          'notify_charset': 'utf-8',
          'notify_natural_language': 'de',
          'notify_time_interval': 1})
-    assert 'NAME "Create Job Subscriptions"' in request
-    assert 'OPERATION "Create-Job-Subscriptions"' in request
+    assert 'NAME "Create Job Subscription"' in request
+    assert 'OPERATION "Create-Job-Subscription"' in request
     assert 'ATTR charset attributes-charset utf-8' in request
     assert 'ATTR language attributes-natural-language en' in request
     assert 'ATTR name requesting-user-name admin' in request
