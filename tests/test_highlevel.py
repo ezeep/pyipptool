@@ -276,6 +276,16 @@ def test_get_subscriptions(_call_ipptool):
 
 
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
+def test_get_notifications(_call_ipptool):
+    from pyipptool import get_notifications
+    _call_ipptool.return_value = {'Tests': [{}]}
+    get_notifications('https://localhost:631/',
+                      printer_uri='',
+                      notify_subscription_ids=3)
+    assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
+
+
+@mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_pause_printer(_call_ipptool):
     from pyipptool import pause_printer
     _call_ipptool.return_value = {'Tests': [{}]}

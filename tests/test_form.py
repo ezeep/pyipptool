@@ -385,6 +385,44 @@ def test_get_subscriptions_form():
     assert 'ATTR boolean my-subscriptions 1' in request
 
 
+def test_get_notifications_form_for_one_notification():
+    from pyipptool.forms import get_notifications_form
+    request = get_notifications_form.render(
+        {'header':
+         {'operation_attributes':
+          {'printer_uri': 'https://localhost:631/printers/p0',
+           'requesting_user_name': 'yoda',
+           'notify_subscription_ids': 3,
+           'notify_sequence_numbers': 1,
+           'notify_wait': True}}})
+    assert 'NAME "Get Notifications"' in request
+    assert 'OPERATION "Get-Notifications"' in request
+    assert 'ATTR uri printer-uri https://localhost:631/printers/p0' in request
+    assert 'ATTR name requesting-user-name yoda' in request
+    assert 'ATTR integer notify-subscription-ids 3' in request
+    assert 'ATTR integer notify-sequence-numbers 1' in request
+    assert 'ATTR boolean notify-wait 1' in request
+
+
+def test_get_notifications_form_for_multiple_notifications():
+    from pyipptool.forms import get_notifications_form
+    request = get_notifications_form.render(
+        {'header':
+         {'operation_attributes':
+          {'printer_uri': 'https://localhost:631/printers/p0',
+           'requesting_user_name': 'yoda',
+           'notify_subscription_ids': (3, 4, 5),
+           'notify_sequence_numbers': (2, 9, 29),
+           'notify_wait': True}}})
+    assert 'NAME "Get Notifications"' in request
+    assert 'OPERATION "Get-Notifications"' in request
+    assert 'ATTR uri printer-uri https://localhost:631/printers/p0' in request
+    assert 'ATTR name requesting-user-name yoda' in request
+    assert 'ATTR integer notify-subscription-ids 3,4,5' in request
+    assert 'ATTR integer notify-sequence-numbers 2,9,29' in request
+    assert 'ATTR boolean notify-wait 1' in request
+
+
 def test_pause_printer_form():
     from pyipptool.forms import pause_printer_form
     request = pause_printer_form.render(
