@@ -216,7 +216,7 @@ def test_cups_get_classes_form():
     assert 'ATTR enum printer-type 2' in request
     assert 'ATTR enum printer-type-mask 8' in request
     assert ('ATTR keyword requested-attributes'
-            ' name,printer-attributes-tag' in request, request)
+            ' name,printer-attributes-tag' in request), request
     assert 'ATTR name requested-user-name john' in request
 
 
@@ -290,7 +290,7 @@ def test_cups_get_printers_form():
     assert 'ATTR enum printer-type 2' in request
     assert 'ATTR enum printer-type-mask 8' in request
     assert ('ATTR keyword requested-attributes'
-            ' name,printer-attributes-tag' in request, request)
+            ' name,printer-attributes-tag' in request), request
     assert 'ATTR name requested-user-name john' in request
 
 
