@@ -3,6 +3,15 @@ from .widgets import (IPPAttributeWidget, IPPBodyWidget, IPPGroupWidget,
                       IPPNameWidget, IPPTupleWidget, IPPConstantTupleWidget)
 
 
+class IntegerOrTuple(colander.List):
+    def serialize(self, node, appstruct):
+        if isinstance(appstruct, (tuple, list)):
+            return super(IntegerOrTuple, self).serialize(
+                node,
+                ','.join([str(i) for i in appstruct]))
+        return super(IntegerOrTuple, self).serialize(node, appstruct)
+
+
 class StringOrTuple(colander.String):
     def serialize(self, node, appstruct):
         if isinstance(appstruct, (tuple, list)):
@@ -16,6 +25,10 @@ class Charset(colander.String):
 
 
 class Enum(colander.String):
+    pass
+
+
+class Integer(IntegerOrTuple):
     pass
 
 
@@ -144,6 +157,21 @@ class GetSubscriptionsAttributes(OperationAttributesWithPrinterUri):
         Keyword(),
         widget=IPPAttributeWidget())
     my_subscriptions = colander.SchemaNode(
+        colander.Boolean(false_val=0, true_val=1),
+        widget=IPPAttributeWidget())
+
+
+class GetNotificationsAttributes(OperationAttributesWithPrinterUri):
+    requesting_user_name = colander.SchemaNode(
+        Name(),
+        widget=IPPAttributeWidget())
+    notify_subscription_ids = colander.SchemaNode(
+        Integer(),
+        widget=IPPAttributeWidget())
+    notify_sequence_numbers = colander.SchemaNode(
+        Integer(),
+        widget=IPPAttributeWidget())
+    notify_wait = colander.SchemaNode(
         colander.Boolean(false_val=0, true_val=1),
         widget=IPPAttributeWidget())
 
@@ -424,6 +452,15 @@ class GetSubscriptionsSchema(BaseIPPSchema):
     object_attributes_tag = colander.null
 
 
+class GetNotificationsSchema(BaseIPPSchema):
+    name = 'Get Notifications'
+    operation = 'Get-Notifications'
+    header = HeaderIPPSchema(widget=IPPConstantTupleWidget())
+    header['operation_attributes'] = GetNotificationsAttributes(
+        widget=IPPTupleWidget())
+    object_attributes_tag = colander.null
+
+
 class PausePrinterSchema(BaseIPPSchema):
     name = 'Pause Printer'
     operation = 'Pause-Printer'
@@ -506,6 +543,8 @@ get_printer_attributes_schema = GetPrinterAttributesSchema(
     widget=IPPBodyWidget())
 
 get_subscriptions_schema = GetSubscriptionsSchema(widget=IPPBodyWidget())
+
+get_notifications_schema = GetNotificationsSchema(widget=IPPBodyWidget())
 
 pause_printer_schema = PausePrinterSchema(widget=IPPBodyWidget())
 

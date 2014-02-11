@@ -26,6 +26,7 @@ from .forms import (cancel_job_form,
                     get_jobs_form,
                     get_printer_attributes_form,
                     get_subscriptions_form,
+                    get_notifications_form,
                     pause_printer_form,
                     resume_printer_form,
                     hold_new_jobs_form,
@@ -436,6 +437,24 @@ class IPPToolWrapper(object):
                          'requested_attributes': requested_attributes,
                          'my_subscriptions': my_subscriptions}}}
         request = get_subscriptions_form.render(kw)
+        response = self._call_ipptool(uri, request)
+        return response['Tests'][0]
+
+    def get_notifications(self,
+                          uri,
+                          printer_uri=None,
+                          notify_subscription_ids=None,
+                          requesting_user_name=colander.null,
+                          notify_sequence_numbers=colander.null,
+                          notify_wait=colander.null):
+        kw = {'header':
+              {'operation_attributes':
+                  {'printer_uri': printer_uri,
+                   'requesting_user_name': requesting_user_name,
+                   'notify_subscription_ids': notify_subscription_ids,
+                   'notify_sequence_numbers': notify_sequence_numbers,
+                   'notify_wait': notify_wait}}}
+        request = get_notifications_form.render(kw)
         response = self._call_ipptool(uri, request)
         return response['Tests'][0]
 

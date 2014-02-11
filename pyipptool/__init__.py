@@ -24,6 +24,7 @@ get_job_attributes = wrapper.get_job_attributes
 get_jobs = wrapper.get_jobs
 get_printer_attributes = wrapper.get_printer_attributes
 get_subscriptions = wrapper.get_subscriptions
+get_notifications = wrapper.get_notifications
 pause_printer = wrapper.pause_printer
 resume_printer = wrapper.resume_printer
 hold_new_jobs = wrapper.hold_new_jobs
