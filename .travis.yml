@@ -3,10 +3,12 @@ python:
     - "2.7"
 
 install:
+    - "sudo apt-get install cups cups-pdf"
     - "python setup.py install"
     - "pip install coverage coveralls pytest mock"
     - "curl http://www.cups.org/software/ipptool/ipptool-20130731-linux-ubuntu-x86_64.tar.gz | tar xvzf -"
     - "echo \"[main]\nipptool_path = \"$TRAVIS_BUILD_DIR\"/ipptool-20130731/ipptool\" > ~/.pyipptool.cfg"
+    - "echo \"$USER:travis\" | sudo chpasswd"
 
 script: "coverage run --source=pyipptool setup.py test"
 
