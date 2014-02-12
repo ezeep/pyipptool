@@ -30,3 +30,19 @@ class TestWithCups(object):
         assert response['ResponseAttributes'][1]['printer-name'] == 'PDF'
         assert response['StatusCode'] == 'successful-ok'
         assert response['Successful']
+
+    def test_cups_get_ppds(self):
+        ipptool = pyipptool.core.IPPToolWrapper(self.config)
+        response = ipptool.cups_get_ppds('http://localhost:631/',
+                                         ppd_make_and_model='generic pdf')
+        assert response['Name'] == 'CUPS Get PPDs'
+        assert response['Operation'] == 'CUPS-Get-PPDs'
+        assert response['RequestAttributes'] == [{
+            'attributes-charset': 'utf-8',
+            'attributes-natural-language': 'en',
+            'ppd-make-and-model': 'generic pdf'}]
+        assert len(response['ResponseAttributes']) == 2
+        assert 'ppd-make-and-model' in response['ResponseAttributes'][1]
+        ppd = response['ResponseAttributes'][1]
+        assert ppd['ppd-make-and-model'] == 'Generic PDF Printer'
+        assert response['StatusCode'] == 'successful-ok'
