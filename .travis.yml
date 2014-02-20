@@ -19,7 +19,7 @@ install:
 script: "py.test --cov pyipptool --ignore ipptool-20130731"
 
 after_success:
-    coveralls
+    "if [[ NO_TORNADO == '1' ]]; then coveralls; fi"
 
 notifications:
     email: false
