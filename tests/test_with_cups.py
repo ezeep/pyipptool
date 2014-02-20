@@ -1,14 +1,16 @@
 import os
 
-import pyipptool
 import pytest
 
 TRAVIS = os.getenv('TRAVIS')
 TRAVIS_USER = os.getenv('USER')
 TRAVIS_BUILD_DIR = os.getenv('TRAVIS_BUILD_DIR')
 
+NO_TORNADO = os.getenv('NO_TORNADO', '').lower() in ('1', 'yes', 'true', 't')
 
-@pytest.mark.skipif(TRAVIS != 'true', reason='requires travis')
+
+@pytest.mark.skipif(TRAVIS != 'true' or not(NO_TORNADO),
+                    reason='requires travis')
 class TestWithCups(object):
 
     ipptool_path = '%s/ipptool-20130731/ipptool' % TRAVIS_BUILD_DIR
@@ -19,6 +21,7 @@ class TestWithCups(object):
               'timeout': 5}
 
     def test_cups_get_printers(self):
+        import pyipptool
         ipptool = pyipptool.core.IPPToolWrapper(self.config)
         response = ipptool.cups_get_printers('http://localhost:631/')
         assert response['Name'] == 'CUPS Get Printers'
@@ -32,6 +35,7 @@ class TestWithCups(object):
         assert response['Successful']
 
     def test_cups_get_ppds(self):
+        import pyipptool
         ipptool = pyipptool.core.IPPToolWrapper(self.config)
         response = ipptool.cups_get_ppds('http://localhost:631/',
                                          ppd_make_and_model='generic pdf')

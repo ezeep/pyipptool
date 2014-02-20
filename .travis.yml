@@ -2,15 +2,21 @@ language: python
 python:
     - "2.7"
 
-install:
-    - "sudo apt-get install cups cups-pdf"
-    - "python setup.py install"
-    - "pip install coverage coveralls pytest mock"
+env:
+    - NO_TORNADO=1
+    - NO_TORNADO=0
+
+before_install:
+    - "sudo apt-get install -qq cups cups-pdf"
     - "curl http://www.cups.org/software/ipptool/ipptool-20130731-linux-ubuntu-x86_64.tar.gz | tar xvzf -"
     - "echo \"[main]\nipptool_path = \"$TRAVIS_BUILD_DIR\"/ipptool-20130731/ipptool\" > ~/.pyipptool.cfg"
     - "echo \"$USER:travis\" | sudo chpasswd"
+    - "sudo pip install -U pip setuptools"
 
-script: "coverage run --source=pyipptool setup.py test"
+install:
+    - "pip install -e . pytest-cov coveralls pytest mock tornado pkipplib"
+
+script: "py.test --cov pyipptool --ignore ipptool-20130731"
 
 after_success:
     coveralls

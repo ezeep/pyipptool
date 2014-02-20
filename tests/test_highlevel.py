@@ -1,4 +1,5 @@
 import BaseHTTPServer
+import os
 import SocketServer
 import socket
 import threading
@@ -10,6 +11,10 @@ import pytest
 import pyipptool
 
 
+NO_TORNADO = os.getenv('NO_TORNADO', '').lower() in ('1', 'yes', 'true', 't')
+
+
+@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_ipptool_create_job_subscription_pull_delivery_method(_call_ipptool):
     from pyipptool import create_job_subscription
@@ -37,6 +42,7 @@ def test_ipptool_create_job_subscription_pull_delivery_method(_call_ipptool):
     assert 'notify-time-interval 1' in request
 
 
+@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_ipptool_create_printer_subscription(_call_ipptool):
     from pyipptool import create_printer_subscription
@@ -64,6 +70,7 @@ def test_ipptool_create_printer_subscription(_call_ipptool):
     assert 'notify-time-interval 1' in request
 
 
+@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_cups_add_modify_printer(_call_ipptool):
     from pyipptool import cups_add_modify_printer
@@ -78,6 +85,7 @@ def test_cups_add_modify_printer(_call_ipptool):
     assert 'device-uri cups-pdf:/' in request
 
 
+@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_get_job_attributes_with_job_id(_call_ipptool):
     from pyipptool import get_job_attributes
@@ -92,6 +100,7 @@ def test_get_job_attributes_with_job_id(_call_ipptool):
     assert 'job-uri' not in request
 
 
+@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_get_job_attributes_with_job_uri(_call_ipptool):
     from pyipptool import get_job_attributes
@@ -104,6 +113,7 @@ def test_get_job_attributes_with_job_uri(_call_ipptool):
     assert 'printer-uri' not in request
 
 
+@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 def test_timeout():
     from pyipptool import wrapper
     from pyipptool.core import TimeoutError
@@ -152,6 +162,7 @@ def test_timeout():
         wrapper.config['timeout'] = old_timeout
 
 
+@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 def test_authentication():
     from pyipptool import IPPToolWrapper
     wrapper = IPPToolWrapper({'login': 'ezeep',
@@ -162,6 +173,7 @@ def test_authentication():
         'http://ezeep:secret@localhost:631/printers/?arg=value')
 
 
+@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_release_job(_call_ipptool):
     from pyipptool import release_job
@@ -170,6 +182,7 @@ def test_release_job(_call_ipptool):
     assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
 
 
+@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_cancel_job(_call_ipptool):
     from pyipptool import cancel_job
@@ -178,6 +191,7 @@ def test_cancel_job(_call_ipptool):
     assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
 
 
+@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_cups_add_modify_class(_call_ipptool):
     from pyipptool import cups_add_modify_class
@@ -187,6 +201,7 @@ def test_cups_add_modify_class(_call_ipptool):
     assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
 
 
+@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_cups_delete_printer(_call_ipptool):
     from pyipptool import cups_delete_printer
@@ -195,6 +210,7 @@ def test_cups_delete_printer(_call_ipptool):
     assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
 
 
+@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_cups_delete_class(_call_ipptool):
     from pyipptool import cups_delete_class
@@ -203,6 +219,7 @@ def test_cups_delete_class(_call_ipptool):
     assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
 
 
+@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_cups_get_classes(_call_ipptool):
     from pyipptool import cups_get_classes
@@ -211,6 +228,7 @@ def test_cups_get_classes(_call_ipptool):
     assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
 
 
+@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_cups_get_printers(_call_ipptool):
     from pyipptool import cups_get_printers
@@ -219,6 +237,7 @@ def test_cups_get_printers(_call_ipptool):
     assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
 
 
+@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_cups_get_devices(_call_ipptool):
     from pyipptool import cups_get_devices
@@ -227,6 +246,7 @@ def test_cups_get_devices(_call_ipptool):
     assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
 
 
+@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_cups_get_ppds(_call_ipptool):
     from pyipptool import cups_get_ppds
@@ -235,6 +255,7 @@ def test_cups_get_ppds(_call_ipptool):
     assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
 
 
+@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_cups_move_job(_call_ipptool):
     from pyipptool import cups_move_job
@@ -243,6 +264,7 @@ def test_cups_move_job(_call_ipptool):
     assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
 
 
+@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_cups_reject_jobs(_call_ipptool):
     from pyipptool import cups_reject_jobs
@@ -251,6 +273,7 @@ def test_cups_reject_jobs(_call_ipptool):
     assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
 
 
+@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_get_jobs(_call_ipptool):
     from pyipptool import get_jobs
@@ -259,6 +282,7 @@ def test_get_jobs(_call_ipptool):
     assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
 
 
+@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_get_printer_attributes(_call_ipptool):
     from pyipptool import get_printer_attributes
@@ -267,6 +291,7 @@ def test_get_printer_attributes(_call_ipptool):
     assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
 
 
+@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_get_subscriptions(_call_ipptool):
     from pyipptool import get_subscriptions
@@ -275,6 +300,7 @@ def test_get_subscriptions(_call_ipptool):
     assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
 
 
+@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_get_notifications(_call_ipptool):
     from pyipptool import get_notifications
@@ -285,6 +311,7 @@ def test_get_notifications(_call_ipptool):
     assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
 
 
+@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_pause_printer(_call_ipptool):
     from pyipptool import pause_printer
@@ -293,6 +320,7 @@ def test_pause_printer(_call_ipptool):
     assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
 
 
+@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_hold_new_jobs(_call_ipptool):
     from pyipptool import hold_new_jobs
@@ -301,6 +329,7 @@ def test_hold_new_jobs(_call_ipptool):
     assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
 
 
+@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_release_held_new_jobs(_call_ipptool):
     from pyipptool import release_held_new_jobs
@@ -309,6 +338,7 @@ def test_release_held_new_jobs(_call_ipptool):
     assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
 
 
+@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_resume_printer(_call_ipptool):
     from pyipptool import resume_printer
@@ -317,6 +347,7 @@ def test_resume_printer(_call_ipptool):
     assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
 
 
+@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_cancel_subscription(_call_ipptool):
     from pyipptool import cancel_subscription
