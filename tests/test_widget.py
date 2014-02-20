@@ -1,6 +1,11 @@
+import os
+
 import colander
 from deform.tests.test_widget import DummyField, DummyRenderer
 import pytest
+
+
+NO_TORNADO = os.getenv('NO_TORNADO', '').lower() in ('1', 'yes', 'true', 't')
 
 
 class DummyType(object):
@@ -12,6 +17,7 @@ class DummySchema(object):
         self.__dict__.update(kw)
 
 
+@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 def test_ipp_attribute_widget_null():
     from pyipptool.widgets import IPPAttributeWidget
     widget = IPPAttributeWidget()
@@ -21,6 +27,7 @@ def test_ipp_attribute_widget_null():
     assert response == ''
 
 
+@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 def test_ipp_attribute_widget_with_value():
     from pyipptool.widgets import IPPAttributeWidget
     widget = IPPAttributeWidget()
@@ -32,6 +39,7 @@ def test_ipp_attribute_widget_with_value():
     assert response == 'ATTR dummyType name hello'
 
 
+@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 def test_ipp_attribute_widget_with_None():
     from pyipptool.widgets import IPPAttributeWidget
     widget = IPPAttributeWidget()
@@ -44,6 +52,7 @@ def test_ipp_attribute_widget_with_None():
     assert exc_info.value.message == "None value provided for 'name'"
 
 
+@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 def test_ipp_display_widget():
     from pyipptool.widgets import IPPDisplayWidget
     widget = IPPDisplayWidget()
@@ -53,6 +62,7 @@ def test_ipp_display_widget():
     assert response == 'DISPLAY name'
 
 
+@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 def test_ipp_name_widget():
     from pyipptool.widgets import IPPNameWidget
     widget = IPPNameWidget()
@@ -68,6 +78,7 @@ def test_ipp_name_widget():
     assert response == 'NAME "FOO"'
 
 
+@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 def test_ipp_group_widget():
     from pyipptool.widgets import IPPGroupWidget
     widget = IPPGroupWidget()

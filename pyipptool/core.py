@@ -1,3 +1,4 @@
+import functools
 import os
 import plistlib
 import subprocess
@@ -34,15 +35,28 @@ from .forms import (cancel_job_form,
                     cancel_subscription_form,
                     )
 
+try:
+    if os.getenv('NO_TORNADO', '').lower() in ('1', 'yes', 'true', 't'):
+        raise ImportError
+    from tornado.gen import coroutine, Return, Task
+    from tornado.ioloop import TimeoutError
+except ImportError:
+    HAS_TORNADO = False
 
-class TimeoutError(Exception):
-    pass
+    def coroutine(f):
+        return f
+
+    class TimeoutError(Exception):
+        pass
+else:
+    HAS_TORNADO = True
 
 
 class IPPToolWrapper(object):
 
-    def __init__(self, config):
+    def __init__(self, config, io_loop=None):
         self.config = config
+        self.io_loop = io_loop
 
     def authenticate_uri(self, uri):
         if 'login' in self.config and 'password' in self.config:
@@ -70,6 +84,42 @@ class IPPToolWrapper(object):
             time.sleep(.1)
 
     def _call_ipptool(self, uri, request):
+        if HAS_TORNADO:
+            return self._async_call_ipptool(uri, request)
+        return self._sync_call_ipptool(uri, request)
+
+    @coroutine
+    def cleanup_fd(self, name):
+        try:
+            os.unlink(name)
+        except OSError:
+            pass
+
+    @coroutine
+    def _async_call_ipptool(self, uri, request):
+        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+            temp_file.write(request)
+        from tornado.process import Subprocess
+        process = Subprocess([self.config['ipptool_path'],
+                              self.authenticate_uri(uri), '-X',
+                              temp_file.name],
+                             stdin=subprocess.PIPE,
+                             stdout=Subprocess.STREAM,
+                             stderr=Subprocess.STREAM,
+                             io_loop=self.io_loop)
+        future = []
+        self.io_loop.add_timeout(self.io_loop.time() + self.config['timeout'],
+                                 functools.partial(self.timeout_handler,
+                                                   process.proc, future))
+        stdout, stderr = yield [Task(process.stdout.read_until_close),
+                                Task(process.stderr.read_until_close)]
+        if future:
+            raise TimeoutError
+        yield self.cleanup_fd(temp_file.name)
+
+        raise Return(plistlib.readPlistFromString(stdout))
+
+    def _sync_call_ipptool(self, uri, request):
         with tempfile.NamedTemporaryFile(delete=False) as temp_file:
             temp_file.write(request)
         process = subprocess.Popen([self.config['ipptool_path'],
