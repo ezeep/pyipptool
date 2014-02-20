@@ -16,7 +16,7 @@ class PyTest(TestCommand):
         sys.exit(errno)
 
 
-version = '0.4.2dev'
+version = '0.4.2'
 
 
 def read_that_file(path):
@@ -35,7 +35,7 @@ setup(
     description='ipptool python wrapper',
     url='https://github.com/ezeep/pyipptool',
     long_description=description,
-    license=' Apache Software License',
+    license='Apache Software License',
     packages=('pyipptool',),
     install_requires=('deform>=2.0a2',),
     extra_requires={'Tornado': ('tornado', 'futures')},
