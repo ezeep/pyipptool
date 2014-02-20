@@ -12,10 +12,6 @@ pyipptool
    :target: https://crate.io/packages/pyipptool/
    :alt: Latest PyPI version
 
-.. image:: https://gemnasium.com/ezeep/pyipptool.png
-   :target: https://gemnasium.com/ezeep/pyipptool
-   :alt: Dependency Status
-
 Convenient IPP request generator for python to interrogate CUPS or IPP devices, with the help of ipptool_.
 
 .. _ipptool: http://www.cups.org/documentation.php/doc-1.7/man-ipptool.html
