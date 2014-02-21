@@ -6,11 +6,8 @@ TRAVIS = os.getenv('TRAVIS')
 TRAVIS_USER = os.getenv('USER')
 TRAVIS_BUILD_DIR = os.getenv('TRAVIS_BUILD_DIR')
 
-NO_TORNADO = os.getenv('NO_TORNADO', '').lower() in ('1', 'yes', 'true', 't')
 
-
-@pytest.mark.skipif(TRAVIS != 'true' or not(NO_TORNADO),
-                    reason='requires travis')
+@pytest.mark.skipif(TRAVIS != 'true', reason='requires travis')
 class TestWithCups(object):
 
     ipptool_path = '%s/ipptool-20130731/ipptool' % TRAVIS_BUILD_DIR
