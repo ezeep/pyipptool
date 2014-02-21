@@ -10,15 +10,23 @@ import pytest
 import tornado.testing
 
 
-NO_TORNADO = os.getenv('NO_TORNADO', '').lower() in ('1', 'yes', 'true', 't')
+TRAVIS_USER = os.getenv('TRAVIS_USER', 'travis')
+TRAVIS_BUILD_DIR = os.getenv('TRAVIS_BUILD_DIR')
 
 
-@pytest.mark.skipif(NO_TORNADO, reason='requires tornado')
 class AsyncSubprocessTestCase(tornado.testing.AsyncTestCase):
+
+    ipptool_path = ('%s/ipptool-20130731/ipptool' % TRAVIS_BUILD_DIR if
+                    TRAVIS_BUILD_DIR else '/usr/bin/ipptool')
+    config = {'ipptool_path': ipptool_path,
+              'login': TRAVIS_USER,
+              'password': 'travis',
+              'graceful_shutdown_time': 2,
+              'timeout': 5}
 
     @tornado.testing.gen_test
     def test_async_call(self):
-        from pyipptool import wrapper
+        from pyipptool.core import AsyncIPPToolWrapper
         from pyipptool.forms import get_subscriptions_form
 
         class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
@@ -67,46 +75,41 @@ class AsyncSubprocessTestCase(tornado.testing.AsyncTestCase):
         thread.daemon = True
         thread.start()
 
+
+        wrapper = AsyncIPPToolWrapper(self.config, self.io_loop)
+
         request = get_subscriptions_form.render(
             {'header':
              {'operation_attributes':
               {'printer_uri': 'http://localhost:%s/printers/fake' % PORT}}}
         )
 
-        try:
-            wrapper.io_loop = self.io_loop
-            response = yield wrapper._call_ipptool(
-                'http://localhost:%s/' % PORT, request)
-        finally:
-            wrapper.io_loop = None
+        response = yield wrapper._call_ipptool(
+            'http://localhost:%s/' % PORT, request)
+        for key in ('RequestId', 'ipptoolVersion', 'Version'):
+            # May diverge depending of version of ipptool
             try:
-                del response['Tests'][0]['RequestId']
+                del response[key]
             except KeyError:
-                self.fail(response)
-            assert response == {'Successful': True,
-                                'Tests':
-                                [{'Name': 'Get Subscriptions',
-                                  'Operation': 'Get-Subscriptions',
-                                  'Version': '1.1',
-                                  'RequestAttributes':
-                                  [{'attributes-charset': 'utf-8',
-                                    'attributes-natural-language': 'en',
-                                    'printer-uri':
-                                    'http://localhost:%s/printers/fake' % PORT}
-                                   ],
-                                  'ResponseAttributes':
-                                  [{'attributes-charset': 'utf-8',
-                                    'attributes-natural-language': 'en-us'}
-                                   ],
-                                    'StatusCode': 'successful-ok',
-                                    'Successful': True}],
-                                'Transfer': 'auto',
-                                'ipptoolVersion': 'CUPS v1.7.0'}, response
+                pass
+        expected_response = {'Name': 'Get Subscriptions',
+                             'Operation': 'Get-Subscriptions',
+                             'Successful': True,
+                             'RequestAttributes':
+                             [{'attributes-charset': 'utf-8',
+                               'attributes-natural-language': 'en',
+                               'printer-uri':
+                               'http://localhost:%s/printers/fake' % PORT}],
+                               'ResponseAttributes':
+                             [{'attributes-charset': 'utf-8',
+                               'attributes-natural-language': 'en-us'}],
+                               'StatusCode': 'successful-ok',
+                               'Successful': True}
+        assert response == expected_response, response
 
     @tornado.testing.gen_test
     def test_async_timeout_call(self):
-        from pyipptool import wrapper
-        from pyipptool.core import TimeoutError
+        from pyipptool.core import AsyncIPPToolWrapper, TimeoutError
         from pyipptool.forms import get_subscriptions_form
 
         class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
@@ -138,6 +141,7 @@ class AsyncSubprocessTestCase(tornado.testing.AsyncTestCase):
         thread.daemon = True
         thread.start()
 
+        wrapper = AsyncIPPToolWrapper(self.config, self.io_loop)
         request = get_subscriptions_form.render(
             {'header':
              {'operation_attributes':
@@ -147,10 +151,8 @@ class AsyncSubprocessTestCase(tornado.testing.AsyncTestCase):
         try:
             old_timeout = wrapper.config['timeout']
             wrapper.config['timeout'] = .1
-            wrapper.io_loop = self.io_loop
             with pytest.raises(TimeoutError):
                 yield wrapper._call_ipptool('http://localhost:%s/' % PORT,
                                             request)
         finally:
-            wrapper.io_loop = None
             wrapper.config['timeout'] = old_timeout

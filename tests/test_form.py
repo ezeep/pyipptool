@@ -1,11 +1,6 @@
-import os
-
 import pytest
 
-NO_TORNADO = os.getenv('NO_TORNADO', '').lower() in ('1', 'yes', 'true', 't')
 
-
-@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 def test_cancel_job_form():
     from pyipptool.forms import cancel_job_form
     request = cancel_job_form.render(
@@ -22,7 +17,6 @@ def test_cancel_job_form():
     assert 'ATTR boolean purge-job 1' in request
 
 
-@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 def test_release_job_form_with_job_id():
     from pyipptool.forms import release_job_form
     request = release_job_form.render(
@@ -35,7 +29,6 @@ def test_release_job_form_with_job_id():
     assert 'ATTR integer job-id 7' in request
 
 
-@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 def test_release_job_form_with_job_uri():
     from pyipptool.forms import release_job_form
     request = release_job_form.render(
@@ -46,7 +39,6 @@ def test_release_job_form_with_job_uri():
     assert 'ATTR uri job-uri https://localhost:631/jobs/7' in request
 
 
-@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 def test_create_printer_subscription_form():
     from pyipptool.forms import create_printer_subscription_form
     request = create_printer_subscription_form.render(
@@ -75,7 +67,6 @@ def test_create_printer_subscription_form():
     assert 'ATTR integer notify-time-interval 1' in request
 
 
-@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 def test_create_job_subscription_form_for_pull_delivery_method():
     from pyipptool.forms import create_job_subscription_form
     request = create_job_subscription_form.render(
@@ -105,7 +96,6 @@ def test_create_job_subscription_form_for_pull_delivery_method():
     assert 'ATTR integer notify-time-interval 1' in request
 
 
-@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 def test_cups_add_modify_class_form():
     from pyipptool.forms import cups_add_modify_class_form
     m_uri_0 = 'ipp://localhost:631/printers/p0'
@@ -136,7 +126,6 @@ def test_cups_add_modify_class_form():
     assert 'ATTR name requesting-user-name-allowed me' in request
 
 
-@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 def test_cups_add_modify_printer_form():
     from pyipptool.forms import cups_add_modify_printer_form
     request = cups_add_modify_printer_form.render(
@@ -174,7 +163,6 @@ def test_cups_add_modify_printer_form():
     assert 'ATTR name requesting-user-name-allowed me' in request
 
 
-@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 def test_cups_add_modify_printer_form_with_None():
     from pyipptool.forms import cups_add_modify_printer_form
     with pytest.raises(ValueError) as exec_info:
@@ -187,7 +175,6 @@ def test_cups_add_modify_printer_form_with_None():
                                        " 'printer_state_message'")
 
 
-@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 def test_cups_delete_printer_form():
     from pyipptool.forms import cups_delete_printer_form
     request = cups_delete_printer_form.render(
@@ -199,7 +186,6 @@ def test_cups_delete_printer_form():
     assert 'ATTR uri printer-uri https://localhost:631/printers/p0' in request
 
 
-@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 def test_cups_delete_class_form():
     from pyipptool.forms import cups_delete_class_form
     request = cups_delete_class_form.render(
@@ -211,7 +197,6 @@ def test_cups_delete_class_form():
     assert 'ATTR uri printer-uri https://localhost:631/classes/p0' in request
 
 
-@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 def test_cups_get_classes_form():
     from pyipptool.forms import cups_get_classes_form
     request = cups_get_classes_form.render(
@@ -236,7 +221,6 @@ def test_cups_get_classes_form():
     assert 'ATTR name requested-user-name john' in request
 
 
-@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 def test_cups_get_devices_form():
     from pyipptool.forms import cups_get_devices_form
     request = cups_get_devices_form.render(
@@ -257,7 +241,6 @@ def test_cups_get_devices_form():
     assert 'ATTR integer timeout 12' in request
 
 
-@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 def test_cups_get_ppds_form():
     from pyipptool.forms import cups_get_ppds_form
     request = cups_get_ppds_form.render(
@@ -288,7 +271,6 @@ def test_cups_get_ppds_form():
     assert 'ATTR integer limit 3' in request
 
 
-@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 def test_cups_get_printers_form():
     from pyipptool.forms import cups_get_printers_form
     request = cups_get_printers_form.render(
@@ -313,7 +295,6 @@ def test_cups_get_printers_form():
     assert 'ATTR name requested-user-name john' in request
 
 
-@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 def test_cups_reject_jobs_form():
     from pyipptool.forms import cups_reject_jobs_form
     request = cups_reject_jobs_form.render(
@@ -327,7 +308,6 @@ def test_cups_reject_jobs_form():
     assert 'ATTR text printer-state-message "You shall not pass"' in request
 
 
-@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 def test_get_job_attributes_form():
     from pyipptool.forms import get_job_attributes_form
     request = get_job_attributes_form.render(
@@ -347,7 +327,6 @@ def test_get_job_attributes_form():
     assert 'ATTR keyword requested-attributes job-uri' in request
 
 
-@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 def test_get_jobs_form():
     from pyipptool.forms import get_jobs_form
     request = get_jobs_form.render(
@@ -369,7 +348,6 @@ def test_get_jobs_form():
     assert 'ATTR keyword requested-attributes job-uri' in request
 
 
-@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 def test_get_printer_attributes_form():
     from pyipptool.forms import get_printer_attributes_form
     request = get_printer_attributes_form.render(
@@ -387,7 +365,6 @@ def test_get_printer_attributes_form():
         ' printer-name,operations-supported' in request
 
 
-@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 def test_get_subscriptions_form():
     from pyipptool.forms import get_subscriptions_form
     request = get_subscriptions_form.render(
@@ -409,7 +386,6 @@ def test_get_subscriptions_form():
     assert 'ATTR boolean my-subscriptions 1' in request
 
 
-@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 def test_get_notifications_form_for_one_notification():
     from pyipptool.forms import get_notifications_form
     request = get_notifications_form.render(
@@ -429,7 +405,6 @@ def test_get_notifications_form_for_one_notification():
     assert 'ATTR boolean notify-wait 1' in request
 
 
-@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 def test_get_notifications_form_for_multiple_notifications():
     from pyipptool.forms import get_notifications_form
     request = get_notifications_form.render(
@@ -449,7 +424,6 @@ def test_get_notifications_form_for_multiple_notifications():
     assert 'ATTR boolean notify-wait 1' in request
 
 
-@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 def test_pause_printer_form():
     from pyipptool.forms import pause_printer_form
     request = pause_printer_form.render(
@@ -463,7 +437,6 @@ def test_pause_printer_form():
     assert 'ATTR name requesting-user-name yoda' in request
 
 
-@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 def test_resume_printer_form():
     from pyipptool.forms import resume_printer_form
     request = resume_printer_form.render(
@@ -477,7 +450,6 @@ def test_resume_printer_form():
     assert 'ATTR name requesting-user-name yoda' in request
 
 
-@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 def test_hold_new_jobs_form():
     from pyipptool.forms import hold_new_jobs_form
     request = hold_new_jobs_form.render(
@@ -493,7 +465,6 @@ def test_hold_new_jobs_form():
     assert 'ATTR text printer-message-from-operator "freeze jobs"' in request
 
 
-@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 def test_release_held_new_jobs_form():
     from pyipptool.forms import release_held_new_jobs_form
     request = release_held_new_jobs_form.render(
@@ -509,7 +480,6 @@ def test_release_held_new_jobs_form():
     assert 'ATTR text printer-message-from-operator "melt jobs"' in request
 
 
-@pytest.mark.skipif(not NO_TORNADO, reason='w/o tornado')
 def test_cancel_subscription_form():
     from pyipptool.forms import cancel_subscription_form
     request = cancel_subscription_form.render(

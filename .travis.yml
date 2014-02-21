@@ -2,9 +2,6 @@ language: python
 python:
     - "2.7"
 
-env:
-    - NO_TORNADO=1
-    - NO_TORNADO=0
 
 before_install:
     - "sudo apt-get install -qq cups cups-pdf"
@@ -19,7 +16,7 @@ install:
 script: "py.test --cov pyipptool --ignore ipptool-20130731"
 
 after_success:
-    "if [[ NO_TORNADO == '1' ]]; then coveralls; fi"
+    coveralls
 
 notifications:
     email: false
