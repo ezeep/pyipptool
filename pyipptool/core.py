@@ -597,13 +597,6 @@ class AsyncIPPToolWrapper(IPPToolWrapper):
         self.io_loop = io_loop
 
     @coroutine
-    def cleanup_fd(self, name):
-        try:
-            os.unlink(name)
-        except OSError:
-            pass
-
-    @coroutine
     def _call_ipptool(self, uri, request):
         with tempfile.NamedTemporaryFile(delete=False) as temp_file:
             temp_file.write(request)
@@ -619,10 +612,12 @@ class AsyncIPPToolWrapper(IPPToolWrapper):
         self.io_loop.add_timeout(self.io_loop.time() + self.config['timeout'],
                                  functools.partial(self.timeout_handler,
                                                    process.proc, future))
-        stdout, stderr = yield [Task(process.stdout.read_until_close),
-                                Task(process.stderr.read_until_close)]
-        if future:
-            raise TimeoutError
-        yield self.cleanup_fd(temp_file.name)
+        try:
+            stdout, stderr = yield [Task(process.stdout.read_until_close),
+                                    Task(process.stderr.read_until_close)]
+            if future:
+                raise TimeoutError
+        finally:
+            os.unlink(temp_file.name)
 
         raise Return(plistlib.readPlistFromString(stdout)['Tests'][0])
