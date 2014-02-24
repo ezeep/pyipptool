@@ -50,10 +50,18 @@ except ImportError:
             self.value = value
 
 
-def ipptool_caller_marker(method):
+def pyipptool_coroutine(method):
+    """
+    Mark the method as a coroutine.
+    If use with tornado the side effect of this decorator will be
+    cancelled and the original_method will be wrapped by
+    tornado.gen.coroutine .
+    Otherwise the sync_coroutine_consumer wrapper
+    will take care to consume the generator synchronously.
+    """
     method.ipptool_caller = True
     @functools.wraps(method)
-    def inner(*args, **kw):
+    def sync_coroutine_consumer(*args, **kw):
         gen = method(*args, **kw)
         while True:
             value = gen.next()
@@ -63,8 +71,8 @@ def ipptool_caller_marker(method):
                 return returned.value
             except StopIteration:
                 return value
-    inner.real_method = method
-    return inner
+    sync_coroutine_consumer.original_method = method
+    return sync_coroutine_consumer
 
 
 class MetaAsyncShifter(type):
@@ -81,10 +89,9 @@ class MetaAsyncShifter(type):
                 method = getattr(bases[0], method_name)
                 if getattr(method, 'ipptool_caller', False):
                     # Patch Method with tornado.gen.coroutine
-                    setattr(klass, method_name, coroutine(method.real_method))
-            return klass
-        else:
-            return klass
+                    setattr(klass, method_name,
+                            coroutine(method.original_method))
+        return klass
 
 
 
@@ -144,7 +151,7 @@ class IPPToolWrapper(object):
             raise TimeoutError
         return plistlib.readPlistFromString(stdout)['Tests'][0]
 
-    @ipptool_caller_marker
+    @pyipptool_coroutine
     def release_job(self, uri,
                     printer_uri=colander.null,
                     job_id=colander.null,
@@ -157,7 +164,7 @@ class IPPToolWrapper(object):
         response = yield self._call_ipptool(uri, request)
         raise Return(response)
 
-    @ipptool_caller_marker
+    @pyipptool_coroutine
     def cancel_job(self, uri,
                    printer_uri=colander.null,
                    job_id=colander.null,
@@ -172,7 +179,7 @@ class IPPToolWrapper(object):
         response = yield self._call_ipptool(uri, request)
         raise Return(response)
 
-    @ipptool_caller_marker
+    @pyipptool_coroutine
     def create_job_subscription(self,
                                 uri,
                                 printer_uri=None,
@@ -203,7 +210,7 @@ class IPPToolWrapper(object):
         response = yield self._call_ipptool(uri, request)
         raise Return(response)
 
-    @ipptool_caller_marker
+    @pyipptool_coroutine
     def create_printer_subscription(
             self,
             uri,
@@ -235,7 +242,7 @@ class IPPToolWrapper(object):
         response = yield self._call_ipptool(uri, request)
         raise Return(response)
 
-    @ipptool_caller_marker
+    @pyipptool_coroutine
     def cups_add_modify_printer(self, uri,
                                 printer_uri=None,
                                 auth_info_required=colander.null,
@@ -274,7 +281,7 @@ class IPPToolWrapper(object):
         response = yield self._call_ipptool(uri, request)
         raise Return(response)
 
-    @ipptool_caller_marker
+    @pyipptool_coroutine
     def cups_add_modify_class(self, uri,
                               printer_uri=None,
                               auth_info_required=colander.null,
@@ -307,21 +314,21 @@ class IPPToolWrapper(object):
         response = yield self._call_ipptool(uri, request)
         raise Return(response)
 
-    @ipptool_caller_marker
+    @pyipptool_coroutine
     def cups_delete_printer(self, uri, printer_uri=None):
         kw = {'header': {'operation_attributes': {'printer_uri': printer_uri}}}
         request = cups_delete_printer_form.render(kw)
         response = yield self._call_ipptool(uri, request)
         raise Return(response)
 
-    @ipptool_caller_marker
+    @pyipptool_coroutine
     def cups_delete_class(self, uri, printer_uri=None):
         kw = {'header': {'operation_attributes': {'printer_uri': printer_uri}}}
         request = cups_delete_class_form.render(kw)
         response = yield self._call_ipptool(uri, request)
         raise Return(response)
 
-    @ipptool_caller_marker
+    @pyipptool_coroutine
     def cups_get_classes(self, uri,
                          first_printer_name=colander.null,
                          limit=colander.null,
@@ -342,7 +349,7 @@ class IPPToolWrapper(object):
         response = yield self._call_ipptool(uri, request)
         raise Return(response)
 
-    @ipptool_caller_marker
+    @pyipptool_coroutine
     def cups_get_devices(self, uri,
                          device_class=colander.null,
                          exclude_schemes=colander.null,
@@ -361,7 +368,7 @@ class IPPToolWrapper(object):
         response = yield self._call_ipptool(uri, request)
         raise Return(response)
 
-    @ipptool_caller_marker
+    @pyipptool_coroutine
     def cups_get_ppds(self, uri,
                       exclude_schemes=colander.null,
                       include_schemes=colander.null,
@@ -391,7 +398,7 @@ class IPPToolWrapper(object):
         response = yield self._call_ipptool(uri, request)
         raise Return(response)
 
-    @ipptool_caller_marker
+    @pyipptool_coroutine
     def cups_get_printers(self, uri,
                           first_printer_name=colander.null,
                           limit=colander.null,
@@ -412,7 +419,7 @@ class IPPToolWrapper(object):
         response = yield self._call_ipptool(uri, request)
         raise Return(response)
 
-    @ipptool_caller_marker
+    @pyipptool_coroutine
     def cups_move_job(self, uri,
                       printer_uri=colander.null,
                       job_id=colander.null,
@@ -429,7 +436,7 @@ class IPPToolWrapper(object):
         response = yield self._call_ipptool(uri, request)
         raise Return(response)
 
-    @ipptool_caller_marker
+    @pyipptool_coroutine
     def cups_reject_jobs(self, uri,
                          printer_uri=None,
                          requesting_user_name=None,
@@ -442,7 +449,7 @@ class IPPToolWrapper(object):
         response = yield self._call_ipptool(uri, request)
         raise Return(response)
 
-    @ipptool_caller_marker
+    @pyipptool_coroutine
     def get_job_attributes(self, uri,
                            printer_uri=colander.null,
                            job_id=colander.null,
@@ -459,7 +466,7 @@ class IPPToolWrapper(object):
         response = yield self._call_ipptool(uri, request)
         raise Return(response)
 
-    @ipptool_caller_marker
+    @pyipptool_coroutine
     def get_jobs(self, uri,
                  printer_uri=None,
                  requesting_user_name=colander.null,
@@ -478,7 +485,7 @@ class IPPToolWrapper(object):
         response = yield self._call_ipptool(uri, request)
         raise Return(response)
 
-    @ipptool_caller_marker
+    @pyipptool_coroutine
     def get_printer_attributes(self, uri,
                                printer_uri=None,
                                requesting_user_name=colander.null,
@@ -491,7 +498,7 @@ class IPPToolWrapper(object):
         response = yield self._call_ipptool(uri, request)
         raise Return(response)
 
-    @ipptool_caller_marker
+    @pyipptool_coroutine
     def get_subscriptions(self, uri,
                           printer_uri=None,
                           requesting_user_name=colander.null,
@@ -510,7 +517,7 @@ class IPPToolWrapper(object):
         response = yield self._call_ipptool(uri, request)
         raise Return(response)
 
-    @ipptool_caller_marker
+    @pyipptool_coroutine
     def get_notifications(self,
                           uri,
                           printer_uri=None,
@@ -529,7 +536,7 @@ class IPPToolWrapper(object):
         response = yield self._call_ipptool(uri, request)
         raise Return(response)
 
-    @ipptool_caller_marker
+    @pyipptool_coroutine
     def cancel_subscription(self, uri,
                             printer_uri=None,
                             requesting_user_name=colander.null,
@@ -543,7 +550,7 @@ class IPPToolWrapper(object):
         response = yield self._call_ipptool(uri, request)
         raise Return(response)
 
-    @ipptool_caller_marker
+    @pyipptool_coroutine
     def _pause_or_resume_printer(self, form, uri, printer_uri=None,
                                  requesting_user_name=colander.null):
         kw = {'header': {'operation_attributes':
@@ -559,7 +566,7 @@ class IPPToolWrapper(object):
     def resume_printer(self, *args, **kw):
         return self._pause_or_resume_printer(resume_printer_form, *args, **kw)
 
-    @ipptool_caller_marker
+    @pyipptool_coroutine
     def _hold_or_release_new_jobs(self, form, uri, printer_uri=None,
                                   requesting_user_name=colander.null,
                                   printer_message_from_operator=colander.null):
