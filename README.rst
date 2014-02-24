@@ -12,6 +12,11 @@ pyipptool
    :target: https://crate.io/packages/pyipptool/
    :alt: Latest PyPI version
 
+.. image:: https://landscape.io/github/ezeep/pyipptool/master/landscape.png
+   :target: https://landscape.io/github/ezeep/pyipptool/master
+   :alt: Code Health
+
+
 Convenient IPP request generator for python to interrogate CUPS or IPP devices, with the help of ipptool_.
 
 .. _ipptool: http://www.cups.org/documentation.php/doc-1.7/man-ipptool.html
