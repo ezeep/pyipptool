@@ -16,6 +16,14 @@ class IPPNameWidget(Widget):
         return '{} "{}"'.format(name.upper(), value)
 
 
+class IPPFileWidget(Widget):
+    def serialize(self, field, cstruct=None, readonly=False):
+        if not isinstance(cstruct, basestring):
+            raise ValueError('Wrong value provided for field {!r}'.format(
+                field.name))
+        return 'FILE {}'.format(cstruct)
+
+
 class IPPGroupWidget(Widget):
     def serialize(self, field, cstruct=None, readonly=False):
         name = field.name

@@ -81,3 +81,24 @@ def test_ipp_group_widget():
 
     response = widget.serialize(sub_field, 'world')
     assert response == 'GROUP FOO'
+
+
+def test_ipp_file_widget():
+    from pyipptool.widgets import IPPFileWidget
+
+    widget = IPPFileWidget()
+    rendrer = DummyRenderer()
+
+    field = DummyField(None, renderer=rendrer)
+    response = widget.serialize(field, '/path/to/file.txt')
+    assert response == 'FILE /path/to/file.txt'
+
+def test_ipp_file_widgeti_with_None():
+    from pyipptool.widgets import IPPFileWidget
+
+    widget = IPPFileWidget()
+    rendrer = DummyRenderer()
+
+    field = DummyField(None, renderer=rendrer)
+    with pytest.raises(ValueError):
+        widget.serialize(field, None)

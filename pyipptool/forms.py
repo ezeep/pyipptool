@@ -4,6 +4,7 @@ import deform.template
 
 from .schemas import (cancel_job_schema,
                       release_job_schema,
+                      create_job_schema,
                       create_job_subscription_schema,
                       create_printer_subscription_schema,
                       cups_add_modify_class_schema,
@@ -22,7 +23,9 @@ from .schemas import (cancel_job_schema,
                       get_subscriptions_schema,
                       get_notifications_schema,
                       pause_printer_schema,
+                      print_job_schema,
                       resume_printer_schema,
+                      send_document_schema,
                       hold_new_jobs_schema,
                       release_held_new_jobs_schema,
                       cancel_subscription_schema,
@@ -36,6 +39,7 @@ deform.Form.set_default_renderer(renderer)
 
 cancel_job_form = deform.Form(cancel_job_schema)
 release_job_form = deform.Form(release_job_schema)
+create_job_form = deform.Form(create_job_schema)
 create_job_subscription_form = deform.Form(
     create_job_subscription_schema)
 create_printer_subscription_form = deform.Form(
@@ -56,7 +60,9 @@ get_printer_attributes_form = deform.Form(get_printer_attributes_schema)
 get_subscriptions_form = deform.Form(get_subscriptions_schema)
 get_notifications_form = deform.Form(get_notifications_schema)
 pause_printer_form = deform.Form(pause_printer_schema)
+print_job_form = deform.Form(print_job_schema)
 resume_printer_form = deform.Form(resume_printer_schema)
+send_document_form = deform.Form(send_document_schema)
 hold_new_jobs_form = deform.Form(hold_new_jobs_schema)
 release_held_new_jobs_form = deform.Form(release_held_new_jobs_schema)
 cancel_subscription_form = deform.Form(cancel_subscription_schema)

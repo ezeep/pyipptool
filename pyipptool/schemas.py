@@ -1,6 +1,7 @@
 import colander
-from .widgets import (IPPAttributeWidget, IPPBodyWidget, IPPGroupWidget,
-                      IPPNameWidget, IPPTupleWidget, IPPConstantTupleWidget)
+from .widgets import (IPPAttributeWidget, IPPBodyWidget, IPPFileWidget,
+                      IPPGroupWidget, IPPNameWidget, IPPTupleWidget,
+                      IPPConstantTupleWidget)
 
 
 class IntegerOrTuple(colander.List):
@@ -37,6 +38,10 @@ class Keyword(StringOrTuple):
 
 
 class Language(colander.String):
+    pass
+
+
+class MimeMediaType(colander.String):
     pass
 
 
@@ -235,6 +240,21 @@ class GetPrinterAttributesOperationAttributes(
         widget=IPPAttributeWidget())
 
 
+class SendDocumentOperationAttribute(JobOperationAttributes):
+    requesting_user_name = colander.SchemaNode(Name(),
+                                               widget=IPPAttributeWidget())
+    document_name = colander.SchemaNode(Name(), widget=IPPAttributeWidget())
+    compression = colander.SchemaNode(Keyword(), widget=IPPAttributeWidget())
+    document_format = colander.SchemaNode(MimeMediaType(),
+                                          widget=IPPAttributeWidget())
+    document_natural_language = colander.SchemaNode(
+        NaturalLanguage(),
+        widget=IPPAttributeWidget())
+    last_document = colander.SchemaNode(
+        colander.Boolean(false_val=0, true_val=1),
+        widget=IPPAttributeWidget())
+
+
 class HeaderIPPSchema(colander.Schema):
     name = colander.SchemaNode(colander.String(), widget=IPPNameWidget())
     operation = colander.SchemaNode(colander.String(), widget=IPPNameWidget())
@@ -381,6 +401,19 @@ class CupsRejectJobsSchema(BaseIPPSchema):
         widget=IPPAttributeWidget())
 
 
+class CreateJobSchema(BaseIPPSchema):
+    name = 'Create Job'
+    operation = 'Create-Job'
+    header = HeaderIPPSchema(widget=IPPConstantTupleWidget())
+    header['operation_attributes'] = OperationAttributesWithPrinterUri(
+        widget=IPPTupleWidget())
+    object_attributes_tag = 'job-attributes-tag'
+    auth_info = colander.SchemaNode(Text(), widget=IPPAttributeWidget())
+    job_billing = colander.SchemaNode(Text(), widget=IPPAttributeWidget())
+    job_sheets = colander.SchemaNode(Keyword(), widget=IPPAttributeWidget())
+    media = colander.SchemaNode(Keyword(), widget=IPPAttributeWidget())
+
+
 class CreateSubscriptionSchema(BaseIPPSchema):
     header = HeaderIPPSchema(widget=IPPConstantTupleWidget())
     header['operation_attributes'] = SubscriptionOperationAttributes(
@@ -471,6 +504,13 @@ class PausePrinterSchema(BaseIPPSchema):
     object_attributes_tag = colander.null
 
 
+class PrintJobSchema(CreateJobSchema):
+    name = 'Print Job'
+    operation = 'Print-Job'
+    object_attributes_tag = 'document-attributes-tag'
+    file = colander.SchemaNode(colander.String(), widget=IPPFileWidget())
+
+
 class ResumePrinterSchema(PausePrinterSchema):
     name = 'Resume Printer'
     operation = 'Resume-Printer'
@@ -478,6 +518,16 @@ class ResumePrinterSchema(PausePrinterSchema):
     header['operation_attributes'] = SubscriptionOperationAttributes(
         widget=IPPTupleWidget())
     object_attributes_tag = colander.null
+
+
+class SendDocumentSchema(BaseIPPSchema):
+    name = 'Send Document'
+    operation = 'Send-Document'
+    header = HeaderIPPSchema(widget=IPPConstantTupleWidget())
+    header['operation_attributes'] = SendDocumentOperationAttribute(
+        widget=IPPTupleWidget())
+    object_attributes_tag = 'document-attributes-tag'
+    file = colander.SchemaNode(colander.String(), widget=IPPFileWidget())
 
 
 class HoldNewJobsSchema(PausePrinterSchema):
@@ -508,6 +558,8 @@ release_job_schema = ReleaseJobSchema(widget=IPPBodyWidget())
 
 create_job_subscription_schema = CreateJobSubscriptionSchema(
     widget=IPPBodyWidget())
+
+create_job_schema = CreateJobSchema(widget=IPPBodyWidget())
 
 create_printer_subscription_schema = CreatePrinterSubscriptionSchema(
     widget=IPPBodyWidget())
@@ -549,7 +601,11 @@ get_notifications_schema = GetNotificationsSchema(widget=IPPBodyWidget())
 
 pause_printer_schema = PausePrinterSchema(widget=IPPBodyWidget())
 
+print_job_schema = PrintJobSchema(widget=IPPBodyWidget())
+
 resume_printer_schema = ResumePrinterSchema(widget=IPPBodyWidget())
+
+send_document_schema = SendDocumentSchema(widget=IPPBodyWidget())
 
 hold_new_jobs_schema = HoldNewJobsSchema(widget=IPPBodyWidget())
 
