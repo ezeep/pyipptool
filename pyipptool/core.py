@@ -60,6 +60,7 @@ def pyipptool_coroutine(method):
     will take care to consume the generator synchronously.
     """
     method.ipptool_caller = True
+
     @functools.wraps(method)
     def sync_coroutine_consumer(*args, **kw):
         gen = method(*args, **kw)
@@ -94,7 +95,6 @@ class MetaAsyncShifter(type):
         return klass
 
 
-
 class IPPToolWrapper(object):
     __metaclass__ = MetaAsyncShifter
     async = False
@@ -126,7 +126,6 @@ class IPPToolWrapper(object):
                     pass
                 break
             time.sleep(.1)
-
 
     def _call_ipptool(self, uri, request):
         with tempfile.NamedTemporaryFile(delete=False) as temp_file:
