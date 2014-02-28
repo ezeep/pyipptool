@@ -1,6 +1,8 @@
 import BaseHTTPServer
+import os.path
 import SocketServer
 import socket
+import tempfile
 import threading
 import time
 
@@ -325,3 +327,52 @@ def test_cancel_subscription(_call_ipptool):
                         printer_uri='',
                         notify_subscription_id=3)
     assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
+
+
+@mock.patch.object(pyipptool.wrapper, '_call_ipptool')
+def test_create_job(_call_ipptool):
+    from pyipptool import create_job
+    _call_ipptool.return_value = {'Tests': [{}]}
+    create_job('https://localhost:631/',
+               printer_uri='')
+    assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
+
+
+@mock.patch.object(pyipptool.wrapper, '_call_ipptool')
+def test_print_job(_call_ipptool):
+    from pyipptool import print_job
+    _call_ipptool.return_value = {'Tests': [{}]}
+    with open(os.path.join(os.path.dirname(__file__),
+                           'hello.pdf'), 'rb') as tmp:
+        print_job('https://localhost:631/',
+                  printer_uri='',
+                  document_content=tmp.read())
+    assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
+    assert 'FILE /tmp/' in _call_ipptool._mock_mock_calls[0][1][-1]
+
+
+@mock.patch.object(pyipptool.wrapper, '_call_ipptool')
+def test_send_document_with_file(_call_ipptool):
+    from pyipptool import send_document
+    _call_ipptool.return_value = {'Tests': [{}]}
+
+    with tempfile.NamedTemporaryFile('rb') as tmp:
+        send_document('https://localhost:631/',
+                      document_content=tmp)
+        assert (_call_ipptool._mock_mock_calls[0][1][0] ==
+                'https://localhost:631/')
+        assert ('FILE {}'.format(tmp.name)
+                in _call_ipptool._mock_mock_calls[0][1][-1])
+
+
+@mock.patch.object(pyipptool.wrapper, '_call_ipptool')
+def test_send_document_with_binary(_call_ipptool):
+    from pyipptool import send_document
+    _call_ipptool.return_value = {'Tests': [{}]}
+
+    with open(os.path.join(os.path.dirname(__file__),
+                           'hello.pdf'), 'rb') as tmp:
+        send_document('https://localhost:631/',
+                      document_content=tmp.read())
+    assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
+    assert 'FILE /tmp/' in _call_ipptool._mock_mock_calls[0][1][-1]

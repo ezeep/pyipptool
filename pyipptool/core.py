@@ -1,6 +1,7 @@
 import functools
 import os
 import plistlib
+import shutil
 import subprocess
 import tempfile
 import time
@@ -11,6 +12,7 @@ import colander
 
 from .forms import (cancel_job_form,
                     release_job_form,
+                    create_job_form,
                     create_job_subscription_form,
                     create_printer_subscription_form,
                     cups_add_modify_class_form,
@@ -29,7 +31,9 @@ from .forms import (cancel_job_form,
                     get_subscriptions_form,
                     get_notifications_form,
                     pause_printer_form,
+                    print_job_form,
                     resume_printer_form,
+                    send_document_form,
                     hold_new_jobs_form,
                     release_held_new_jobs_form,
                     cancel_subscription_form,
@@ -60,6 +64,7 @@ def pyipptool_coroutine(method):
     will take care to consume the generator synchronously.
     """
     method.ipptool_caller = True
+
     @functools.wraps(method)
     def sync_coroutine_consumer(*args, **kw):
         gen = method(*args, **kw)
@@ -73,6 +78,54 @@ def pyipptool_coroutine(method):
                 return value
     sync_coroutine_consumer.original_method = method
     return sync_coroutine_consumer
+
+
+def _get_filename_for_content(content):
+    """
+    Return the name of a file based on type of content
+    - already a file ?
+        - does he have a name ?
+            take its name
+        - else
+            copy to temp file and return its name
+    - binary content ?
+        copy to temp file and return its name
+
+    if a temp file is created the caller is responsible to
+    destroy the file. the flag delete is meant for it.
+    """
+    file_ = None
+    delete = False
+    if isinstance(content, file):
+        # regular file
+        file_ = content
+    if isinstance(getattr(content, 'file', None), file):
+        # tempfile
+        file_ = content
+    if (hasattr(content, 'read') and hasattr(content, 'read') and
+            hasattr(content, 'tell')):
+        # most likely a file like object
+        file_ = content
+    if file_ is not None:
+        if file_.name:
+            name = file_.name
+        else:
+            with tempfile.NamedTemporaryFile(delete=False,
+                                                mode='rb') as tmp:
+                delete = True
+                shutil.copyfileobj(file_, tmp)
+            name = tmp.name
+    elif isinstance(content, basestring):
+        with tempfile.NamedTemporaryFile(delete=False, mode='w') as tmp:
+            delete = True
+            tmp.write(content)
+        name = tmp.name
+    else:
+        raise NotImplementedError(
+            'Got unknow document\'s content type {}'.format(
+                type(content)))
+
+    return name, delete
 
 
 class MetaAsyncShifter(type):
@@ -92,7 +145,6 @@ class MetaAsyncShifter(type):
                     setattr(klass, method_name,
                             coroutine(method.original_method))
         return klass
-
 
 
 class IPPToolWrapper(object):
@@ -126,7 +178,6 @@ class IPPToolWrapper(object):
                     pass
                 break
             time.sleep(.1)
-
 
     def _call_ipptool(self, uri, request):
         with tempfile.NamedTemporaryFile(delete=False) as temp_file:
@@ -178,6 +229,49 @@ class IPPToolWrapper(object):
         request = cancel_job_form.render(kw)
         response = yield self._call_ipptool(uri, request)
         raise Return(response)
+
+    @pyipptool_coroutine
+    def create_job(self, uri,
+                   printer_uri=None,
+                   auth_info=colander.null,
+                   job_billing=colander.null,
+                   job_sheets=colander.null,
+                   media=colander.null):
+        kw = {'header':
+              {'operation_attributes':
+               {'printer_uri': printer_uri}},
+              'auth_info': auth_info,
+              'job_billing': job_billing,
+              'job_sheets': job_sheets,
+              'media': media}
+        request = create_job_form.render(kw)
+        response = yield self._call_ipptool(uri, request)
+        raise Return(response)
+
+    @pyipptool_coroutine
+    def print_job(self, uri,
+                  printer_uri=None,
+                  auth_info=colander.null,
+                  job_billing=colander.null,
+                  job_sheets=colander.null,
+                  media=colander.null,
+                  document_content=None):
+        filename, delete = _get_filename_for_content(document_content)
+        kw = {'header':
+              {'operation_attributes':
+               {'printer_uri': printer_uri}},
+              'auth_info': auth_info,
+              'job_billing': job_billing,
+              'job_sheets': job_sheets,
+              'media': media,
+              'file': filename}
+        request = print_job_form.render(kw)
+        try:
+            response = yield self._call_ipptool(uri, request)
+            raise Return(response)
+        finally:
+            if delete:
+                os.unlink(filename)
 
     @pyipptool_coroutine
     def create_job_subscription(self,
@@ -587,6 +681,44 @@ class IPPToolWrapper(object):
     def release_held_new_jobs(self, *args, **kw):
         return self._hold_or_release_new_jobs(release_held_new_jobs_form,
                                               *args, **kw)
+
+    @pyipptool_coroutine
+    def send_document(self, uri,
+                      job_uri=colander.null,
+                      printer_uri=colander.null,
+                      job_id=colander.null,
+                      requesting_user_name=None,
+                      document_name=colander.null,
+                      compression=colander.null,
+                      document_format='application/pdf',
+                      document_natural_language=colander.null,
+                      last_document=True,
+                      document_content=None,
+                      ):
+        """
+        :param document_content: Binary Content or Named File
+        """
+        delete = False
+        filename, delete = _get_filename_for_content(document_content)
+        kw = {'header':
+              {'operation_attributes':
+               {'job_uri': job_uri,
+                'printer_uri': printer_uri,
+                'job_id': job_id,
+                'requesting_user_name': requesting_user_name,
+                'document_name': document_name,
+                'compression': compression,
+                'document_format': document_format,
+                'document_natural_language': document_natural_language,
+                'last_document': last_document}},
+              'file': filename}
+        request = send_document_form.render(kw)
+        try:
+            response = yield self._call_ipptool(uri, request)
+            raise Return(response)
+        finally:
+            if delete:
+                os.unlink(filename)
 
 
 class AsyncIPPToolWrapper(IPPToolWrapper):

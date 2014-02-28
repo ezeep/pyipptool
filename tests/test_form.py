@@ -493,3 +493,71 @@ def test_cancel_subscription_form():
     assert 'ATTR uri printer-uri ipp://server:port/printers/name' in request
     assert 'ATTR name requesting-user-name yoda' in request
     assert 'ATTR integer notify-subscription-id 5' in request, request
+
+
+def test_create_job_form():
+    from pyipptool.forms import create_job_form
+    request = create_job_form.render(
+        {'header':
+         {'operation_attributes':
+          {'printer_uri': 'ipp://server:port/printers/name'}},
+         'auth_info': 'michael',
+         'job_billing': 'no-idea',
+         'job_sheets': 'none',
+         'media': 'media-default'})
+    assert 'NAME "Create Job"' in request
+    assert 'OPERATION "Create-Job"' in request
+    assert ('ATTR uri printer-uri ipp://server:port/printers/name' in
+            request), request
+    assert 'ATTR text auth-info "michael"' in request, request
+    assert 'ATTR text job-billing "no-idea"' in request, request
+    assert 'ATTR keyword job-sheets none' in request, request
+    assert 'ATTR keyword media media-default' in request
+
+
+def test_print_job_form():
+    from pyipptool.forms import print_job_form
+    request = print_job_form.render(
+        {'header':
+         {'operation_attributes':
+          {'printer_uri': 'ipp://server:port/printers/name'}},
+         'auth_info': 'michael',
+         'job_billing': 'no-idea',
+         'job_sheets': 'none',
+         'media': 'media-default',
+         'file': '/path/to/file.txt'})
+    assert 'NAME "Print Job"' in request
+    assert 'OPERATION "Print-Job"' in request
+    assert ('ATTR uri printer-uri ipp://server:port/printers/name' in
+            request), request
+    assert 'ATTR text auth-info "michael"' in request, request
+    assert 'ATTR text job-billing "no-idea"' in request, request
+    assert 'ATTR keyword job-sheets none' in request, request
+    assert 'ATTR keyword media media-default' in request
+    assert 'FILE /path/to/file.txt' in request
+
+
+def test_send_document_form():
+    from pyipptool.forms import send_document_form
+
+    request = send_document_form.render(
+        {'header':
+         {'operation_attributes':
+          {'job_uri': 'http://cups:631/jobs/2',
+           'requesting_user_name': 'sweet',
+           'document_name': 'python.pdf',
+           'compression': 'gzip',
+           'document_format': 'application/pdf',
+           'document_natural_language': 'en',
+           'last_document': True}},
+         'file': '/path/to/a/file.pdf'})
+    assert 'NAME "Send Document"' in request
+    assert 'OPERATION "Send-Document"' in request
+    assert 'ATTR uri job-uri http://cups:631/jobs/2' in request
+    assert 'ATTR name requesting-user-name sweet' in request
+    assert 'ATTR name document-name python.pdf' in request
+    assert 'ATTR keyword compression gzip' in request
+    assert 'ATTR mimeMediaType document-format application/pdf' in request
+    assert 'ATTR naturalLanguage document-natural-language en' in request
+    assert 'ATTR boolean last-document 1' in request, request
+    assert 'FILE /path/to/a/file.pdf' in request, request
