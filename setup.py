@@ -16,7 +16,7 @@ class PyTest(TestCommand):
         sys.exit(errno)
 
 
-version = '0.4.5'
+version = '0.4.6dev'
 
 
 def read_that_file(path):
