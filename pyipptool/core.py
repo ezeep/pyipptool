@@ -111,7 +111,7 @@ def _get_filename_for_content(content):
             name = file_.name
         else:
             with tempfile.NamedTemporaryFile(delete=False,
-                                                mode='rb') as tmp:
+                                             mode='rb') as tmp:
                 delete = True
                 shutil.copyfileobj(file_, tmp)
             name = tmp.name
@@ -352,7 +352,8 @@ class IPPToolWrapper(object):
                                 printer_state=colander.null,
                                 printer_state_message=colander.null,
                                 requesting_user_name_allowed=colander.null,
-                                requesting_user_name_denied=colander.null):
+                                requesting_user_name_denied=colander.null,
+                                printer_is_shared=colander.null):
         kw = {'header': {'operation_attributes':
                         {'printer_uri': printer_uri}},
               'auth_info_required': auth_info_required,
@@ -388,7 +389,8 @@ class IPPToolWrapper(object):
                               printer_state=colander.null,
                               printer_state_message=colander.null,
                               requesting_user_name_allowed=colander.null,
-                              requesting_user_name_denied=colander.null):
+                              requesting_user_name_denied=colander.null,
+                              printer_is_shared=colander.null):
         kw = {'header': {'operation_attributes':
                         {'printer_uri': printer_uri}},
               'auth_info_required': auth_info_required,
