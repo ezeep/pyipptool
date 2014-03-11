@@ -352,7 +352,8 @@ class IPPToolWrapper(object):
                                 printer_state=colander.null,
                                 printer_state_message=colander.null,
                                 requesting_user_name_allowed=colander.null,
-                                requesting_user_name_denied=colander.null):
+                                requesting_user_name_denied=colander.null,
+                                printer_is_shared=colander.null):
         kw = {'header': {'operation_attributes':
                         {'printer_uri': printer_uri}},
               'auth_info_required': auth_info_required,
@@ -388,7 +389,8 @@ class IPPToolWrapper(object):
                               printer_state=colander.null,
                               printer_state_message=colander.null,
                               requesting_user_name_allowed=colander.null,
-                              requesting_user_name_denied=colander.null):
+                              requesting_user_name_denied=colander.null,
+                              printer_is_shared=colander.null):
         kw = {'header': {'operation_attributes':
                         {'printer_uri': printer_uri}},
               'auth_info_required': auth_info_required,

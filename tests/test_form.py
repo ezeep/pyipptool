@@ -110,7 +110,8 @@ def test_cups_add_modify_class_form():
          'printer_op_policy': 'brain',
          'printer_state': '3',
          'printer_state_message': 'Ready to print',
-         'requesting_user_name_allowed': 'me'})
+         'requesting_user_name_allowed': 'me',
+         'printer_is_shared': False})
     assert 'NAME "CUPS Add Modify Class"'
     assert 'OPERATION "CUPS-Add-Modify-Class"' in request
     assert 'GROUP printer-attributes-tag' in request
@@ -124,6 +125,7 @@ def test_cups_add_modify_class_form():
     assert 'ATTR enum printer-state 3' in request, request
     assert 'ATTR text printer-state-message "Ready to print"' in request
     assert 'ATTR name requesting-user-name-allowed me' in request
+    assert 'ATTR boolean printer-is-shared 0' in request
 
 
 def test_cups_add_modify_printer_form():
@@ -143,7 +145,8 @@ def test_cups_add_modify_printer_form():
          'printer_op_policy': 'pinky',
          'printer_state': '3',
          'printer_state_message': 'Ready to print',
-         'requesting_user_name_allowed': 'me'})
+         'requesting_user_name_allowed': 'me',
+         'printer_is_shared': True})
     assert 'NAME "CUPS Add Modify Printer"'
     assert 'OPERATION "CUPS-Add-Modify-Printer"' in request
     assert 'ATTR uri printer-uri https://localhost:631/printers/p0' in request
@@ -161,6 +164,7 @@ def test_cups_add_modify_printer_form():
     assert 'ATTR enum printer-state 3' in request
     assert 'ATTR text printer-state-message "Ready to print"' in request
     assert 'ATTR name requesting-user-name-allowed me' in request
+    assert 'ATTR boolean printer-is-shared 1' in request
 
 
 def test_cups_add_modify_printer_form_with_None():

@@ -316,6 +316,9 @@ class BaseCupsAddModifyIPPSchema(BaseIPPSchema):
     requesting_user_name_denied = colander.SchemaNode(
         Name(),
         widget=IPPAttributeWidget())
+    printer_is_shared = colander.SchemaNode(colander.Boolean(true_val=1,
+                                                             false_val=0),
+                                            widget=IPPAttributeWidget())
 
 
 class CupsAddModifyPrinterSchema(BaseCupsAddModifyIPPSchema):
