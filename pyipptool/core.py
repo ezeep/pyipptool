@@ -111,7 +111,7 @@ def _get_filename_for_content(content):
             name = file_.name
         else:
             with tempfile.NamedTemporaryFile(delete=False,
-                                                mode='rb') as tmp:
+                                             mode='rb') as tmp:
                 delete = True
                 shutil.copyfileobj(file_, tmp)
             name = tmp.name
