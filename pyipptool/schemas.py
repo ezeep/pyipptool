@@ -113,6 +113,25 @@ class SubscriptionOperationAttributes(OperationAttributesWithPrinterUri):
                                                widget=IPPAttributeWidget())
 
 
+class PrintJobOperationAttributes(SubscriptionOperationAttributes):
+    job_name = colander.SchemaNode(Name(), widget=IPPAttributeWidget())
+    ipp_attribute_fidelity = colander.SchemaNode(colander.Boolean(true_val=1,
+                                                                  false_val=0),
+                                                 widget=IPPAttributeWidget())
+    document_name = colander.SchemaNode(Name(), widget=IPPAttributeWidget())
+    compression = colander.SchemaNode(Keyword(), widget=IPPAttributeWidget())
+    document_format = colander.SchemaNode(MimeMediaType(),
+                                          widget=IPPAttributeWidget())
+    document_natural_language = colander.SchemaNode(
+        NaturalLanguage(),
+        widget=IPPAttributeWidget())
+    job_k_octets = colander.SchemaNode(Integer(), widget=IPPAttributeWidget())
+    job_impressions = colander.SchemaNode(Integer(),
+                                          widget=IPPAttributeWidget())
+    job_media_sheets = colander.SchemaNode(Integer(),
+                                           widget=IPPAttributeWidget())
+
+
 class CreateJobSubscriptionOperationAttributes(
         SubscriptionOperationAttributes):
     notify_job_id = colander.SchemaNode(colander.Integer(),
@@ -408,7 +427,7 @@ class CreateJobSchema(BaseIPPSchema):
     name = 'Create Job'
     operation = 'Create-Job'
     header = HeaderIPPSchema(widget=IPPConstantTupleWidget())
-    header['operation_attributes'] = OperationAttributesWithPrinterUri(
+    header['operation_attributes'] = PrintJobOperationAttributes(
         widget=IPPTupleWidget())
     object_attributes_tag = 'job-attributes-tag'
     auth_info = colander.SchemaNode(Text(), widget=IPPAttributeWidget())
