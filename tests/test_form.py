@@ -504,7 +504,16 @@ def test_create_job_form():
     request = create_job_form.render(
         {'header':
          {'operation_attributes':
-          {'printer_uri': 'ipp://server:port/printers/name'}},
+          {'printer_uri': 'ipp://server:port/printers/name',
+           'job_name': 'foo',
+           'ipp_attribute_fidelity': True,
+           'document_name': 'foo.txt',
+           'compression': 'gzip',
+           'document_format': 'text/plain',
+           'document_natural_language': 'en',
+           'job_k_octets': 1024,
+           'job_impressions': 2048,
+           'job_media_sheets': 2}},
          'auth_info': 'michael',
          'job_billing': 'no-idea',
          'job_sheets': 'none',
@@ -513,6 +522,15 @@ def test_create_job_form():
     assert 'OPERATION "Create-Job"' in request
     assert ('ATTR uri printer-uri ipp://server:port/printers/name' in
             request), request
+    assert 'ATTR name job-name foo' in request
+    assert 'ATTR boolean ipp-attribute-fidelity 1' in request, request
+    assert 'ATTR name document-name foo.txt' in request
+    assert 'ATTR keyword compression gzip' in request
+    assert 'ATTR mimeMediaType document-format text/plain' in request
+    assert 'ATTR naturalLanguage document-natural-language en' in request
+    assert 'ATTR integer job-k-octets 1024' in request
+    assert 'ATTR integer job-impressions 2048' in request
+    assert 'ATTR integer job-media-sheets 2' in request
     assert 'ATTR text auth-info "michael"' in request, request
     assert 'ATTR text job-billing "no-idea"' in request, request
     assert 'ATTR keyword job-sheets none' in request, request
@@ -524,7 +542,16 @@ def test_print_job_form():
     request = print_job_form.render(
         {'header':
          {'operation_attributes':
-          {'printer_uri': 'ipp://server:port/printers/name'}},
+          {'printer_uri': 'ipp://server:port/printers/name',
+           'job_name': 'foo',
+           'ipp_attribute_fidelity': True,
+           'document_name': 'foo.txt',
+           'compression': 'gzip',
+           'document_format': 'text/plain',
+           'document_natural_language': 'en',
+           'job_k_octets': 1024,
+           'job_impressions': 2048,
+           'job_media_sheets': 2}},
          'auth_info': 'michael',
          'job_billing': 'no-idea',
          'job_sheets': 'none',
@@ -534,6 +561,15 @@ def test_print_job_form():
     assert 'OPERATION "Print-Job"' in request
     assert ('ATTR uri printer-uri ipp://server:port/printers/name' in
             request), request
+    assert 'ATTR name job-name foo' in request
+    assert 'ATTR boolean ipp-attribute-fidelity 1' in request, request
+    assert 'ATTR name document-name foo.txt' in request
+    assert 'ATTR keyword compression gzip' in request
+    assert 'ATTR mimeMediaType document-format text/plain' in request
+    assert 'ATTR naturalLanguage document-natural-language en' in request
+    assert 'ATTR integer job-k-octets 1024' in request
+    assert 'ATTR integer job-impressions 2048' in request
+    assert 'ATTR integer job-media-sheets 2' in request
     assert 'ATTR text auth-info "michael"' in request, request
     assert 'ATTR text job-billing "no-idea"' in request, request
     assert 'ATTR keyword job-sheets none' in request, request

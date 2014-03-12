@@ -334,7 +334,17 @@ def test_create_job(_call_ipptool):
     from pyipptool import create_job
     _call_ipptool.return_value = {'Tests': [{}]}
     create_job('https://localhost:631/',
-               printer_uri='')
+               printer_uri='',
+               job_name='foo',
+               ipp_attribute_fidelity=False,
+               document_name='foo.txt',
+               compression='gzip',
+               document_format='text/plain',
+               document_natural_language='en',
+               job_k_octets=1024,
+               job_impressions=2048,
+               job_media_sheets=2,
+               )
     assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
 
 
@@ -346,6 +356,15 @@ def test_print_job(_call_ipptool):
                            'hello.pdf'), 'rb') as tmp:
         print_job('https://localhost:631/',
                   printer_uri='',
+                  job_name='foo',
+                  ipp_attribute_fidelity=False,
+                  document_name='foo.txt',
+                  compression='gzip',
+                  document_format='text/plain',
+                  document_natural_language='en',
+                  job_k_octets=1024,
+                  job_impressions=2048,
+                  job_media_sheets=2,
                   document_content=tmp.read())
     assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
     assert 'FILE /tmp/' in _call_ipptool._mock_mock_calls[0][1][-1]
