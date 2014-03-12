@@ -557,7 +557,7 @@ class IPPToolWrapper(object):
                       job_id=colander.null,
                       job_uri=colander.null,
                       job_printer_uri=None,
-                      printer_state_message=None):
+                      printer_state_message=colander.null):
         kw = {'header': {'operation_attributes':
                         {'printer_uri': printer_uri,
                          'job_id': job_id,
