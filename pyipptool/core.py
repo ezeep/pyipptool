@@ -207,10 +207,10 @@ class IPPToolWrapper(object):
                     printer_uri=colander.null,
                     job_id=colander.null,
                     job_uri=colander.null):
-        kw = {'header': {'operation_attributes':
-                         {'printer_uri': printer_uri,
-                          'job_id': job_id,
-                          'job_uri': job_uri}}}
+        kw = {'operation_attributes':
+              {'printer_uri': printer_uri,
+               'job_id': job_id,
+               'job_uri': job_uri}}
         request = release_job_form.render(kw)
         response = yield self._call_ipptool(uri, request)
         raise Return(response)
@@ -221,11 +221,11 @@ class IPPToolWrapper(object):
                    job_id=colander.null,
                    job_uri=colander.null,
                    purge_job=colander.null):
-        kw = {'header': {'operation_attributes':
-                         {'printer_uri': printer_uri,
-                          'job_id': job_id,
-                          'job_uri': job_uri,
-                          'purge_job': purge_job}}}
+        kw = {'operation_attributes':
+              {'printer_uri': printer_uri,
+               'job_id': job_id,
+               'job_uri': job_uri,
+               'purge_job': purge_job}}
         request = cancel_job_form.render(kw)
         response = yield self._call_ipptool(uri, request)
         raise Return(response)
@@ -246,18 +246,17 @@ class IPPToolWrapper(object):
                    job_billing=colander.null,
                    job_sheets=colander.null,
                    media=colander.null):
-        kw = {'header':
-              {'operation_attributes':
-               {'printer_uri': printer_uri,
-                'job_name': job_name,
-                'ipp_attribute_fidelity': ipp_attribute_fidelity,
-                'document_name': document_name,
-                'compression': compression,
-                'document_format': document_format,
-                'document_natural_language': document_natural_language,
-                'job_k_octets': job_k_octets,
-                'job_impressions': job_impressions,
-                'job_media_sheets': job_media_sheets}},
+        kw = {'operation_attributes':
+              {'printer_uri': printer_uri,
+               'job_name': job_name,
+               'ipp_attribute_fidelity': ipp_attribute_fidelity,
+               'document_name': document_name,
+               'compression': compression,
+               'document_format': document_format,
+               'document_natural_language': document_natural_language,
+               'job_k_octets': job_k_octets,
+               'job_impressions': job_impressions,
+               'job_media_sheets': job_media_sheets},
               'auth_info': auth_info,
               'job_billing': job_billing,
               'job_sheets': job_sheets,
@@ -284,18 +283,17 @@ class IPPToolWrapper(object):
                   media=colander.null,
                   document_content=None):
         filename, delete = _get_filename_for_content(document_content)
-        kw = {'header':
-              {'operation_attributes':
-               {'printer_uri': printer_uri,
-                'job_name': job_name,
-                'ipp_attribute_fidelity': ipp_attribute_fidelity,
-                'document_name': document_name,
-                'compression': compression,
-                'document_format': document_format,
-                'document_natural_language': document_natural_language,
-                'job_k_octets': job_k_octets,
-                'job_impressions': job_impressions,
-                'job_media_sheets': job_media_sheets}},
+        kw = {'operation_attributes':
+              {'printer_uri': printer_uri,
+               'job_name': job_name,
+               'ipp_attribute_fidelity': ipp_attribute_fidelity,
+               'document_name': document_name,
+               'compression': compression,
+               'document_format': document_format,
+               'document_natural_language': document_natural_language,
+               'job_k_octets': job_k_octets,
+               'job_impressions': job_impressions,
+               'job_media_sheets': job_media_sheets},
               'auth_info': auth_info,
               'job_billing': job_billing,
               'job_sheets': job_sheets,
@@ -312,9 +310,11 @@ class IPPToolWrapper(object):
     @pyipptool_coroutine
     def create_job_subscription(self,
                                 uri,
-                                printer_uri=None,
                                 requesting_user_name=None,
-                                notify_job_id=None,
+                                printer_uri=colander.null,
+                                job_id=colander.null,
+                                job_uri=colander.null,
+                                notify_job_id=colander.null,
                                 notify_recipient_uri=colander.null,
                                 notify_pull_method=colander.null,
                                 notify_events=colander.null,
@@ -325,10 +325,12 @@ class IPPToolWrapper(object):
         """
         Create a per-job subscription object.
         """
-        kw = {'header': {'operation_attributes':
-                         {'printer_uri': printer_uri,
-                          'requesting_user_name': requesting_user_name,
-                          'notify_job_id': notify_job_id}},
+        kw = {'operation_attributes':
+              {'printer_uri': printer_uri,
+               'requesting_user_name': requesting_user_name,
+               'notify_job_id': notify_job_id,
+               'job_id': job_id,
+               'job_uri': job_uri},
               'notify_recipient_uri': notify_recipient_uri,
               'notify_pull_method': notify_pull_method,
               'notify_events': notify_events,
@@ -357,9 +359,9 @@ class IPPToolWrapper(object):
         """
         Create a new subscription and return its id
         """
-        kw = {'header': {'operation_attributes':
-                         {'printer_uri': printer_uri,
-                          'requesting_user_name': requesting_user_name}},
+        kw = {'operation_attributes':
+              {'printer_uri': printer_uri,
+               'requesting_user_name': requesting_user_name},
               'notify_recipient_uri': notify_recipient_uri,
               'notify_pull_method': notify_pull_method,
               'notify_events': notify_events,
@@ -390,8 +392,8 @@ class IPPToolWrapper(object):
                                 requesting_user_name_allowed=colander.null,
                                 requesting_user_name_denied=colander.null,
                                 printer_is_shared=colander.null):
-        kw = {'header': {'operation_attributes':
-                        {'printer_uri': printer_uri}},
+        kw = {'operation_attributes':
+             {'printer_uri': printer_uri},
               'auth_info_required': auth_info_required,
               'job_sheets_default': job_sheets_default,
               'device_uri': device_uri,
@@ -427,8 +429,8 @@ class IPPToolWrapper(object):
                               requesting_user_name_allowed=colander.null,
                               requesting_user_name_denied=colander.null,
                               printer_is_shared=colander.null):
-        kw = {'header': {'operation_attributes':
-                        {'printer_uri': printer_uri}},
+        kw = {'operation_attributes':
+              {'printer_uri': printer_uri},
               'auth_info_required': auth_info_required,
               'member_uris': member_uris,
               'printer_is_accepting_jobs': printer_is_accepting_jobs,
@@ -448,14 +450,14 @@ class IPPToolWrapper(object):
 
     @pyipptool_coroutine
     def cups_delete_printer(self, uri, printer_uri=None):
-        kw = {'header': {'operation_attributes': {'printer_uri': printer_uri}}}
+        kw = {'operation_attributes': {'printer_uri': printer_uri}}
         request = cups_delete_printer_form.render(kw)
         response = yield self._call_ipptool(uri, request)
         raise Return(response)
 
     @pyipptool_coroutine
     def cups_delete_class(self, uri, printer_uri=None):
-        kw = {'header': {'operation_attributes': {'printer_uri': printer_uri}}}
+        kw = {'operation_attributes': {'printer_uri': printer_uri}}
         request = cups_delete_class_form.render(kw)
         response = yield self._call_ipptool(uri, request)
         raise Return(response)
@@ -469,14 +471,14 @@ class IPPToolWrapper(object):
                          printer_type_mask=colander.null,
                          requested_attributes=colander.null,
                          requested_user_name=colander.null):
-        kw = {'header': {'operation_attributes':
-                        {'first_printer_name': first_printer_name,
-                         'limit': limit,
-                         'printer_location': printer_location,
-                         'printer_type': printer_type,
-                         'printer_type_mask': printer_type_mask,
-                         'requested_attributes': requested_attributes,
-                         'requested_user_name': requested_user_name}}}
+        kw = {'operation_attributes':
+              {'first_printer_name': first_printer_name,
+               'limit': limit,
+               'printer_location': printer_location,
+               'printer_type': printer_type,
+               'printer_type_mask': printer_type_mask,
+               'requested_attributes': requested_attributes,
+               'requested_user_name': requested_user_name}}
         request = cups_get_classes_form.render(kw)
         response = yield self._call_ipptool(uri, request)
         raise Return(response)
@@ -489,13 +491,13 @@ class IPPToolWrapper(object):
                          limit=colander.null,
                          requested_attributes=colander.null,
                          timeout=colander.null):
-        kw = {'header': {'operation_attributes':
-                        {'device_class': device_class,
-                         'exclude_schemes': exclude_schemes,
-                         'include-schemes': include_schemes,
-                         'limit': limit,
-                         'requested_attributes': requested_attributes,
-                         'timeout': timeout}}}
+        kw = {'operation_attributes':
+             {'device_class': device_class,
+              'exclude_schemes': exclude_schemes,
+              'include-schemes': include_schemes,
+              'limit': limit,
+              'requested_attributes': requested_attributes,
+              'timeout': timeout}}
         request = cups_get_devices_form.render(kw)
         response = yield self._call_ipptool(uri, request)
         raise Return(response)
@@ -513,19 +515,19 @@ class IPPToolWrapper(object):
                       ppd_psversion=colander.null,
                       ppd_type=colander.null,
                       requested_attributes=colander.null):
-        kw = {'header': {'operation_attributes':
-                        {'exclude_schemes': exclude_schemes,
-                         'include_schemes': include_schemes,
-                         'limit': limit,
-                         'ppd_make': ppd_make,
-                         'ppd_make_and_model': ppd_make_and_model,
-                         'ppd_model_number': ppd_model_number,
-                         'ppd_natural_language': ppd_natural_language,
-                         'ppd_product': ppd_product,
-                         'ppd_psversion': ppd_psversion,
-                         'ppd_type': ppd_type,
-                         'requested_attributes': requested_attributes
-                         }}}
+        kw = {'operation_attributes':
+              {'exclude_schemes': exclude_schemes,
+               'include_schemes': include_schemes,
+               'limit': limit,
+               'ppd_make': ppd_make,
+               'ppd_make_and_model': ppd_make_and_model,
+               'ppd_model_number': ppd_model_number,
+               'ppd_natural_language': ppd_natural_language,
+               'ppd_product': ppd_product,
+               'ppd_psversion': ppd_psversion,
+               'ppd_type': ppd_type,
+               'requested_attributes': requested_attributes
+               }}
         request = cups_get_ppds_form.render(kw)
         response = yield self._call_ipptool(uri, request)
         raise Return(response)
@@ -539,14 +541,14 @@ class IPPToolWrapper(object):
                           printer_type_mask=colander.null,
                           requested_attributes=colander.null,
                           requested_user_name=colander.null):
-        kw = {'header': {'operation_attributes':
-                        {'first_printer_name': first_printer_name,
-                         'limit': limit,
-                         'printer_location': printer_location,
-                         'printer_type': printer_type,
-                         'printer_type_mask': printer_type_mask,
-                         'requested_attributes': requested_attributes,
-                         'requested_user_name': requested_user_name}}}
+        kw = {'operation_attributes':
+              {'first_printer_name': first_printer_name,
+               'limit': limit,
+               'printer_location': printer_location,
+               'printer_type': printer_type,
+               'printer_type_mask': printer_type_mask,
+               'requested_attributes': requested_attributes,
+               'requested_user_name': requested_user_name}}
         request = cups_get_printers_form.render(kw)
         response = yield self._call_ipptool(uri, request)
         raise Return(response)
@@ -558,10 +560,10 @@ class IPPToolWrapper(object):
                       job_uri=colander.null,
                       job_printer_uri=None,
                       printer_state_message=colander.null):
-        kw = {'header': {'operation_attributes':
-                        {'printer_uri': printer_uri,
-                         'job_id': job_id,
-                         'job_uri': job_uri}},
+        kw = {'operation_attributes':
+              {'printer_uri': printer_uri,
+               'job_id': job_id,
+               'job_uri': job_uri},
               'job_printer_uri': job_printer_uri,
               'printer_state_message': printer_state_message}
         request = cups_move_job_form.render(kw)
@@ -573,9 +575,9 @@ class IPPToolWrapper(object):
                          printer_uri=None,
                          requesting_user_name=None,
                          printer_state_message=colander.null):
-        kw = {'header': {'operation_attributes':
-                        {'printer_uri': printer_uri,
-                         'requesting_user_name': requesting_user_name}},
+        kw = {'operation_attributes':
+              {'printer_uri': printer_uri,
+               'requesting_user_name': requesting_user_name},
               'printer_state_message': printer_state_message}
         request = cups_reject_jobs_form.render(kw)
         response = yield self._call_ipptool(uri, request)
@@ -588,12 +590,12 @@ class IPPToolWrapper(object):
                            job_uri=colander.null,
                            requesting_user_name=colander.null,
                            requested_attributes=colander.null):
-        kw = {'header': {'operation_attributes':
-                        {'printer_uri': printer_uri,
-                         'job_id': job_id,
-                         'job_uri': job_uri,
-                         'requesting_user_name': requesting_user_name,
-                         'requested_attributes': requested_attributes}}}
+        kw = {'operation_attributes':
+              {'printer_uri': printer_uri,
+               'job_id': job_id,
+               'job_uri': job_uri,
+               'requesting_user_name': requesting_user_name,
+               'requested_attributes': requested_attributes}}
         request = get_job_attributes_form.render(kw)
         response = yield self._call_ipptool(uri, request)
         raise Return(response)
