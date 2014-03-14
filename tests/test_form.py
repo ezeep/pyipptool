@@ -1,3 +1,5 @@
+import colander
+import mock
 import pytest
 
 
@@ -499,6 +501,20 @@ def test_create_job_form():
           'job_k_octets': 1024,
           'job_impressions': 2048,
           'job_media_sheets': 2},
+         'sub_operation_attributes':
+          {'job_priority': 1,
+           'job_hold_until': 'indefinite',
+           'job_sheets': 'standard',
+           'multiple_document_handling': 'single-document',
+           'copies': 2,
+           'finishings': 'punch',
+           'page_ranges': '1-6',
+           'sides': 'two-sided-short-edge',
+           'number_up': 4,
+           'orientation_requested': 'reverse-landscape',
+           'media': 'iso-a4-white',
+           'printer_resolution': '600dpi',
+           'print_quality': 5},
          'auth_info': 'michael',
          'job_billing': 'no-idea',
          'job_sheets': 'none',
@@ -521,22 +537,50 @@ def test_create_job_form():
     assert 'ATTR keyword job-sheets none' in request, request
     assert 'ATTR keyword media media-default' in request
 
+    assert 'GROUP job-attributes-tag' in request
+    assert 'ATTR integer job-priority 1' in request
+    assert 'ATTR keyword job-hold-until indefinite' in request
+    assert 'ATTR keyword job-sheets standard' in request
+    assert 'ATTR keyword multiple-document-handling single-document' in request
+    assert 'ATTR integer copies 2' in request
+    assert 'ATTR enum finishings punch' in request
+    assert 'ATTR rangeOfInteger page-ranges 1-6' in request
+    assert 'ATTR keyword sides two-sided-short-edge' in request
+    assert 'ATTR integer number-up 4' in request
+    assert 'ATTR enum orientation-requested reverse-landscape' in request
+    assert 'ATTR keyword media iso-a4-white' in request
+    assert 'ATTR resolution printer-resolution 600dpi' in request
+    assert 'ATTR enum print-quality 5' in request
+
 
 def test_print_job_form():
     from pyipptool.forms import print_job_form
     request = print_job_form.render(
-        {'header':
-         {'operation_attributes':
-          {'printer_uri': 'ipp://server:port/printers/name',
-           'job_name': 'foo',
-           'ipp_attribute_fidelity': True,
-           'document_name': 'foo.txt',
-           'compression': 'gzip',
-           'document_format': 'text/plain',
-           'document_natural_language': 'en',
-           'job_k_octets': 1024,
-           'job_impressions': 2048,
-           'job_media_sheets': 2}},
+        {'operation_attributes':
+         {'printer_uri': 'ipp://server:port/printers/name',
+          'job_name': 'foo',
+          'ipp_attribute_fidelity': True,
+          'document_name': 'foo.txt',
+          'compression': 'gzip',
+          'document_format': 'text/plain',
+          'document_natural_language': 'en',
+          'job_k_octets': 1024,
+          'job_impressions': 2048,
+          'job_media_sheets': 2},
+         'sub_operation_attributes':
+          {'job_priority': 1,
+           'job_hold_until': 'indefinite',
+           'job_sheets': 'standard',
+           'multiple_document_handling': 'single-document',
+           'copies': 2,
+           'finishings': 'punch',
+           'page_ranges': '1-6',
+           'sides': 'two-sided-short-edge',
+           'number_up': 4,
+           'orientation_requested': 'reverse-landscape',
+           'media': 'iso-a4-white',
+           'printer_resolution': '600dpi',
+           'print_quality': 5},
          'auth_info': 'michael',
          'job_billing': 'no-idea',
          'job_sheets': 'none',
@@ -546,6 +590,7 @@ def test_print_job_form():
     assert 'OPERATION "Print-Job"' in request
     assert ('ATTR uri printer-uri ipp://server:port/printers/name' in
             request), request
+    assert 'GROUP operation-attributes-tag' in request
     assert 'ATTR name job-name foo' in request
     assert 'ATTR boolean ipp-attribute-fidelity 1' in request, request
     assert 'ATTR name document-name foo.txt' in request
@@ -555,11 +600,33 @@ def test_print_job_form():
     assert 'ATTR integer job-k-octets 1024' in request
     assert 'ATTR integer job-impressions 2048' in request
     assert 'ATTR integer job-media-sheets 2' in request
+
+    assert 'GROUP job-attributes-tag' in request
+    assert 'ATTR integer job-priority 1' in request
+    assert 'ATTR keyword job-hold-until indefinite' in request
+    assert 'ATTR keyword job-sheets standard' in request
+    assert 'ATTR keyword multiple-document-handling single-document' in request
+    assert 'ATTR integer copies 2' in request
+    assert 'ATTR enum finishings punch' in request
+    assert 'ATTR rangeOfInteger page-ranges 1-6' in request
+    assert 'ATTR keyword sides two-sided-short-edge' in request
+    assert 'ATTR integer number-up 4' in request
+    assert 'ATTR enum orientation-requested reverse-landscape' in request
+    assert 'ATTR keyword media iso-a4-white' in request
+    assert 'ATTR resolution printer-resolution 600dpi' in request
+    assert 'ATTR enum print-quality 5' in request
+
+    assert 'GROUP document-attributes-tag' in request
     assert 'ATTR text auth-info "michael"' in request, request
     assert 'ATTR text job-billing "no-idea"' in request, request
     assert 'ATTR keyword job-sheets none' in request, request
     assert 'ATTR keyword media media-default' in request
     assert 'FILE /path/to/file.txt' in request
+
+    assert (request.index('GROUP operation-attributes-tag') <
+            request.index('GROUP job-attributes-tag') <
+            request.index('GROUP document-attributes-tag')
+            )
 
 
 def test_send_document_form():
@@ -585,3 +652,17 @@ def test_send_document_form():
     assert 'ATTR naturalLanguage document-natural-language en' in request
     assert 'ATTR boolean last-document 1' in request, request
     assert 'FILE /path/to/a/file.pdf' in request, request
+
+
+def test_range_of_integer_validator():
+    from pyipptool.schemas import range_of_integer_validator
+    with pytest.raises(colander.Invalid):
+        range_of_integer_validator(mock.MagicMock(), '12-98d')
+
+    with pytest.raises(colander.Invalid):
+        range_of_integer_validator(mock.MagicMock(), '-12')
+
+    with pytest.raises(colander.Invalid):
+        range_of_integer_validator(mock.MagicMock(), '10-9')
+
+    range_of_integer_validator(mock.MagicMock(), '2-87')

@@ -1,3 +1,5 @@
+import re
+
 import colander
 from .widgets import (IPPAttributeWidget, IPPBodyWidget, IPPFileWidget,
                       IPPGroupWidget, IPPNameWidget, IPPTupleWidget,
@@ -51,6 +53,28 @@ class Name(colander.String):
 
 class NaturalLanguage(colander.String):
     pass
+
+
+class RangeOfInteger(colander.String):
+    pass
+
+
+class Resolution(colander.String):
+    pass
+
+
+range_regex = re.compile('^(\d+)-(\d+)$')
+
+
+def range_of_integer_validator(node, value):
+    match = range_regex.match(value)
+    if match is None:
+        raise colander.Invalid(node,
+                               "Invalid range e.g '1-5'")
+    low, high = match.groups()
+    if int(low) >= int(high):
+        raise colander.Invalid(node,
+                               'Low bound must be lower than high bound')
 
 
 class Text(colander.String):
@@ -113,18 +137,16 @@ class SubscriptionOperationAttributes(OperationAttributesWithPrinterUri):
                                                widget=IPPAttributeWidget())
 
 
-class PrintJobOperationAttributes(SubscriptionOperationAttributes):
+class JobSubscriptionOperationAttributes(JobOperationAttributes):
+    requesting_user_name = colander.SchemaNode(Name(),
+                                               widget=IPPAttributeWidget())
+
+
+class CreateJobOperationAttributes(SubscriptionOperationAttributes):
     job_name = colander.SchemaNode(Name(), widget=IPPAttributeWidget())
     ipp_attribute_fidelity = colander.SchemaNode(colander.Boolean(true_val=1,
                                                                   false_val=0),
                                                  widget=IPPAttributeWidget())
-    document_name = colander.SchemaNode(Name(), widget=IPPAttributeWidget())
-    compression = colander.SchemaNode(Keyword(), widget=IPPAttributeWidget())
-    document_format = colander.SchemaNode(MimeMediaType(),
-                                          widget=IPPAttributeWidget())
-    document_natural_language = colander.SchemaNode(
-        NaturalLanguage(),
-        widget=IPPAttributeWidget())
     job_k_octets = colander.SchemaNode(Integer(), widget=IPPAttributeWidget())
     job_impressions = colander.SchemaNode(Integer(),
                                           widget=IPPAttributeWidget())
@@ -132,10 +154,14 @@ class PrintJobOperationAttributes(SubscriptionOperationAttributes):
                                            widget=IPPAttributeWidget())
 
 
-class CreateJobSubscriptionOperationAttributes(
-        SubscriptionOperationAttributes):
-    notify_job_id = colander.SchemaNode(colander.Integer(),
-                                        widget=IPPAttributeWidget())
+class PrintJobOperationAttributes(CreateJobOperationAttributes):
+    document_name = colander.SchemaNode(Name(), widget=IPPAttributeWidget())
+    compression = colander.SchemaNode(Keyword(), widget=IPPAttributeWidget())
+    document_format = colander.SchemaNode(MimeMediaType(),
+                                          widget=IPPAttributeWidget())
+    document_natural_language = colander.SchemaNode(
+        NaturalLanguage(),
+        widget=IPPAttributeWidget())
 
 
 class CancelSubscriptionOperationAttributes(SubscriptionOperationAttributes):
@@ -274,6 +300,30 @@ class SendDocumentOperationAttribute(JobOperationAttributes):
         widget=IPPAttributeWidget())
 
 
+class JobAttributes(colander.Schema):
+    job_priority = colander.SchemaNode(Integer(),
+                                       widget=IPPAttributeWidget())
+    job_hold_until = colander.SchemaNode(Keyword(),
+                                         widget=IPPAttributeWidget())
+    job_sheets = colander.SchemaNode(Keyword(), widget=IPPAttributeWidget())
+    multiple_document_handling = colander.SchemaNode(
+        Keyword(),
+        widget=IPPAttributeWidget())
+    copies = colander.SchemaNode(Integer(), widget=IPPAttributeWidget())
+    finishings = colander.SchemaNode(Enum(), widget=IPPAttributeWidget())
+    page_ranges = colander.SchemaNode(RangeOfInteger(),
+                                      widget=IPPAttributeWidget(),
+                                      validator=range_of_integer_validator)
+    sides = colander.SchemaNode(Keyword(), widget=IPPAttributeWidget())
+    number_up = colander.SchemaNode(Integer(), widget=IPPAttributeWidget())
+    orientation_requested = colander.SchemaNode(Enum(),
+                                                widget=IPPAttributeWidget())
+    media = colander.SchemaNode(Keyword(), widget=IPPAttributeWidget())
+    printer_resolution = colander.SchemaNode(Resolution(),
+                                             widget=IPPAttributeWidget())
+    print_quality = colander.SchemaNode(Enum(), widget=IPPAttributeWidget())
+
+
 class HeaderIPPSchema(colander.Schema):
     name = colander.SchemaNode(colander.String(), widget=IPPNameWidget())
     operation = colander.SchemaNode(colander.String(), widget=IPPNameWidget())
@@ -281,9 +331,19 @@ class HeaderIPPSchema(colander.Schema):
                                                    widget=IPPGroupWidget())
 
 
+class SubOperationIPPSchema(colander.Schema):
+    sub_operation_attributes_tag = colander.SchemaNode(colander.String(),
+                                                       widget=IPPGroupWidget())
+
+    # override it to enable sub operations
+    sub_operation_attributes = colander.null
+
+
 class BaseIPPSchema(colander.Schema):
     operation_attributes_tag = 'operation-attributes-tag'
+    sub_operation_attributes_tag = colander.null
     header = HeaderIPPSchema(widget=IPPConstantTupleWidget())
+    sub_group = SubOperationIPPSchema(widget=IPPConstantTupleWidget())
     operation_attributes = OperationAttributes(widget=IPPTupleWidget())
     object_attributes_tag = colander.SchemaNode(
         colander.String(),
@@ -421,7 +481,8 @@ class CreateJobSchema(BaseIPPSchema):
     object_attributes_tag = colander.null
     operation_attributes = PrintJobOperationAttributes(
         widget=IPPTupleWidget())
-        widget=IPPTupleWidget())
+    sub_operation_attributes_tag = 'job-attributes-tag'
+    sub_operation_attributes = JobAttributes(widget=IPPTupleWidget())
     auth_info = colander.SchemaNode(Text(), widget=IPPAttributeWidget())
     job_billing = colander.SchemaNode(Text(), widget=IPPAttributeWidget())
     job_sheets = colander.SchemaNode(Keyword(), widget=IPPAttributeWidget())
@@ -513,7 +574,16 @@ class PausePrinterSchema(BaseIPPSchema):
 class PrintJobSchema(CreateJobSchema):
     name = 'Print Job'
     operation = 'Print-Job'
+    operation_attributes = PrintJobOperationAttributes(
+        widget=IPPTupleWidget())
+    sub_operation_attributes_tag = 'job-attributes-tag'
+    sub_operation_attributes = JobAttributes(
+        widget=IPPTupleWidget())
     object_attributes_tag = 'document-attributes-tag'
+    auth_info = colander.SchemaNode(Text(), widget=IPPAttributeWidget())
+    job_billing = colander.SchemaNode(Text(), widget=IPPAttributeWidget())
+    job_sheets = colander.SchemaNode(Keyword(), widget=IPPAttributeWidget())
+    media = colander.SchemaNode(Keyword(), widget=IPPAttributeWidget())
     file = colander.SchemaNode(colander.String(), widget=IPPFileWidget())
 
 
