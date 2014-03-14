@@ -366,7 +366,16 @@ class IPPToolWrapper(object):
                                 notify_time_interval=colander.null):
         """
         Create a per-job subscription object.
+
+        Create-Job-Subscription ???
+        http://www.cups.org/documentation.php/spec-ipp.html
+
+        OR
+
+        Create-Job-Subscriptions ???
+        https://tools.ietf.org/html/rfc3995#section-11.1.1
         """
+        raise NotImplementedError
         kw = {'operation_attributes':
               {'printer_uri': printer_uri,
                'requesting_user_name': requesting_user_name,
