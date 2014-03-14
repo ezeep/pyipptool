@@ -75,13 +75,11 @@ class AsyncSubprocessTestCase(tornado.testing.AsyncTestCase):
         thread.daemon = True
         thread.start()
 
-
         wrapper = AsyncIPPToolWrapper(self.config, self.io_loop)
 
         request = get_subscriptions_form.render(
-            {'header':
-             {'operation_attributes':
-              {'printer_uri': 'http://localhost:%s/printers/fake' % PORT}}}
+            {'operation_attributes':
+             {'printer_uri': 'http://localhost:%s/printers/fake' % PORT}}
         )
 
         response = yield wrapper._call_ipptool(
@@ -100,11 +98,11 @@ class AsyncSubprocessTestCase(tornado.testing.AsyncTestCase):
                                'attributes-natural-language': 'en',
                                'printer-uri':
                                'http://localhost:%s/printers/fake' % PORT}],
-                               'ResponseAttributes':
+                             'ResponseAttributes':
                              [{'attributes-charset': 'utf-8',
                                'attributes-natural-language': 'en-us'}],
-                               'StatusCode': 'successful-ok',
-                               'Successful': True}
+                             'StatusCode': 'successful-ok',
+                             'Successful': True}
         assert response == expected_response, response
 
     @tornado.testing.gen_test

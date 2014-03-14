@@ -1,14 +1,16 @@
+import colander
+import mock
 import pytest
 
 
 def test_cancel_job_form():
     from pyipptool.forms import cancel_job_form
     request = cancel_job_form.render(
-        {'header': {'operation_attributes':
-                    {'printer_uri': 'https://localhost:631/classes/PIY',
-                     'job_id': 8,
-                     'job_uri': 'https://localhost:631/jobs/8',
-                     'purge_job': True}}})
+        {'operation_attributes':
+         {'printer_uri': 'https://localhost:631/classes/PIY',
+          'job_id': 8,
+          'job_uri': 'https://localhost:631/jobs/8',
+          'purge_job': True}})
     assert 'NAME "Cancel Job"' in request
     assert 'OPERATION "Cancel-Job"' in request
     assert 'ATTR uri printer-uri https://localhost:631/classes/PIY' in request
@@ -20,9 +22,9 @@ def test_cancel_job_form():
 def test_release_job_form_with_job_id():
     from pyipptool.forms import release_job_form
     request = release_job_form.render(
-        {'header': {'operation_attributes':
-                    {'printer_uri': 'https://localhost:631/classes/PIY',
-                     'job_id': 7}}})
+        {'operation_attributes':
+         {'printer_uri': 'https://localhost:631/classes/PIY',
+          'job_id': 7}})
     assert 'NAME "Release Job"' in request
     assert 'OPERATION "Release-Job"' in request
     assert 'ATTR uri printer-uri https://localhost:631/classes/PIY' in request
@@ -32,8 +34,8 @@ def test_release_job_form_with_job_id():
 def test_release_job_form_with_job_uri():
     from pyipptool.forms import release_job_form
     request = release_job_form.render(
-        {'header': {'operation_attributes':
-                    {'job_uri': 'https://localhost:631/jobs/7'}}})
+        {'operation_attributes':
+         {'job_uri': 'https://localhost:631/jobs/7'}})
     assert 'NAME "Release Job"' in request
     assert 'OPERATION "Release-Job"' in request
     assert 'ATTR uri job-uri https://localhost:631/jobs/7' in request
@@ -42,9 +44,9 @@ def test_release_job_form_with_job_uri():
 def test_create_printer_subscription_form():
     from pyipptool.forms import create_printer_subscription_form
     request = create_printer_subscription_form.render(
-        {'header': {'operation_attributes':
-                    {'printer_uri': 'https://localhost:631/classes/PIY',
-                     'requesting_user_name': 'admin'}},
+        {'operation_attributes':
+         {'printer_uri': 'https://localhost:631/classes/PIY',
+          'requesting_user_name': 'admin'},
          'notify_recipient_uri': 'rss://',
          'notify_events': 'all',
          'notify_attributes': 'notify-subscriber-user-name',
@@ -67,13 +69,14 @@ def test_create_printer_subscription_form():
     assert 'ATTR integer notify-time-interval 1' in request
 
 
+@pytest.mark.xfail
 def test_create_job_subscription_form_for_pull_delivery_method():
     from pyipptool.forms import create_job_subscription_form
     request = create_job_subscription_form.render(
-        {'header': {'operation_attributes':
-                    {'printer_uri': 'https://localhost:631/printer/p',
-                     'requesting_user_name': 'admin',
-                     'notify_job_id': 12}},
+        {'operation_attributes':
+         {'printer_uri': 'https://localhost:631/printer/p',
+          'requesting_user_name': 'admin',
+          'notify_job_id': 12},
          'notify_recipient_uri': 'rss://',
          'notify_events': ('job-completed', 'job-created', 'job-progress'),
          'notify_attributes': 'notify-subscriber-user-name',
@@ -131,9 +134,9 @@ def test_cups_add_modify_class_form():
 def test_cups_add_modify_printer_form():
     from pyipptool.forms import cups_add_modify_printer_form
     request = cups_add_modify_printer_form.render(
-        {'device_uri': 'cups-pdf:/',
-         'header': {'operation_attributes':
-                    {'printer_uri': 'https://localhost:631/printers/p0'}},
+        {'operation_attributes':
+         {'printer_uri': 'https://localhost:631/printers/p0'},
+         'device_uri': 'cups-pdf:/',
          'auth_info_required': 'john',
          'job_sheets_default': 'none',
          'port_monitor': 'port',
@@ -171,9 +174,8 @@ def test_cups_add_modify_printer_form_with_None():
     from pyipptool.forms import cups_add_modify_printer_form
     with pytest.raises(ValueError) as exec_info:
         cups_add_modify_printer_form.render(
-            {'device_uri': 'cups-pdf:/',
-             'header': {'operation_attributes':
-                        {'printer_uri': 'https://localhost:631/printers/p0'}},
+            {'operation_attributes':
+             {'printer_uri': 'https://localhost:631/printers/p0'},
              'printer_state_message': None})
     assert exec_info.value.message == ("None value provided for"
                                        " 'printer_state_message'")
@@ -182,8 +184,8 @@ def test_cups_add_modify_printer_form_with_None():
 def test_cups_delete_printer_form():
     from pyipptool.forms import cups_delete_printer_form
     request = cups_delete_printer_form.render(
-        {'header': {'operation_attributes':
-                    {'printer_uri': 'https://localhost:631/printers/p0'}}})
+        {'operation_attributes':
+         {'printer_uri': 'https://localhost:631/printers/p0'}})
     assert 'NAME "CUPS Delete Printer"' in request
     assert 'OPERATION "CUPS-Delete-Printer"' in request
     assert 'GROUP operation-attributes-tag' in request
@@ -193,8 +195,8 @@ def test_cups_delete_printer_form():
 def test_cups_delete_class_form():
     from pyipptool.forms import cups_delete_class_form
     request = cups_delete_class_form.render(
-        {'header': {'operation_attributes':
-                    {'printer_uri': 'https://localhost:631/classes/p0'}}})
+        {'operation_attributes':
+         {'printer_uri': 'https://localhost:631/classes/p0'}})
     assert 'NAME "CUPS Delete Class"' in request
     assert 'OPERATION "CUPS-Delete-Class"' in request
     assert 'GROUP operation-attributes-tag' in request
@@ -204,15 +206,14 @@ def test_cups_delete_class_form():
 def test_cups_get_classes_form():
     from pyipptool.forms import cups_get_classes_form
     request = cups_get_classes_form.render(
-        {'header': {'operation_attributes':
-                    {'first_printer_name': 'DA-Printer',
-                     'limit': 2,
-                     'printer_location': 'The Office',
-                     'printer_type': '2',
-                     'printer_type_mask': '8',
-                     'requested_attributes': ('name',
-                                              'printer-attributes-tag'),
-                     'requested_user_name': 'john'}}})
+        {'operation_attributes':
+         {'first_printer_name': 'DA-Printer',
+          'limit': 2,
+          'printer_location': 'The Office',
+          'printer_type': '2',
+          'printer_type_mask': '8',
+          'requested_attributes': ('name', 'printer-attributes-tag'),
+          'requested_user_name': 'john'}})
     assert 'NAME "CUPS Get Classes"' in request, request
     assert 'OPERATION "CUPS-Get-Classes"' in request, request
     assert 'ATTR name first-printer-name DA-Printer' in request, request
@@ -228,13 +229,13 @@ def test_cups_get_classes_form():
 def test_cups_get_devices_form():
     from pyipptool.forms import cups_get_devices_form
     request = cups_get_devices_form.render(
-        {'header': {'operation_attributes':
-                    {'device_class': 'fermionic',
-                     'exclude_schemes': 'foo',
-                     'include_schemes': 'bar',
-                     'limit': 3,
-                     'requested_attributes': 'all',
-                     'timeout': 12}}})
+        {'operation_attributes':
+         {'device_class': 'fermionic',
+          'exclude_schemes': 'foo',
+          'include_schemes': 'bar',
+          'limit': 3,
+          'requested_attributes': 'all',
+          'timeout': 12}})
     assert 'NAME "CUPS Get Devices"' in request
     assert 'OPERATION "CUPS-Get-Devices"' in request
     assert 'ATTR keyword device-class fermionic' in request
@@ -248,18 +249,18 @@ def test_cups_get_devices_form():
 def test_cups_get_ppds_form():
     from pyipptool.forms import cups_get_ppds_form
     request = cups_get_ppds_form.render(
-        {'header': {'operation_attributes':
-                    {'exclude_schemes': 'foo',
-                     'include_schemes': 'bar',
-                     'limit': 3,
-                     'ppd_make': 'Manufaktur',
-                     'ppd_make_and_model': 'Manufaktur XYZ',
-                     'ppd_model_number': '1234',
-                     'ppd_natural_language': 'en',
-                     'ppd_product': 'Generic',
-                     'ppd_psversion': 'PS3',
-                     'ppd_type': 'generic',
-                     'requested_attributes': 'all'}}})
+        {'operation_attributes':
+         {'exclude_schemes': 'foo',
+          'include_schemes': 'bar',
+          'limit': 3,
+          'ppd_make': 'Manufaktur',
+          'ppd_make_and_model': 'Manufaktur XYZ',
+          'ppd_model_number': '1234',
+          'ppd_natural_language': 'en',
+          'ppd_product': 'Generic',
+          'ppd_psversion': 'PS3',
+          'ppd_type': 'generic',
+          'requested_attributes': 'all'}})
     assert 'NAME "CUPS Get PPDs"' in request
     assert 'OPERATION "CUPS-Get-PPDs"' in request
     assert 'ATTR name exclude-schemes foo' in request
@@ -278,15 +279,14 @@ def test_cups_get_ppds_form():
 def test_cups_get_printers_form():
     from pyipptool.forms import cups_get_printers_form
     request = cups_get_printers_form.render(
-        {'header': {'operation_attributes':
-                    {'first_printer_name': 'DA-Printer',
-                     'limit': 2,
-                     'printer_location': 'The Office',
-                     'printer_type': '2',
-                     'printer_type_mask': '8',
-                     'requested_attributes': ('name',
-                                              'printer-attributes-tag'),
-                     'requested_user_name': 'john'}}})
+        {'operation_attributes':
+         {'first_printer_name': 'DA-Printer',
+          'limit': 2,
+          'printer_location': 'The Office',
+          'printer_type': '2',
+          'printer_type_mask': '8',
+          'requested_attributes': ('name', 'printer-attributes-tag'),
+          'requested_user_name': 'john'}})
     assert 'NAME "CUPS Get Printers"' in request, request
     assert 'OPERATION "CUPS-Get-Printers"' in request, request
     assert 'ATTR name first-printer-name DA-Printer' in request, request
@@ -302,10 +302,10 @@ def test_cups_get_printers_form():
 def test_cups_reject_jobs_form():
     from pyipptool.forms import cups_reject_jobs_form
     request = cups_reject_jobs_form.render(
-        {'header': {'operation_attributes':
-                    {'printer_uri': ('https://localhost:631/'
-                                     'printers/DA-PRINTER'),
-                     'requesting_user_name': 'admin'}},
+        {'operation_attributes':
+         {'printer_uri': ('https://localhost:631/'
+                          'printers/DA-PRINTER'),
+          'requesting_user_name': 'admin'},
          'printer_state_message': 'You shall not pass'})
     assert 'NAME "CUPS Reject Jobs"' in request, request
     assert 'OPERATION "CUPS-Reject-Jobs"' in request, request
@@ -315,13 +315,12 @@ def test_cups_reject_jobs_form():
 def test_get_job_attributes_form():
     from pyipptool.forms import get_job_attributes_form
     request = get_job_attributes_form.render(
-        {'header':
-         {'operation_attributes':
-          {'printer_uri':
-           'https://localhost:631/printers/DA-PRINTER',
-           'job_id': 2,
-           'requesting_user_name': 'susan',
-           'requested_attributes': 'job-uri'}}})
+        {'operation_attributes':
+         {'printer_uri':
+          'https://localhost:631/printers/DA-PRINTER',
+          'job_id': 2,
+          'requesting_user_name': 'susan',
+          'requested_attributes': 'job-uri'}})
     assert 'NAME "Get Job Attributes"' in request
     assert 'OPERATION "Get-Job-Attributes"' in request
     assert 'ATTR uri printer-uri https://localhost:631/printers/DA-PRINTER'\
@@ -334,14 +333,13 @@ def test_get_job_attributes_form():
 def test_get_jobs_form():
     from pyipptool.forms import get_jobs_form
     request = get_jobs_form.render(
-        {'header':
-         {'operation_attributes':
-          {'printer_uri': 'https://localhost:631/printers/p0',
-           'requesting_user_name': 'yoda',
-           'limit': 1,
-           'requested_attributes': 'job-uri',
-           'which_jobs': 'pending',
-           'my_jobs': True}}})
+        {'operation_attributes':
+         {'printer_uri': 'https://localhost:631/printers/p0',
+          'requesting_user_name': 'yoda',
+          'limit': 1,
+          'requested_attributes': 'job-uri',
+          'which_jobs': 'pending',
+          'my_jobs': True}})
     assert 'NAME "Get Jobs"' in request
     assert 'OPERATION "Get-Jobs"' in request
     assert 'ATTR uri printer-uri https://localhost:631/printers/p0' in request
@@ -355,12 +353,11 @@ def test_get_jobs_form():
 def test_get_printer_attributes_form():
     from pyipptool.forms import get_printer_attributes_form
     request = get_printer_attributes_form.render(
-        {'header':
-         {'operation_attributes':
-          {'printer_uri':
-           'https://localhost:631/printers/p0',
-           'requesting_user_name': 'yoda',
-           'requested_attributes': ('printer-name', 'operations-supported')}}})
+        {'operation_attributes':
+         {'printer_uri':
+          'https://localhost:631/printers/p0',
+          'requesting_user_name': 'yoda',
+          'requested_attributes': ('printer-name', 'operations-supported')}})
     assert 'NAME "Get Printer Attributes"' in request
     assert 'OPERATION "Get-Printer-Attributes"' in request
     assert 'ATTR uri printer-uri https://localhost:631/printers/p0' in request
@@ -372,14 +369,13 @@ def test_get_printer_attributes_form():
 def test_get_subscriptions_form():
     from pyipptool.forms import get_subscriptions_form
     request = get_subscriptions_form.render(
-        {'header':
-         {'operation_attributes':
-          {'printer_uri': 'https://localhost:631/printers/p0',
-           'requesting_user_name': 'yoda',
-           'notify_job_id': 3,
-           'limit': 1,
-           'requested_attributes': 'notify-recipient-uri',
-           'my_subscriptions': True}}})
+        {'operation_attributes':
+         {'printer_uri': 'https://localhost:631/printers/p0',
+          'requesting_user_name': 'yoda',
+          'notify_job_id': 3,
+          'limit': 1,
+          'requested_attributes': 'notify-recipient-uri',
+          'my_subscriptions': True}})
     assert 'NAME "Get Subscriptions"' in request
     assert 'OPERATION "Get-Subscriptions"' in request
     assert 'ATTR uri printer-uri https://localhost:631/printers/p0' in request
@@ -393,13 +389,12 @@ def test_get_subscriptions_form():
 def test_get_notifications_form_for_one_notification():
     from pyipptool.forms import get_notifications_form
     request = get_notifications_form.render(
-        {'header':
-         {'operation_attributes':
-          {'printer_uri': 'https://localhost:631/printers/p0',
-           'requesting_user_name': 'yoda',
-           'notify_subscription_ids': 3,
-           'notify_sequence_numbers': 1,
-           'notify_wait': True}}})
+        {'operation_attributes':
+         {'printer_uri': 'https://localhost:631/printers/p0',
+          'requesting_user_name': 'yoda',
+          'notify_subscription_ids': 3,
+          'notify_sequence_numbers': 1,
+          'notify_wait': True}})
     assert 'NAME "Get Notifications"' in request
     assert 'OPERATION "Get-Notifications"' in request
     assert 'ATTR uri printer-uri https://localhost:631/printers/p0' in request
@@ -412,13 +407,12 @@ def test_get_notifications_form_for_one_notification():
 def test_get_notifications_form_for_multiple_notifications():
     from pyipptool.forms import get_notifications_form
     request = get_notifications_form.render(
-        {'header':
-         {'operation_attributes':
-          {'printer_uri': 'https://localhost:631/printers/p0',
-           'requesting_user_name': 'yoda',
-           'notify_subscription_ids': (3, 4, 5),
-           'notify_sequence_numbers': (2, 9, 29),
-           'notify_wait': True}}})
+        {'operation_attributes':
+         {'printer_uri': 'https://localhost:631/printers/p0',
+          'requesting_user_name': 'yoda',
+          'notify_subscription_ids': (3, 4, 5),
+          'notify_sequence_numbers': (2, 9, 29),
+          'notify_wait': True}})
     assert 'NAME "Get Notifications"' in request
     assert 'OPERATION "Get-Notifications"' in request
     assert 'ATTR uri printer-uri https://localhost:631/printers/p0' in request
@@ -431,10 +425,9 @@ def test_get_notifications_form_for_multiple_notifications():
 def test_pause_printer_form():
     from pyipptool.forms import pause_printer_form
     request = pause_printer_form.render(
-        {'header':
-         {'operation_attributes':
-          {'printer_uri': 'ipp://server:port/printers/name',
-           'requesting_user_name': 'yoda'}}})
+        {'operation_attributes':
+         {'printer_uri': 'ipp://server:port/printers/name',
+          'requesting_user_name': 'yoda'}})
     assert 'NAME "Pause Printer"' in request
     assert 'OPERATION "Pause-Printer"' in request
     assert 'ATTR uri printer-uri ipp://server:port/printers/name' in request
@@ -444,10 +437,9 @@ def test_pause_printer_form():
 def test_resume_printer_form():
     from pyipptool.forms import resume_printer_form
     request = resume_printer_form.render(
-        {'header':
-         {'operation_attributes':
-          {'printer_uri': 'ipp://server:port/printers/name',
-           'requesting_user_name': 'yoda'}}})
+        {'operation_attributes':
+         {'printer_uri': 'ipp://server:port/printers/name',
+          'requesting_user_name': 'yoda'}})
     assert 'NAME "Resume Printer"' in request
     assert 'OPERATION "Resume-Printer"' in request
     assert 'ATTR uri printer-uri ipp://server:port/printers/name' in request
@@ -457,11 +449,10 @@ def test_resume_printer_form():
 def test_hold_new_jobs_form():
     from pyipptool.forms import hold_new_jobs_form
     request = hold_new_jobs_form.render(
-        {'header':
-         {'operation_attributes':
-          {'printer_uri': 'ipp://server:port/printers/name',
-           'requesting_user_name': 'yoda',
-           'printer_message_from_operator': 'freeze jobs'}}})
+        {'operation_attributes':
+         {'printer_uri': 'ipp://server:port/printers/name',
+          'requesting_user_name': 'yoda',
+          'printer_message_from_operator': 'freeze jobs'}})
     assert 'NAME "Hold New Jobs"' in request
     assert 'OPERATION "Hold-New-Jobs"' in request
     assert 'ATTR uri printer-uri ipp://server:port/printers/name' in request
@@ -472,11 +463,10 @@ def test_hold_new_jobs_form():
 def test_release_held_new_jobs_form():
     from pyipptool.forms import release_held_new_jobs_form
     request = release_held_new_jobs_form.render(
-        {'header':
-         {'operation_attributes':
-          {'printer_uri': 'ipp://server:port/printers/name',
-           'requesting_user_name': 'yoda',
-           'printer_message_from_operator': 'melt jobs'}}})
+        {'operation_attributes':
+         {'printer_uri': 'ipp://server:port/printers/name',
+          'requesting_user_name': 'yoda',
+          'printer_message_from_operator': 'melt jobs'}})
     assert 'NAME "Release Held New Jobs"' in request
     assert 'OPERATION "Release-Held-New-Jobs"' in request
     assert 'ATTR uri printer-uri ipp://server:port/printers/name' in request
@@ -487,11 +477,10 @@ def test_release_held_new_jobs_form():
 def test_cancel_subscription_form():
     from pyipptool.forms import cancel_subscription_form
     request = cancel_subscription_form.render(
-        {'header':
-         {'operation_attributes':
-          {'printer_uri': 'ipp://server:port/printers/name',
-           'requesting_user_name': 'yoda',
-           'notify_subscription_id': 5}}})
+        {'operation_attributes':
+         {'printer_uri': 'ipp://server:port/printers/name',
+          'requesting_user_name': 'yoda',
+          'notify_subscription_id': 5}})
     assert 'NAME "Cancel Subscription"' in request
     assert 'OPERATION "Cancel-Subscription"' in request
     assert 'ATTR uri printer-uri ipp://server:port/printers/name' in request
@@ -502,18 +491,31 @@ def test_cancel_subscription_form():
 def test_create_job_form():
     from pyipptool.forms import create_job_form
     request = create_job_form.render(
-        {'header':
-         {'operation_attributes':
-          {'printer_uri': 'ipp://server:port/printers/name',
-           'job_name': 'foo',
-           'ipp_attribute_fidelity': True,
-           'document_name': 'foo.txt',
-           'compression': 'gzip',
-           'document_format': 'text/plain',
-           'document_natural_language': 'en',
-           'job_k_octets': 1024,
-           'job_impressions': 2048,
-           'job_media_sheets': 2}},
+        {'operation_attributes':
+         {'printer_uri': 'ipp://server:port/printers/name',
+          'job_name': 'foo',
+          'ipp_attribute_fidelity': True,
+          'document_name': 'foo.txt',
+          'compression': 'gzip',
+          'document_format': 'text/plain',
+          'document_natural_language': 'en',
+          'job_k_octets': 1024,
+          'job_impressions': 2048,
+          'job_media_sheets': 2},
+         'sub_operation_attributes':
+          {'job_priority': 1,
+           'job_hold_until': 'indefinite',
+           'job_sheets': 'standard',
+           'multiple_document_handling': 'single-document',
+           'copies': 2,
+           'finishings': 'punch',
+           'page_ranges': '1-6',
+           'sides': 'two-sided-short-edge',
+           'number_up': 4,
+           'orientation_requested': 'reverse-landscape',
+           'media': 'iso-a4-white',
+           'printer_resolution': '600dpi',
+           'print_quality': 5},
          'auth_info': 'michael',
          'job_billing': 'no-idea',
          'job_sheets': 'none',
@@ -536,22 +538,50 @@ def test_create_job_form():
     assert 'ATTR keyword job-sheets none' in request, request
     assert 'ATTR keyword media media-default' in request
 
+    assert 'GROUP job-attributes-tag' in request
+    assert 'ATTR integer job-priority 1' in request
+    assert 'ATTR keyword job-hold-until indefinite' in request
+    assert 'ATTR keyword job-sheets standard' in request
+    assert 'ATTR keyword multiple-document-handling single-document' in request
+    assert 'ATTR integer copies 2' in request
+    assert 'ATTR enum finishings punch' in request
+    assert 'ATTR rangeOfInteger page-ranges 1-6' in request
+    assert 'ATTR keyword sides two-sided-short-edge' in request
+    assert 'ATTR integer number-up 4' in request
+    assert 'ATTR enum orientation-requested reverse-landscape' in request
+    assert 'ATTR keyword media iso-a4-white' in request
+    assert 'ATTR resolution printer-resolution 600dpi' in request
+    assert 'ATTR enum print-quality 5' in request
+
 
 def test_print_job_form():
     from pyipptool.forms import print_job_form
     request = print_job_form.render(
-        {'header':
-         {'operation_attributes':
-          {'printer_uri': 'ipp://server:port/printers/name',
-           'job_name': 'foo',
-           'ipp_attribute_fidelity': True,
-           'document_name': 'foo.txt',
-           'compression': 'gzip',
-           'document_format': 'text/plain',
-           'document_natural_language': 'en',
-           'job_k_octets': 1024,
-           'job_impressions': 2048,
-           'job_media_sheets': 2}},
+        {'operation_attributes':
+         {'printer_uri': 'ipp://server:port/printers/name',
+          'job_name': 'foo',
+          'ipp_attribute_fidelity': True,
+          'document_name': 'foo.txt',
+          'compression': 'gzip',
+          'document_format': 'text/plain',
+          'document_natural_language': 'en',
+          'job_k_octets': 1024,
+          'job_impressions': 2048,
+          'job_media_sheets': 2},
+         'sub_operation_attributes':
+          {'job_priority': 1,
+           'job_hold_until': 'indefinite',
+           'job_sheets': 'standard',
+           'multiple_document_handling': 'single-document',
+           'copies': 2,
+           'finishings': 'punch',
+           'page_ranges': '1-6',
+           'sides': 'two-sided-short-edge',
+           'number_up': 4,
+           'orientation_requested': 'reverse-landscape',
+           'media': 'iso-a4-white',
+           'printer_resolution': '600dpi',
+           'print_quality': 5},
          'auth_info': 'michael',
          'job_billing': 'no-idea',
          'job_sheets': 'none',
@@ -561,6 +591,7 @@ def test_print_job_form():
     assert 'OPERATION "Print-Job"' in request
     assert ('ATTR uri printer-uri ipp://server:port/printers/name' in
             request), request
+    assert 'GROUP operation-attributes-tag' in request
     assert 'ATTR name job-name foo' in request
     assert 'ATTR boolean ipp-attribute-fidelity 1' in request, request
     assert 'ATTR name document-name foo.txt' in request
@@ -570,26 +601,47 @@ def test_print_job_form():
     assert 'ATTR integer job-k-octets 1024' in request
     assert 'ATTR integer job-impressions 2048' in request
     assert 'ATTR integer job-media-sheets 2' in request
+
+    assert 'GROUP job-attributes-tag' in request
+    assert 'ATTR integer job-priority 1' in request
+    assert 'ATTR keyword job-hold-until indefinite' in request
+    assert 'ATTR keyword job-sheets standard' in request
+    assert 'ATTR keyword multiple-document-handling single-document' in request
+    assert 'ATTR integer copies 2' in request
+    assert 'ATTR enum finishings punch' in request
+    assert 'ATTR rangeOfInteger page-ranges 1-6' in request
+    assert 'ATTR keyword sides two-sided-short-edge' in request
+    assert 'ATTR integer number-up 4' in request
+    assert 'ATTR enum orientation-requested reverse-landscape' in request
+    assert 'ATTR keyword media iso-a4-white' in request
+    assert 'ATTR resolution printer-resolution 600dpi' in request
+    assert 'ATTR enum print-quality 5' in request
+
+    assert 'GROUP document-attributes-tag' in request
     assert 'ATTR text auth-info "michael"' in request, request
     assert 'ATTR text job-billing "no-idea"' in request, request
     assert 'ATTR keyword job-sheets none' in request, request
     assert 'ATTR keyword media media-default' in request
     assert 'FILE /path/to/file.txt' in request
 
+    assert (request.index('GROUP operation-attributes-tag') <
+            request.index('GROUP job-attributes-tag') <
+            request.index('GROUP document-attributes-tag')
+            )
+
 
 def test_send_document_form():
     from pyipptool.forms import send_document_form
 
     request = send_document_form.render(
-        {'header':
-         {'operation_attributes':
-          {'job_uri': 'http://cups:631/jobs/2',
-           'requesting_user_name': 'sweet',
-           'document_name': 'python.pdf',
-           'compression': 'gzip',
-           'document_format': 'application/pdf',
-           'document_natural_language': 'en',
-           'last_document': True}},
+        {'operation_attributes':
+         {'job_uri': 'http://cups:631/jobs/2',
+          'requesting_user_name': 'sweet',
+          'document_name': 'python.pdf',
+          'compression': 'gzip',
+          'document_format': 'application/pdf',
+          'document_natural_language': 'en',
+          'last_document': True},
          'file': '/path/to/a/file.pdf'})
     assert 'NAME "Send Document"' in request
     assert 'OPERATION "Send-Document"' in request
@@ -601,3 +653,17 @@ def test_send_document_form():
     assert 'ATTR naturalLanguage document-natural-language en' in request
     assert 'ATTR boolean last-document 1' in request, request
     assert 'FILE /path/to/a/file.pdf' in request, request
+
+
+def test_range_of_integer_validator():
+    from pyipptool.schemas import range_of_integer_validator
+    with pytest.raises(colander.Invalid):
+        range_of_integer_validator(mock.MagicMock(), '12-98d')
+
+    with pytest.raises(colander.Invalid):
+        range_of_integer_validator(mock.MagicMock(), '-12')
+
+    with pytest.raises(colander.Invalid):
+        range_of_integer_validator(mock.MagicMock(), '10-9')
+
+    range_of_integer_validator(mock.MagicMock(), '2-87')
