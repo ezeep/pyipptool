@@ -2,7 +2,7 @@ pyipptool
 =========
 
 .. image::
-   https://travis-ci.org/ezeep/pyipptool.png?branch=master
+   https://travis-ci.org/ezeep/pyipptool.svg?branch=master
    :target: https://travis-ci.org/ezeep/pyipptool
 
 .. image:: https://coveralls.io/repos/ezeep/pyipptool/badge.png
