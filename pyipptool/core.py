@@ -462,6 +462,7 @@ class IPPToolWrapper(object):
               'printer_state_message': printer_state_message,
               'requesting_user_name_allowed ': requesting_user_name_allowed,
               'requesting_user_name_denied': requesting_user_name_denied,
+              'printer_is_shared': printer_is_shared,
               }
 
         request = cups_add_modify_printer_form.render(kw)
@@ -496,6 +497,7 @@ class IPPToolWrapper(object):
               'printer_state_message': printer_state_message,
               'requesting_user_name_allowed ': requesting_user_name_allowed,
               'requesting_user_name_denied': requesting_user_name_denied,
+              'printer_is_shared': printer_is_shared,
               }
 
         request = cups_add_modify_class_form.render(kw)
