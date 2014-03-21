@@ -374,6 +374,9 @@ class IPPToolWrapper(object):
 
         Create-Job-Subscriptions ???
         https://tools.ietf.org/html/rfc3995#section-11.1.1
+
+        A ticket is open for the current bug in cups
+        https://www.cups.org/str.php?L4389
         """
         raise NotImplementedError
         kw = {'operation_attributes':
