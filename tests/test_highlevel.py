@@ -74,11 +74,14 @@ def test_cups_add_modify_printer(_call_ipptool):
     cups_add_modify_printer(
         'https://localhost:631/',
         printer_uri='https://localhost:631/classes/PUBLIC-PDF',
-        device_uri='cups-pdf:/')
+        device_uri='cups-pdf:/',
+        printer_is_shared=False,
+    )
     assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
     request = _call_ipptool._mock_mock_calls[0][1][1]
     assert 'printer-uri https://localhost:631/classes/PUBLIC-PDF' in request
     assert 'device-uri cups-pdf:/' in request
+    assert 'ATTR boolean printer-is-shared 0' in request
 
 
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
@@ -186,8 +189,11 @@ def test_cups_add_modify_class(_call_ipptool):
     from pyipptool import cups_add_modify_class
     _call_ipptool.return_value = {'Tests': [{}]}
     cups_add_modify_class('https://localhost:631/',
-                          printer_uri='')
+                          printer_uri='',
+                          printer_is_shared=True)
     assert _call_ipptool._mock_mock_calls[0][1][0] == 'https://localhost:631/'
+    request = _call_ipptool._mock_mock_calls[0][1][1]
+    assert 'ATTR boolean printer-is-shared 1' in request
 
 
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
