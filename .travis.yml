@@ -7,7 +7,7 @@ before_install:
     - "sudo apt-get update"
     - "sudo apt-get install -qq cups cups-pdf"
     - "curl http://www.cups.org/software/ipptool/ipptool-20130731-linux-ubuntu-x86_64.tar.gz | tar xvzf -"
-    - "echo \"[main]\nipptool_path = \"$TRAVIS_BUILD_DIR\"/ipptool-20130731/ipptool\" > ~/.pyipptool.cfg"
+    - "echo \"[main]\nipptool_path = \"$TRAVIS_BUILD_DIR\"/ipptool-20130731/ipptool\ncups_uri = http://localhost:631/\" > ~/.pyipptool.cfg"
     - "echo \"$USER:travis\" | sudo chpasswd"
     - "sudo pip install -U pip setuptools"
 

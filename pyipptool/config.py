@@ -6,6 +6,7 @@ def read_config(paths=()):
     config = {}
     fs_config = ConfigParser.ConfigParser()
     fs_config.read(paths)
+    config['cups_uri'] = fs_config.get('main', 'cups_uri')
     config['ipptool_path'] = fs_config.get('main', 'ipptool_path')
     try:
         config['login'] = fs_config.get('main', 'login')
