@@ -367,24 +367,18 @@ class IPPToolWrapper(object):
         """
         Create a per-job subscription object.
 
-        Create-Job-Subscription ???
-        http://www.cups.org/documentation.php/spec-ipp.html
 
-        OR
-
-        Create-Job-Subscriptions ???
+        Create-Job-Subscriptions
         https://tools.ietf.org/html/rfc3995#section-11.1.1
 
-        A ticket is open for the current bug in cups
         https://www.cups.org/str.php?L4389
         """
-        raise NotImplementedError
         kw = {'operation_attributes':
               {'printer_uri': printer_uri,
                'requesting_user_name': requesting_user_name,
-               'notify_job_id': notify_job_id,
                'job_id': job_id,
                'job_uri': job_uri},
+              'notify_job_id': notify_job_id,
               'notify_recipient_uri': notify_recipient_uri,
               'notify_pull_method': notify_pull_method,
               'notify_events': notify_events,

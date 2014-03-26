@@ -493,6 +493,8 @@ class CreateSubscriptionSchema(BaseIPPSchema):
     operation_attributes = SubscriptionOperationAttributes(
         widget=IPPTupleWidget())
     object_attributes_tag = 'subscription-attributes-tag'
+    notify_job_id = colander.SchemaNode(colander.Integer(),
+                                        widget=IPPAttributeWidget())
     notify_recipient_uri = colander.SchemaNode(Uri(),
                                                widget=IPPAttributeWidget())
     notify_pull_method = colander.SchemaNode(Keyword(),
