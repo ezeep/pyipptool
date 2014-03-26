@@ -69,15 +69,14 @@ def test_create_printer_subscription_form():
     assert 'ATTR integer notify-time-interval 1' in request
 
 
-@pytest.mark.xfail
 def test_create_job_subscription_form_for_pull_delivery_method():
     from pyipptool.forms import create_job_subscription_form
     request = create_job_subscription_form.render(
         {'operation_attributes':
          {'printer_uri': 'https://localhost:631/printer/p',
-          'requesting_user_name': 'admin',
-          'notify_job_id': 12},
+          'requesting_user_name': 'admin'},
          'notify_recipient_uri': 'rss://',
+         'notify_job_id': 12,
          'notify_events': ('job-completed', 'job-created', 'job-progress'),
          'notify_attributes': 'notify-subscriber-user-name',
          'notify_charset': 'utf-8',

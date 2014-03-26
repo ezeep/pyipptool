@@ -12,7 +12,6 @@ import pytest
 import pyipptool
 
 
-@pytest.mark.xfail
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_ipptool_create_job_subscription_pull_delivery_method(_call_ipptool):
     from pyipptool import create_job_subscription
@@ -27,15 +26,17 @@ def test_ipptool_create_job_subscription_pull_delivery_method(_call_ipptool):
         notify_natural_language='de',
         notify_time_interval=1)
     request = _call_ipptool._mock_mock_calls[0][1][0]
-    assert 'printer-uri https://localhost:631/printer/p' in request
-    assert 'requesting-user-name admin' in request
-    assert 'notify-job-id 108' in request
-    assert 'notify-recipient-uri rss://' in request
-    assert 'notify-events job-completed,job-created,job-progress' in request
-    assert 'notify-attributes notify-subscriber-user-name' in request
-    assert 'notify-charset utf-8' in request
-    assert 'notify-natural-language de' in request
-    assert 'notify-time-interval 1' in request
+    assert 'ATTR uri printer-uri https://localhost:631/printer/p' in request
+    assert 'ATTR name requesting-user-name admin' in request
+    assert 'ATTR integer notify-job-id 108' in request
+    assert 'ATTR uri notify-recipient-uri rss://' in request
+    assert ('ATTR keyword notify-events job-completed,job-created,job-progress'
+            in request)
+    assert ('ATTR keyword notify-attributes notify-subscriber-user-name'
+            in request)
+    assert 'ATTR charset notify-charset utf-8' in request
+    assert 'ATTR language notify-natural-language de' in request
+    assert 'ATTR integer notify-time-interval 1' in request
 
 
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
