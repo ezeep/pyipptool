@@ -39,7 +39,7 @@ setup(
     packages=('pyipptool',),
     install_requires=('deform>=2.0a2',),
     extra_requires={'Tornado': ('tornado', 'futures')},
-    tests_require=('mock', 'pytest', 'coverage',
+    tests_require=('mock', 'pytest', 'coverage', 'pep8',
                    'pytest-cov', 'coveralls', 'pkipplib', 'tornado'),
     include_package_data=True,
     test_suite='tests',

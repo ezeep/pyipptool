@@ -93,6 +93,7 @@ def test_ipp_file_widget():
     response = widget.serialize(field, '/path/to/file.txt')
     assert response == 'FILE /path/to/file.txt'
 
+
 def test_ipp_file_widget_with_None():
     from pyipptool.widgets import IPPFileWidget
 
