@@ -12,6 +12,7 @@ class TestWithCups(object):
 
     ipptool_path = '%s/ipptool-20130731/ipptool' % TRAVIS_BUILD_DIR
     config = {'ipptool_path': ipptool_path,
+              'cups_uri': 'http://localhost:631/',
               'login': TRAVIS_USER,
               'password': 'travis',
               'graceful_shutdown_time': 2,
@@ -20,7 +21,7 @@ class TestWithCups(object):
     def test_cups_get_printers(self):
         import pyipptool
         ipptool = pyipptool.core.IPPToolWrapper(self.config)
-        response = ipptool.cups_get_printers('http://localhost:631/')
+        response = ipptool.cups_get_printers()
         assert response['Name'] == 'CUPS Get Printers'
         assert response['Operation'] == 'CUPS-Get-Printers'
         assert response['RequestAttributes'] == [{
@@ -34,8 +35,7 @@ class TestWithCups(object):
     def test_cups_get_ppds(self):
         import pyipptool
         ipptool = pyipptool.core.IPPToolWrapper(self.config)
-        response = ipptool.cups_get_ppds('http://localhost:631/',
-                                         ppd_make_and_model='generic pdf')
+        response = ipptool.cups_get_ppds(ppd_make_and_model='generic pdf')
         assert response['Name'] == 'CUPS Get PPDs'
         assert response['Operation'] == 'CUPS-Get-PPDs'
         assert response['RequestAttributes'] == [{

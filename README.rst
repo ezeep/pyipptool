@@ -45,6 +45,7 @@ Add the following content in  ``~/.pyipptool.cfg`` or ``/etc/pyipptool/pyipptol.
 
     [main]
     ipptool_path = /usr/bin/ipptool
+    cups_uri = http://localhost:631/
     ;If authentication is required
     login = admin
     password = secret
@@ -63,7 +64,6 @@ Create an infinite time subscription for printer-XYZ class for the ``rss`` notif
 
     >>> from pyipptool import create_printer_subscription
     >>> create_printer_subscription(
-            'http://localhost:631/',
             printer_uri='http://localhost:631/classes/printer-XYZ',
             requesting_user_name='admin',
             notify_recipient_uri='rss://',

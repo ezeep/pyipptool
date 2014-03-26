@@ -76,14 +76,14 @@ class AsyncSubprocessTestCase(tornado.testing.AsyncTestCase):
         thread.start()
 
         wrapper = AsyncIPPToolWrapper(self.config, self.io_loop)
+        wrapper.config['cups_uri'] = 'http://localhost:%s/' % PORT
 
         request = get_subscriptions_form.render(
             {'operation_attributes':
              {'printer_uri': 'http://localhost:%s/printers/fake' % PORT}}
         )
 
-        response = yield wrapper._call_ipptool(
-            'http://localhost:%s/' % PORT, request)
+        response = yield wrapper._call_ipptool(request)
         for key in ('RequestId', 'ipptoolVersion', 'Version'):
             # May diverge depending of version of ipptool
             try:
@@ -140,6 +140,7 @@ class AsyncSubprocessTestCase(tornado.testing.AsyncTestCase):
         thread.start()
 
         wrapper = AsyncIPPToolWrapper(self.config, self.io_loop)
+        wrapper.config['cups_uri'] = 'http://localhost:%s/' % PORT
         request = get_subscriptions_form.render(
             {'header':
              {'operation_attributes':
@@ -150,7 +151,6 @@ class AsyncSubprocessTestCase(tornado.testing.AsyncTestCase):
             old_timeout = wrapper.config['timeout']
             wrapper.config['timeout'] = .1
             with pytest.raises(TimeoutError):
-                yield wrapper._call_ipptool('http://localhost:%s/' % PORT,
-                                            request)
+                yield wrapper._call_ipptool(request)
         finally:
             wrapper.config['timeout'] = old_timeout
