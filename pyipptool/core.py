@@ -1,4 +1,5 @@
 import functools
+import logging
 import os
 import plistlib
 import shutil
@@ -201,7 +202,14 @@ class IPPToolWrapper(object):
         timer.cancel()
         if future:
             raise TimeoutError
-        return plistlib.readPlistFromString(stdout)['Tests'][0]
+        result = plistlib.readPlistFromString(stdout)
+        try:
+            return result['Tests'][0]
+        except (IndexError, KeyError):
+            logger = logging.getLogger(__name__)
+            logger.error('ipptool command failed: {} {}'.format(stdout,
+                                                                stderr))
+            raise
 
     @pyipptool_coroutine
     def release_job(self,
@@ -440,7 +448,7 @@ class IPPToolWrapper(object):
                                 requesting_user_name_denied=colander.null,
                                 printer_is_shared=colander.null):
         kw = {'operation_attributes':
-             {'printer_uri': printer_uri},
+              {'printer_uri': printer_uri},
               'auth_info_required': auth_info_required,
               'job_sheets_default': job_sheets_default,
               'device_uri': device_uri,
@@ -541,12 +549,12 @@ class IPPToolWrapper(object):
                          requested_attributes=colander.null,
                          timeout=colander.null):
         kw = {'operation_attributes':
-             {'device_class': device_class,
-              'exclude_schemes': exclude_schemes,
-              'include-schemes': include_schemes,
-              'limit': limit,
-              'requested_attributes': requested_attributes,
-              'timeout': timeout}}
+              {'device_class': device_class,
+               'exclude_schemes': exclude_schemes,
+               'include-schemes': include_schemes,
+               'limit': limit,
+               'requested_attributes': requested_attributes,
+               'timeout': timeout}}
         request = cups_get_devices_form.render(kw)
         response = yield self._call_ipptool(request)
         raise Return(response)
@@ -658,12 +666,12 @@ class IPPToolWrapper(object):
                  which_jobs=colander.null,
                  my_jobs=colander.null):
         kw = {'header': {'operation_attributes':
-                        {'printer_uri': printer_uri,
-                         'requesting_user_name': requesting_user_name,
-                         'limit': limit,
-                         'requested_attributes': requested_attributes,
-                         'which_jobs': which_jobs,
-                         'my_jobs': my_jobs}}}
+                         {'printer_uri': printer_uri,
+                          'requesting_user_name': requesting_user_name,
+                          'limit': limit,
+                          'requested_attributes': requested_attributes,
+                          'which_jobs': which_jobs,
+                          'my_jobs': my_jobs}}}
         request = get_jobs_form.render(kw)
         response = yield self._call_ipptool(request)
         raise Return(response)
@@ -674,9 +682,9 @@ class IPPToolWrapper(object):
                                requesting_user_name=colander.null,
                                requested_attributes=colander.null):
         kw = {'header': {'operation_attributes':
-                        {'printer_uri': printer_uri,
-                         'requesting_user_name': requesting_user_name,
-                         'requested_attributes': requested_attributes}}}
+                         {'printer_uri': printer_uri,
+                          'requesting_user_name': requesting_user_name,
+                          'requested_attributes': requested_attributes}}}
         request = get_printer_attributes_form.render(kw)
         response = yield self._call_ipptool(request)
         raise Return(response)
@@ -690,12 +698,12 @@ class IPPToolWrapper(object):
                           requested_attributes=colander.null,
                           my_subscriptions=colander.null):
         kw = {'header': {'operation_attributes':
-                        {'printer_uri': printer_uri,
-                         'requesting_user_name': requesting_user_name,
-                         'notify_job_id': notify_job_id,
-                         'limit': limit,
-                         'requested_attributes': requested_attributes,
-                         'my_subscriptions': my_subscriptions}}}
+                         {'printer_uri': printer_uri,
+                          'requesting_user_name': requesting_user_name,
+                          'notify_job_id': notify_job_id,
+                          'limit': limit,
+                          'requested_attributes': requested_attributes,
+                          'my_subscriptions': my_subscriptions}}}
         request = get_subscriptions_form.render(kw)
         response = yield self._call_ipptool(request)
         raise Return(response)
@@ -736,8 +744,8 @@ class IPPToolWrapper(object):
     def _pause_or_resume_printer(self, form, printer_uri=None,
                                  requesting_user_name=colander.null):
         kw = {'header': {'operation_attributes':
-                        {'printer_uri': printer_uri,
-                         'requesting_user_name': requesting_user_name}}}
+                         {'printer_uri': printer_uri,
+                          'requesting_user_name': requesting_user_name}}}
         request = form.render(kw)
         response = yield self._call_ipptool(request)
         raise Return(response)
@@ -840,4 +848,11 @@ class AsyncIPPToolWrapper(IPPToolWrapper):
         finally:
             os.unlink(temp_file.name)
 
-        raise Return(plistlib.readPlistFromString(stdout)['Tests'][0])
+        result = plistlib.readPlistFromString(stdout)
+        try:
+            raise Return(result['Tests'][0])
+        except (IndexError, KeyError):
+            logger = logging.getLogger(__name__)
+            logger.error('ipptool command failed: {} {}'.format(stdout,
+                                                                stderr))
+            raise
