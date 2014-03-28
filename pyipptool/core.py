@@ -1,4 +1,5 @@
 import functools
+import logging
 import os
 import plistlib
 import shutil
@@ -201,7 +202,14 @@ class IPPToolWrapper(object):
         timer.cancel()
         if future:
             raise TimeoutError
-        return plistlib.readPlistFromString(stdout)['Tests'][0]
+        result = plistlib.readPlistFromString(stdout)
+        try:
+            return result['Tests'][0]
+        except (IndexError, KeyError):
+            logger = logging.getLogger(__name__)
+            logger.error('ipptool command failed: {} {}'.format(stdout,
+                                                                stderr))
+            raise
 
     @pyipptool_coroutine
     def release_job(self,
@@ -840,4 +848,11 @@ class AsyncIPPToolWrapper(IPPToolWrapper):
         finally:
             os.unlink(temp_file.name)
 
-        raise Return(plistlib.readPlistFromString(stdout)['Tests'][0])
+        result = plistlib.readPlistFromString(stdout)
+        try:
+            raise Return(result['Tests'][0])
+        except (IndexError, KeyError):
+            logger = logging.getLogger(__name__)
+            logger.error('ipptool command failed: {} {}'.format(stdout,
+                                                                stderr))
+            raise
