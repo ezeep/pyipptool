@@ -24,17 +24,6 @@ class IPPFileWidget(Widget):
         return 'FILE {}'.format(cstruct)
 
 
-class IPPGroupWidget(Widget):
-    def serialize(self, field, cstruct=None, readonly=False):
-        name = field.name
-        while field.parent is not None:
-            field = field.parent
-        value = getattr(field.schema, name)
-        if value is colander.null:
-            return ''
-        return 'GROUP {}'.format(value)
-
-
 class IPPAttributeWidget(Widget):
     def serialize(self, field, cstruct=None, readonly=False):
         if cstruct is colander.null:
@@ -55,8 +44,8 @@ class IPPBodyWidget(MappingWidget):
     item_template = 'ipp/item'
 
 
-class IPPTupleWidget(SequenceWidget):
-    readonly_template = 'ipp/tuple'
+class IPPGroupWidget(SequenceWidget):
+    readonly_template = 'ipp/group_tuple'
     template = readonly_template
     item_template = 'ipp/item'
 

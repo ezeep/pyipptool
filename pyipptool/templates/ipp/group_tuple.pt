@@ -1,0 +1,5 @@
+<tal:block tal:define="item_template item_template|field.widget.item_template;">
+    <b tal:replace="python: 'GROUP %s' % field.name.replace('_', '-')"/>
+    <tal:block tal:repeat="child field"
+               tal:replace="child.render_template(item_template)"/>
+</tal:block>

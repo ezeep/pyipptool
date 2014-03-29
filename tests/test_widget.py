@@ -68,21 +68,6 @@ def test_ipp_name_widget():
     assert response == 'NAME "FOO"'
 
 
-def test_ipp_group_widget():
-    from pyipptool.widgets import IPPGroupWidget
-    widget = IPPGroupWidget()
-    rendrer = DummyRenderer()
-    schema = DummySchema(name='FOO')
-
-    field = DummyField(schema, renderer=rendrer)
-    field.parent = None
-    sub_field = DummyField(None, renderer=rendrer)
-    sub_field.parent = field
-
-    response = widget.serialize(sub_field, 'world')
-    assert response == 'GROUP FOO'
-
-
 def test_ipp_file_widget():
     from pyipptool.widgets import IPPFileWidget
 

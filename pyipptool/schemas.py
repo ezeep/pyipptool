@@ -2,8 +2,7 @@ import re
 
 import colander
 from .widgets import (IPPAttributeWidget, IPPBodyWidget, IPPFileWidget,
-                      IPPGroupWidget, IPPNameWidget, IPPTupleWidget,
-                      IPPConstantTupleWidget)
+                      IPPGroupWidget, IPPNameWidget)
 
 
 class IntegerOrTuple(colander.List):
@@ -91,7 +90,7 @@ class Uri(StringOrTuple):
     pass
 
 
-class OperationAttributes(colander.Schema):
+class OperationAttributesGroup(colander.Schema):
     attributes_charset = colander.SchemaNode(Charset(),
                                              default='utf-8',
                                              widget=IPPAttributeWidget())
@@ -99,24 +98,12 @@ class OperationAttributes(colander.Schema):
         Language(),
         default='en',
         widget=IPPAttributeWidget())
-
-
-class OperationAttributesWithPrinterUri(OperationAttributes):
+    compression = colander.SchemaNode(Keyword(), widget=IPPAttributeWidget())
     printer_uri = colander.SchemaNode(Uri(),
                                       widget=IPPAttributeWidget())
-
-
-class OperationAttributesWithJobUri(OperationAttributes):
     job_uri = colander.SchemaNode(Uri(), widget=IPPAttributeWidget())
-
-
-class JobOperationAttributes(OperationAttributesWithPrinterUri,
-                             OperationAttributesWithJobUri):
     job_id = colander.SchemaNode(colander.Integer(),
                                  widget=IPPAttributeWidget())
-
-
-class GetDevicesOperationAttributes(OperationAttributes):
     exclude_schemes = colander.SchemaNode(Name(), widget=IPPAttributeWidget())
     include_schemes = colander.SchemaNode(Name(), widget=IPPAttributeWidget())
     limit = colander.SchemaNode(
@@ -125,24 +112,10 @@ class GetDevicesOperationAttributes(OperationAttributes):
     requested_attributes = colander.SchemaNode(
         Keyword(),
         widget=IPPAttributeWidget())
-
-
-class CancelJobOperationAttributes(JobOperationAttributes):
     purge_job = colander.SchemaNode(colander.Boolean(true_val=1, false_val=0),
                                     widget=IPPAttributeWidget())
-
-
-class SubscriptionOperationAttributes(OperationAttributesWithPrinterUri):
     requesting_user_name = colander.SchemaNode(Name(),
                                                widget=IPPAttributeWidget())
-
-
-class JobSubscriptionOperationAttributes(JobOperationAttributes):
-    requesting_user_name = colander.SchemaNode(Name(),
-                                               widget=IPPAttributeWidget())
-
-
-class CreateJobOperationAttributes(SubscriptionOperationAttributes):
     job_name = colander.SchemaNode(Name(), widget=IPPAttributeWidget())
     ipp_attribute_fidelity = colander.SchemaNode(colander.Boolean(true_val=1,
                                                                   false_val=0),
@@ -152,30 +125,21 @@ class CreateJobOperationAttributes(SubscriptionOperationAttributes):
                                           widget=IPPAttributeWidget())
     job_media_sheets = colander.SchemaNode(Integer(),
                                            widget=IPPAttributeWidget())
-
-
-class PrintJobOperationAttributes(CreateJobOperationAttributes):
     document_name = colander.SchemaNode(Name(), widget=IPPAttributeWidget())
-    compression = colander.SchemaNode(Keyword(), widget=IPPAttributeWidget())
+    device_class = colander.SchemaNode(Keyword(), widget=IPPAttributeWidget())
     document_format = colander.SchemaNode(MimeMediaType(),
                                           widget=IPPAttributeWidget())
     document_natural_language = colander.SchemaNode(
         NaturalLanguage(),
         widget=IPPAttributeWidget())
 
-
-class CancelSubscriptionOperationAttributes(SubscriptionOperationAttributes):
     notify_subscription_id = colander.SchemaNode(
         colander.Integer(),
         widget=IPPAttributeWidget())
 
-
-class HoldNewJobsOperationAttributes(SubscriptionOperationAttributes):
     printer_message_from_operator = colander.SchemaNode(
         Text(), widget=IPPAttributeWidget())
 
-
-class GetJobsOperationAttributes(SubscriptionOperationAttributes):
     limit = colander.SchemaNode(
         colander.Integer(),
         widget=IPPAttributeWidget())
@@ -185,18 +149,6 @@ class GetJobsOperationAttributes(SubscriptionOperationAttributes):
     which_jobs = colander.SchemaNode(Keyword(), widget=IPPAttributeWidget())
     my_jobs = colander.SchemaNode(colander.Boolean(true_val=1, false_val=0),
                                   widget=IPPAttributeWidget())
-
-
-class MoveJobOperationAttributes(OperationAttributesWithPrinterUri):
-    job_id = colander.SchemaNode(colander.Integer(),
-                                 widget=IPPAttributeWidget())
-    job_uri = colander.SchemaNode(Uri(), widget=IPPAttributeWidget())
-
-
-class GetSubscriptionsAttributes(OperationAttributesWithPrinterUri):
-    requesting_user_name = colander.SchemaNode(
-        Name(),
-        widget=IPPAttributeWidget())
     notify_job_id = colander.SchemaNode(
         colander.Integer(),
         widget=IPPAttributeWidget())
@@ -210,11 +162,6 @@ class GetSubscriptionsAttributes(OperationAttributesWithPrinterUri):
         colander.Boolean(false_val=0, true_val=1),
         widget=IPPAttributeWidget())
 
-
-class GetNotificationsAttributes(OperationAttributesWithPrinterUri):
-    requesting_user_name = colander.SchemaNode(
-        Name(),
-        widget=IPPAttributeWidget())
     notify_subscription_ids = colander.SchemaNode(
         Integer(),
         widget=IPPAttributeWidget())
@@ -225,8 +172,6 @@ class GetNotificationsAttributes(OperationAttributesWithPrinterUri):
         colander.Boolean(false_val=0, true_val=1),
         widget=IPPAttributeWidget())
 
-
-class CupsGetPPDsSchemaOperationAttributes(GetDevicesOperationAttributes):
     ppd_make = colander.SchemaNode(Text(), widget=IPPAttributeWidget())
     ppd_make_and_model = colander.SchemaNode(
         Text(),
@@ -239,20 +184,12 @@ class CupsGetPPDsSchemaOperationAttributes(GetDevicesOperationAttributes):
     ppd_psversion = colander.SchemaNode(Text(), widget=IPPAttributeWidget())
     ppd_type = colander.SchemaNode(Keyword(), widget=IPPAttributeWidget())
 
-
-class CupsGetDevicesSchemaOperationAttributes(GetDevicesOperationAttributes):
-    device_class = colander.SchemaNode(Keyword(), widget=IPPAttributeWidget())
     timeout = colander.SchemaNode(
         colander.Integer(),
         widget=IPPAttributeWidget())
 
-
-class CupsGetPrintersSchemaOperationAttributes(OperationAttributes):
     first_printer_name = colander.SchemaNode(
         Name(),
-        widget=IPPAttributeWidget())
-    limit = colander.SchemaNode(
-        colander.Integer(),
         widget=IPPAttributeWidget())
     printer_location = colander.SchemaNode(
         Text(),
@@ -267,27 +204,6 @@ class CupsGetPrintersSchemaOperationAttributes(OperationAttributes):
     requested_user_name = colander.SchemaNode(Name(),
                                               widget=IPPAttributeWidget())
 
-
-class GetJobAttributesOperationAttributes(MoveJobOperationAttributes):
-    requesting_user_name = colander.SchemaNode(Name(),
-                                               widget=IPPAttributeWidget())
-    requested_attributes = colander.SchemaNode(
-        Keyword(),
-        widget=IPPAttributeWidget())
-
-
-class GetPrinterAttributesOperationAttributes(
-        OperationAttributesWithPrinterUri):
-    requesting_user_name = colander.SchemaNode(Name(),
-                                               widget=IPPAttributeWidget())
-    requested_attributes = colander.SchemaNode(
-        Keyword(),
-        widget=IPPAttributeWidget())
-
-
-class SendDocumentOperationAttribute(JobOperationAttributes):
-    requesting_user_name = colander.SchemaNode(Name(),
-                                               widget=IPPAttributeWidget())
     document_name = colander.SchemaNode(Name(), widget=IPPAttributeWidget())
     compression = colander.SchemaNode(Keyword(), widget=IPPAttributeWidget())
     document_format = colander.SchemaNode(MimeMediaType(),
@@ -300,12 +216,16 @@ class SendDocumentOperationAttribute(JobOperationAttributes):
         widget=IPPAttributeWidget())
 
 
-class JobAttributes(colander.Schema):
+class JobAttributesGroup(colander.Schema):
     job_priority = colander.SchemaNode(Integer(),
                                        widget=IPPAttributeWidget())
+    job_printer_uri = colander.SchemaNode(Uri(),
+                                          widget=IPPAttributeWidget())
     job_hold_until = colander.SchemaNode(Keyword(),
                                          widget=IPPAttributeWidget())
     job_sheets = colander.SchemaNode(Keyword(), widget=IPPAttributeWidget())
+    auth_info = colander.SchemaNode(Text(), widget=IPPAttributeWidget())
+    job_billing = colander.SchemaNode(Text(), widget=IPPAttributeWidget())
     multiple_document_handling = colander.SchemaNode(
         Keyword(),
         widget=IPPAttributeWidget())
@@ -324,53 +244,32 @@ class JobAttributes(colander.Schema):
     print_quality = colander.SchemaNode(Enum(), widget=IPPAttributeWidget())
 
 
-class HeaderIPPSchema(colander.Schema):
-    name = colander.SchemaNode(colander.String(), widget=IPPNameWidget())
-    operation = colander.SchemaNode(colander.String(), widget=IPPNameWidget())
-    operation_attributes_tag = colander.SchemaNode(colander.String(),
-                                                   widget=IPPGroupWidget())
+class SubscriptionGroup(colander.Schema):
+    notify_recipient_uri = colander.SchemaNode(Uri(),
+                                               widget=IPPAttributeWidget())
+    notify_events = colander.SchemaNode(Keyword(),
+                                        widget=IPPAttributeWidget())
+    notify_job_id = colander.SchemaNode(colander.Integer(),
+                                        widget=IPPAttributeWidget())
+    notify_pull_method = colander.SchemaNode(Keyword(),
+                                             widget=IPPAttributeWidget())
+    notify_attributes = colander.SchemaNode(Keyword(),
+                                            widget=IPPAttributeWidget())
+    notify_charset = colander.SchemaNode(Charset(),
+                                         widget=IPPAttributeWidget())
+    notify_natural_language = colander.SchemaNode(Language(),
+                                                  widget=IPPAttributeWidget())
+    notify_time_interval = colander.SchemaNode(colander.Integer(),
+                                               widget=IPPAttributeWidget())
+    notify_lease_duration = colander.SchemaNode(colander.Integer(),
+                                                widget=IPPAttributeWidget())
 
 
-class SubOperationIPPSchema(colander.Schema):
-    sub_operation_attributes_tag = colander.SchemaNode(colander.String(),
-                                                       widget=IPPGroupWidget())
-
-    # override it to enable sub operations
-    sub_operation_attributes = colander.null
+class DocumentAttributesGroup(colander.Schema):
+    file = colander.SchemaNode(colander.String(), widget=IPPFileWidget())
 
 
-class BaseIPPSchema(colander.Schema):
-    operation_attributes_tag = 'operation-attributes-tag'
-    sub_operation_attributes_tag = colander.null
-    header = HeaderIPPSchema(widget=IPPConstantTupleWidget())
-    sub_group = SubOperationIPPSchema(widget=IPPConstantTupleWidget())
-    operation_attributes = OperationAttributes(widget=IPPTupleWidget())
-    object_attributes_tag = colander.SchemaNode(
-        colander.String(),
-        widget=IPPGroupWidget())
-
-
-class CancelJobSchema(BaseIPPSchema):
-    name = 'Cancel Job'
-    operation = 'Cancel-Job'
-    object_attributes_tag = colander.null
-    operation_attributes = CancelJobOperationAttributes(
-        widget=IPPTupleWidget())
-
-
-class ReleaseJobSchema(BaseIPPSchema):
-    name = 'Release Job'
-    operation = 'Release-Job'
-    operation_attributes = JobOperationAttributes(
-        widget=IPPTupleWidget())
-    object_attributes_tag = colander.null
-
-
-class BaseCupsAddModifyIPPSchema(BaseIPPSchema):
-    operation_attributes = OperationAttributesWithPrinterUri(
-        widget=IPPTupleWidget())
-
-    object_attributes_tag = 'printer-attributes-tag'
+class PrinterAttributesGroup(colander.Schema):
     auth_info_required = colander.SchemaNode(Keyword(),
                                              widget=IPPAttributeWidget())
 
@@ -395,32 +294,47 @@ class BaseCupsAddModifyIPPSchema(BaseIPPSchema):
     printer_is_shared = colander.SchemaNode(colander.Boolean(true_val=1,
                                                              false_val=0),
                                             widget=IPPAttributeWidget())
-
-
-class CupsAddModifyPrinterSchema(BaseCupsAddModifyIPPSchema):
-    name = 'CUPS Add Modify Printer'
-    operation = 'CUPS-Add-Modify-Printer'
-
     job_sheets_default = colander.SchemaNode(Name(),
                                              widget=IPPAttributeWidget())
     device_uri = colander.SchemaNode(Uri(),
                                      widget=IPPAttributeWidget())
     port_monitor = colander.SchemaNode(Name(), widget=IPPAttributeWidget())
     ppd_name = colander.SchemaNode(Name(), widget=IPPAttributeWidget())
+    member_uris = colander.SchemaNode(Uri(), widget=IPPAttributeWidget())
+
+
+class BaseIPPSchema(colander.Schema):
+    name = colander.SchemaNode(colander.String(), widget=IPPNameWidget())
+    operation = colander.SchemaNode(colander.String(), widget=IPPNameWidget())
+    operation_attributes_tag = OperationAttributesGroup(
+        widget=IPPGroupWidget())
+
+
+class CancelJobSchema(BaseIPPSchema):
+    name = 'Cancel Job'
+    operation = 'Cancel-Job'
+
+
+class ReleaseJobSchema(BaseIPPSchema):
+    name = 'Release Job'
+    operation = 'Release-Job'
+
+
+class CupsAddModifyPrinterSchema(BaseIPPSchema):
+    name = 'CUPS Add Modify Printer'
+    operation = 'CUPS-Add-Modify-Printer'
+    printer_attributes_tag = PrinterAttributesGroup(widget=IPPGroupWidget())
 
 
 class CupsDeletePrinterSchema(BaseIPPSchema):
     name = 'CUPS Delete Printer'
     operation = 'CUPS-Delete-Printer'
-    operation_attributes = OperationAttributesWithPrinterUri(
-        widget=IPPTupleWidget())
-    object_attributes_tag = colander.null
 
 
-class CupsAddModifyClassSchema(BaseCupsAddModifyIPPSchema):
+class CupsAddModifyClassSchema(BaseIPPSchema):
     name = 'CUPS Add Modify Class'
     operation = 'CUPS-Add-Modify-Class'
-    member_uris = colander.SchemaNode(Uri(), widget=IPPAttributeWidget())
+    printer_attributes_tag = PrinterAttributesGroup(widget=IPPGroupWidget())
 
 
 class CupsDeleteClassSchema(CupsDeletePrinterSchema):
@@ -431,25 +345,16 @@ class CupsDeleteClassSchema(CupsDeletePrinterSchema):
 class CupsGetClassesSchema(BaseIPPSchema):
     name = 'CUPS Get Classes'
     operation = 'CUPS-Get-Classes'
-    object_attributes_tag = colander.null
-    operation_attributes = CupsGetPrintersSchemaOperationAttributes(
-        widget=IPPTupleWidget())
 
 
 class CupsGetDevicesSchema(BaseIPPSchema):
     name = 'CUPS Get Devices'
     operation = 'CUPS-Get-Devices'
-    operation_attributes = CupsGetDevicesSchemaOperationAttributes(
-        widget=IPPTupleWidget())
-    object_attributes_tag = colander.null
 
 
 class CupsGetPPDsSchema(BaseIPPSchema):
     name = 'CUPS Get PPDs'
     operation = 'CUPS-Get-PPDs'
-    object_attributes_tag = colander.null
-    operation_attributes = CupsGetPPDsSchemaOperationAttributes(
-        widget=IPPTupleWidget())
 
 
 class CupsGetPrintersSchema(CupsGetClassesSchema):
@@ -460,157 +365,89 @@ class CupsGetPrintersSchema(CupsGetClassesSchema):
 class CupsMoveJobSchema(BaseIPPSchema):
     name = 'CUPS Move Job'
     operation = 'CUPS-Move-Job'
-    object_attributes_tag = 'job-attributes-tag'
-    operation_attributes = MoveJobOperationAttributes(
-        widget=IPPTupleWidget())
-    job_printer_uri = colander.SchemaNode(Uri(), widget=IPPAttributeWidget())
+    job_attributes_tag = JobAttributesGroup(widget=IPPGroupWidget())
 
 
 class CupsRejectJobsSchema(BaseIPPSchema):
     name = 'CUPS Reject Jobs'
     operation = 'CUPS-Reject-Jobs'
-    object_attributes_tag = 'printer-attributes-tag'
-    printer_state_message = colander.SchemaNode(
-        Text(),
-        widget=IPPAttributeWidget())
+    printer_attributes_tag = PrinterAttributesGroup(widget=IPPGroupWidget())
 
 
 class CreateJobSchema(BaseIPPSchema):
+    """
+    http://www.cups.org/documentation.php/spec-ipp.html#CREATE_JOB
+    """
     name = 'Create Job'
     operation = 'Create-Job'
-    object_attributes_tag = colander.null
-    operation_attributes = PrintJobOperationAttributes(
-        widget=IPPTupleWidget())
-    sub_operation_attributes_tag = 'job-attributes-tag'
-    sub_operation_attributes = JobAttributes(widget=IPPTupleWidget())
-    auth_info = colander.SchemaNode(Text(), widget=IPPAttributeWidget())
-    job_billing = colander.SchemaNode(Text(), widget=IPPAttributeWidget())
-    job_sheets = colander.SchemaNode(Keyword(), widget=IPPAttributeWidget())
-    media = colander.SchemaNode(Keyword(), widget=IPPAttributeWidget())
+    job_attributes_tag = JobAttributesGroup(widget=IPPGroupWidget())
 
 
-class CreateSubscriptionSchema(BaseIPPSchema):
-    operation_attributes = SubscriptionOperationAttributes(
-        widget=IPPTupleWidget())
-    object_attributes_tag = 'subscription-attributes-tag'
-    notify_job_id = colander.SchemaNode(colander.Integer(),
-                                        widget=IPPAttributeWidget())
-    notify_recipient_uri = colander.SchemaNode(Uri(),
-                                               widget=IPPAttributeWidget())
-    notify_pull_method = colander.SchemaNode(Keyword(),
-                                             widget=IPPAttributeWidget())
-    notify_events = colander.SchemaNode(Keyword(),
-                                        widget=IPPAttributeWidget())
-    notify_attributes = colander.SchemaNode(Keyword(),
-                                            widget=IPPAttributeWidget())
-    notify_charset = colander.SchemaNode(Charset(),
-                                         widget=IPPAttributeWidget())
-    notify_natural_language = colander.SchemaNode(Language(),
-                                                  widget=IPPAttributeWidget())
-    notify_time_interval = colander.SchemaNode(colander.Integer(),
-                                               widget=IPPAttributeWidget())
-
-
-class CreateJobSubscriptionSchema(CreateSubscriptionSchema):
+class CreateJobSubscriptionSchema(BaseIPPSchema):
     name = 'Create Job Subscription'
     operation = 'Create-Job-Subscription'
-    operation_attributes = JobSubscriptionOperationAttributes(
-        widget=IPPTupleWidget())
+    subscription_attributes_tag = SubscriptionGroup(
+        widget=IPPGroupWidget())
 
 
-class CreatePrinterSubscriptionSchema(CreateSubscriptionSchema):
+class CreatePrinterSubscriptionSchema(CreateJobSubscriptionSchema):
     name = 'Create Printer Subscription'
     operation = 'Create-Printer-Subscription'
-    notify_lease_duration = colander.SchemaNode(colander.Integer(),
-                                                widget=IPPAttributeWidget())
 
 
 class GetJobAttributesSchema(BaseIPPSchema):
     name = 'Get Job Attributes'
     operation = 'Get-Job-Attributes'
-    object_attributes_tag = colander.null
-    operation_attributes = GetJobAttributesOperationAttributes(
-        widget=IPPTupleWidget())
 
 
 class GetJobsSchema(BaseIPPSchema):
     name = 'Get Jobs'
     operation = 'Get-Jobs'
-    object_attributes_tag = colander.null
-    operation_attributes = GetJobsOperationAttributes(
-        widget=IPPTupleWidget())
 
 
 class GetPrinterAttributesSchema(BaseIPPSchema):
     name = 'Get Printer Attributes'
     operation = 'Get-Printer-Attributes'
-    operation_attributes = GetPrinterAttributesOperationAttributes(
-        widget=IPPTupleWidget())
-    object_attributes_tag = colander.null
 
 
 class GetSubscriptionsSchema(BaseIPPSchema):
     name = 'Get Subscriptions'
     operation = 'Get-Subscriptions'
-    operation_attributes = GetSubscriptionsAttributes(
-        widget=IPPTupleWidget())
-    object_attributes_tag = colander.null
 
 
 class GetNotificationsSchema(BaseIPPSchema):
     name = 'Get Notifications'
     operation = 'Get-Notifications'
-    operation_attributes = GetNotificationsAttributes(
-        widget=IPPTupleWidget())
-    object_attributes_tag = colander.null
 
 
 class PausePrinterSchema(BaseIPPSchema):
     name = 'Pause Printer'
     operation = 'Pause-Printer'
-    operation_attributes = SubscriptionOperationAttributes(
-        widget=IPPTupleWidget())
-    object_attributes_tag = colander.null
 
 
 class PrintJobSchema(CreateJobSchema):
     name = 'Print Job'
     operation = 'Print-Job'
-    operation_attributes = PrintJobOperationAttributes(
-        widget=IPPTupleWidget())
-    sub_operation_attributes_tag = 'job-attributes-tag'
-    sub_operation_attributes = JobAttributes(
-        widget=IPPTupleWidget())
-    object_attributes_tag = 'document-attributes-tag'
-    auth_info = colander.SchemaNode(Text(), widget=IPPAttributeWidget())
-    job_billing = colander.SchemaNode(Text(), widget=IPPAttributeWidget())
-    job_sheets = colander.SchemaNode(Keyword(), widget=IPPAttributeWidget())
-    media = colander.SchemaNode(Keyword(), widget=IPPAttributeWidget())
-    file = colander.SchemaNode(colander.String(), widget=IPPFileWidget())
+    job_attributes_tag = JobAttributesGroup(widget=IPPGroupWidget())
+    subscription_attributes_tag = SubscriptionGroup(
+        widget=IPPGroupWidget())
+    document_attributes_tag = DocumentAttributesGroup(widget=IPPGroupWidget())
 
 
 class ResumePrinterSchema(PausePrinterSchema):
     name = 'Resume Printer'
     operation = 'Resume-Printer'
-    operation_attributes = SubscriptionOperationAttributes(
-        widget=IPPTupleWidget())
-    object_attributes_tag = colander.null
 
 
 class SendDocumentSchema(BaseIPPSchema):
     name = 'Send Document'
     operation = 'Send-Document'
-    operation_attributes = SendDocumentOperationAttribute(
-        widget=IPPTupleWidget())
-    object_attributes_tag = 'document-attributes-tag'
-    file = colander.SchemaNode(colander.String(), widget=IPPFileWidget())
+    document_attributes_tag = DocumentAttributesGroup(widget=IPPGroupWidget())
 
 
 class HoldNewJobsSchema(PausePrinterSchema):
     name = 'Hold New Jobs'
     operation = 'Hold-New-Jobs'
-    operation_attributes = HoldNewJobsOperationAttributes(
-        widget=IPPTupleWidget())
 
 
 class ReleaseHeldNewJobsSchema(HoldNewJobsSchema):
@@ -621,9 +458,6 @@ class ReleaseHeldNewJobsSchema(HoldNewJobsSchema):
 class CancelSubscriptionSchema(BaseIPPSchema):
     name = 'Cancel Subscription'
     operation = 'Cancel-Subscription'
-    operation_attributes = CancelSubscriptionOperationAttributes(
-        widget=IPPTupleWidget())
-    object_attributes_tag = colander.null
 
 
 cancel_job_schema = CancelJobSchema(widget=IPPBodyWidget())

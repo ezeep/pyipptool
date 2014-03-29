@@ -79,7 +79,7 @@ class AsyncSubprocessTestCase(tornado.testing.AsyncTestCase):
         wrapper.config['cups_uri'] = 'http://localhost:%s/' % PORT
 
         request = get_subscriptions_form.render(
-            {'operation_attributes':
+            {'operation_attributes_tag':
              {'printer_uri': 'http://localhost:%s/printers/fake' % PORT}}
         )
 
