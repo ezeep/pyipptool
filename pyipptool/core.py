@@ -302,6 +302,7 @@ class IPPToolWrapper(object):
     @pyipptool_coroutine
     def print_job(self,
                   printer_uri=None,
+                  requesting_user_name=colander.null,
                   job_name=colander.null,
                   ipp_attribute_fidelity=colander.null,
                   document_name=colander.null,
@@ -322,6 +323,7 @@ class IPPToolWrapper(object):
                   orientation_requested=colander.null,
                   printer_resolution=colander.null,
                   print_quality=colander.null,
+                  ezeep_job_uuid=colander.null,
                   notify_recipient_uri=colander.null,
                   notify_events=colander.null,
                   notify_time_interval=colander.null,
@@ -329,10 +331,12 @@ class IPPToolWrapper(object):
                   job_billing=colander.null,
                   job_sheets=colander.null,
                   media=colander.null,
-                  document_content=None):
+                  document_content=None,
+                  ):
         filename, delete = _get_filename_for_content(document_content)
         kw = {'operation_attributes_tag':
               {'printer_uri': printer_uri,
+               'requesting_user_name': requesting_user_name,
                'job_name': job_name,
                'ipp_attribute_fidelity': ipp_attribute_fidelity,
                'document_name': document_name,
@@ -357,7 +361,9 @@ class IPPToolWrapper(object):
                'orientation_requested': orientation_requested,
                'media': media,
                'printer_resolution': printer_resolution,
-               'print_quality': print_quality},
+               'print_quality': print_quality,
+               'ezeep_job_uuid': ezeep_job_uuid,
+               },
               'subscription_attributes_tag':
               {'notify_recipient_uri': notify_recipient_uri,
                'notify_events': notify_events,

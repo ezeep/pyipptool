@@ -1,8 +1,11 @@
 import re
 
 import colander
-from .widgets import (IPPAttributeWidget, IPPBodyWidget, IPPFileWidget,
-                      IPPGroupWidget, IPPNameWidget)
+from .widgets import (IPPAttributeWidget,
+                      IPPBodyWidget,
+                      IPPFileWidget,
+                      IPPGroupWidget,
+                      IPPNameWidget)
 
 
 class IntegerOrTuple(colander.List):
@@ -242,6 +245,10 @@ class JobAttributesGroup(colander.Schema):
     printer_resolution = colander.SchemaNode(Resolution(),
                                              widget=IPPAttributeWidget())
     print_quality = colander.SchemaNode(Enum(), widget=IPPAttributeWidget())
+
+    # Arbitrary Job Attributes
+    ezeep_job_uuid = colander.SchemaNode(Text(),
+                                         widget=IPPAttributeWidget())
 
 
 class SubscriptionGroup(colander.Schema):
