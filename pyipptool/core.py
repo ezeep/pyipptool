@@ -302,6 +302,7 @@ class IPPToolWrapper(object):
     @pyipptool_coroutine
     def print_job(self,
                   printer_uri=None,
+                  requesting_user_name=colander.null,
                   job_name=colander.null,
                   ipp_attribute_fidelity=colander.null,
                   document_name=colander.null,
@@ -335,6 +336,7 @@ class IPPToolWrapper(object):
         filename, delete = _get_filename_for_content(document_content)
         kw = {'operation_attributes_tag':
               {'printer_uri': printer_uri,
+               'requesting_user_name': requesting_user_name,
                'job_name': job_name,
                'ipp_attribute_fidelity': ipp_attribute_fidelity,
                'document_name': document_name,

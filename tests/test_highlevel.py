@@ -643,6 +643,7 @@ def test_print_job(_call_ipptool):
     with open(filename, 'rb') as tmp:
         print_job(printer_uri='ipp://cups:631/classes/p',
                   job_name='foo',
+                  requesting_user_name='john-rambo',
                   ipp_attribute_fidelity=False,
                   document_name='foo.txt',
                   compression='gzip',
@@ -677,6 +678,7 @@ def test_print_job(_call_ipptool):
     ATTR charset attributes-charset utf-8
     ATTR language attributes-natural-language en
     ATTR uri printer-uri ipp://cups:631/classes/p
+    ATTR name requesting-user-name john-rambo
     ATTR name job-name foo
     ATTR boolean ipp-attribute-fidelity 0
     ATTR integer job-k-octets 1024
