@@ -666,7 +666,8 @@ def test_print_job(_call_ipptool):
                   media='iso-a4-white',
                   printer_resolution='600dpi',
                   print_quality='5',
-                  document_content=tmp.read())
+                  document_content=tmp.read(),
+                  ezeep_job_uuid='bla')
     request = _call_ipptool._mock_mock_calls[0][1][-1]
     expected_request = textwrap.dedent("""
     {
@@ -701,6 +702,7 @@ def test_print_job(_call_ipptool):
     ATTR keyword media iso-a4-white
     ATTR resolution printer-resolution 600dpi
     ATTR enum print-quality 5
+    ATTR text ezeep-job-uuid "bla"
     GROUP subscription-attributes-tag
     GROUP document-attributes-tag
     FILE /tmp/
