@@ -309,6 +309,9 @@ class PrinterAttributesGroup(colander.Schema):
     ppd_name = colander.SchemaNode(Name(), widget=IPPAttributeWidget())
     member_uris = colander.SchemaNode(Uri(), widget=IPPAttributeWidget())
 
+    # Always last
+    file = colander.SchemaNode(colander.String(), widget=IPPFileWidget())
+
 
 class BaseIPPSchema(colander.Schema):
     name = colander.SchemaNode(colander.String(), widget=IPPNameWidget())

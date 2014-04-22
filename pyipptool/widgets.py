@@ -18,6 +18,8 @@ class IPPNameWidget(Widget):
 
 class IPPFileWidget(Widget):
     def serialize(self, field, cstruct=None, readonly=False):
+        if cstruct is colander.null:
+            return ''
         if not isinstance(cstruct, basestring):
             raise ValueError('Wrong value provided for field {!r}'.format(
                 field.name))

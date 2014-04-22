@@ -97,6 +97,8 @@ def _get_filename_for_content(content):
     """
     file_ = None
     delete = False
+    if content is colander.null:
+        return content, delete
     if isinstance(content, file):
         # regular file
         file_ = content
@@ -468,7 +470,10 @@ class IPPToolWrapper(object):
                                 printer_state_message=colander.null,
                                 requesting_user_name_allowed=colander.null,
                                 requesting_user_name_denied=colander.null,
-                                printer_is_shared=colander.null):
+                                printer_is_shared=colander.null,
+                                ppd_content=colander.null,
+                                ):
+        filename, delete = _get_filename_for_content(ppd_content)
         kw = {'operation_attributes_tag':
               {'printer_uri': printer_uri},
               'printer_attributes_tag':
@@ -486,11 +491,16 @@ class IPPToolWrapper(object):
                'printer_state_message': printer_state_message,
                'requesting_user_name_allowed ': requesting_user_name_allowed,
                'requesting_user_name_denied': requesting_user_name_denied,
-               'printer_is_shared': printer_is_shared}}
+               'printer_is_shared': printer_is_shared,
+               'file': filename}}
 
         request = pretty_printer(cups_add_modify_printer_form.render(kw))
-        response = yield self._call_ipptool(request)
-        raise Return(response)
+        try:
+            response = yield self._call_ipptool(request)
+            raise Return(response)
+        finally:
+            if delete:
+                os.unlink(filename)
 
     @pyipptool_coroutine
     def cups_add_modify_class(self,

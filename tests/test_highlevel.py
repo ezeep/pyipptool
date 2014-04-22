@@ -109,6 +109,34 @@ def test_cups_add_modify_printer(_call_ipptool):
 
 
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
+def test_cups_add_modify_printer_with_ppd(_call_ipptool):
+    from pyipptool import cups_add_modify_printer
+    _call_ipptool.return_value = {'Tests': [{}]}
+    with tempfile.NamedTemporaryFile('rb') as tmp:
+        cups_add_modify_printer(
+            printer_uri='https://localhost:631/classes/PUBLIC-PDF',
+            device_uri='cups-pdf:/',
+            printer_is_shared=False,
+            ppd_content=tmp,
+        )
+        request = _call_ipptool._mock_mock_calls[0][1][-1]
+        expected_request = textwrap.dedent("""
+        {
+        NAME "CUPS Add Modify Printer"
+        OPERATION "CUPS-Add-Modify-Printer"
+        GROUP operation-attributes-tag
+        ATTR charset attributes-charset utf-8
+        ATTR language attributes-natural-language en
+        ATTR uri printer-uri https://localhost:631/classes/PUBLIC-PDF
+        GROUP printer-attributes-tag
+        ATTR boolean printer-is-shared 0
+        ATTR uri device-uri cups-pdf:/
+        FILE %s
+        }""" % tmp.name).strip()
+    assert request == expected_request, request
+
+
+@mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_get_job_attributes_with_job_id(_call_ipptool):
     from pyipptool import get_job_attributes
     get_job_attributes(
