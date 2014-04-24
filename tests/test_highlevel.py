@@ -379,6 +379,42 @@ def test_cups_get_devices(_call_ipptool):
 
 
 @mock.patch.object(pyipptool.wrapper, '_call_ipptool')
+def test_cups_get_ppd_with_printer_uri(_call_ipptool):
+    from pyipptool import cups_get_ppd
+    _call_ipptool.return_value = {'Tests': [{}]}
+    cups_get_ppd(printer_uri='ipp://cups:631/printers/p')
+    request = _call_ipptool._mock_mock_calls[0][1][0]
+    expected_request = textwrap.dedent("""
+    {
+    NAME "CUPS Get PPD"
+    OPERATION "CUPS-Get-PPD"
+    GROUP operation-attributes-tag
+    ATTR charset attributes-charset utf-8
+    ATTR language attributes-natural-language en
+    ATTR uri printer-uri ipp://cups:631/printers/p
+    }""").strip()
+    assert request == expected_request, request
+
+
+@mock.patch.object(pyipptool.wrapper, '_call_ipptool')
+def test_cups_get_ppd_with_ppd_name(_call_ipptool):
+    from pyipptool import cups_get_ppd
+    _call_ipptool.return_value = {'Tests': [{}]}
+    cups_get_ppd(ppd_name='ppd-for-my-printer')
+    request = _call_ipptool._mock_mock_calls[0][1][0]
+    expected_request = textwrap.dedent("""
+    {
+    NAME "CUPS Get PPD"
+    OPERATION "CUPS-Get-PPD"
+    GROUP operation-attributes-tag
+    ATTR charset attributes-charset utf-8
+    ATTR language attributes-natural-language en
+    ATTR name ppd-name ppd-for-my-printer
+    }""").strip()
+    assert request == expected_request, request
+
+
+@mock.patch.object(pyipptool.wrapper, '_call_ipptool')
 def test_cups_get_ppds(_call_ipptool):
     from pyipptool import cups_get_ppds
     _call_ipptool.return_value = {'Tests': [{}]}
