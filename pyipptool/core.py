@@ -22,6 +22,7 @@ from .forms import (cancel_job_form,
                     cups_delete_class_form,
                     cups_get_classes_form,
                     cups_get_devices_form,
+                    cups_get_ppd_form,
                     cups_get_ppds_form,
                     cups_get_printers_form,
                     cups_move_job_form,
@@ -588,6 +589,16 @@ class IPPToolWrapper(object):
                'requested_attributes': requested_attributes,
                'timeout': timeout}}
         request = pretty_printer(cups_get_devices_form.render(kw))
+        response = yield self._call_ipptool(request)
+        raise Return(response)
+
+    @pyipptool_coroutine
+    def cups_get_ppd(self, printer_uri=colander.null, ppd_name=colander.null):
+        kw = {'operation_attributes_tag':
+              {'printer_uri': printer_uri,
+               'ppd_name': ppd_name,
+               }}
+        request = pretty_printer(cups_get_ppd_form.render(kw))
         response = yield self._call_ipptool(request)
         raise Return(response)
 

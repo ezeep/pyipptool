@@ -17,6 +17,7 @@ cups_delete_printer = wrapper.cups_delete_printer
 cups_delete_class = wrapper.cups_delete_class
 cups_get_classes = wrapper.cups_get_classes
 cups_get_devices = wrapper.cups_get_devices
+cups_get_ppd = wrapper.cups_get_ppd
 cups_get_ppds = wrapper.cups_get_ppds
 cups_get_printers = wrapper.cups_get_printers
 cups_move_job = wrapper.cups_move_job

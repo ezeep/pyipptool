@@ -181,6 +181,7 @@ class OperationAttributesGroup(colander.Schema):
         widget=IPPAttributeWidget())
     ppd_model_number = colander.SchemaNode(colander.Integer(),
                                            widget=IPPAttributeWidget())
+    ppd_name = colander.SchemaNode(Name(), widget=IPPAttributeWidget())
     ppd_natural_language = colander.SchemaNode(NaturalLanguage(),
                                                widget=IPPAttributeWidget())
     ppd_product = colander.SchemaNode(Text(), widget=IPPAttributeWidget())
@@ -362,6 +363,11 @@ class CupsGetDevicesSchema(BaseIPPSchema):
     operation = 'CUPS-Get-Devices'
 
 
+class CupsGetPPDSchema(BaseIPPSchema):
+    name = 'CUPS Get PPD'
+    operation = 'CUPS-Get-PPD'
+
+
 class CupsGetPPDsSchema(BaseIPPSchema):
     name = 'CUPS Get PPDs'
     operation = 'CUPS-Get-PPDs'
@@ -497,6 +503,8 @@ cups_delete_class_schema = CupsDeleteClassSchema(
 cups_get_classes_schema = CupsGetClassesSchema(widget=IPPBodyWidget())
 
 cups_get_devices_schema = CupsGetDevicesSchema(widget=IPPBodyWidget())
+
+cups_get_ppd_schema = CupsGetPPDSchema(widget=IPPBodyWidget())
 
 cups_get_ppds_schema = CupsGetPPDsSchema(widget=IPPBodyWidget())
 
