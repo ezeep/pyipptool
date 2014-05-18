@@ -41,7 +41,7 @@ def test_ipp_attribute_widget_with_None():
     field = DummyField(schema, renderer=rendrer)
     with pytest.raises(ValueError) as exc_info:
         widget.serialize(field, None)
-    assert exc_info.value.message == "None value provided for 'name'"
+    assert str(exc_info.value) == "None value provided for 'name'"
 
 
 def test_ipp_display_widget():

@@ -190,8 +190,8 @@ def test_cups_add_modify_printer_form_with_None():
             {'operation_attributes_tag':
              {'printer_uri': 'https://localhost:631/printers/p0'},
              'printer_attributes_tag': {'printer_state_message': None}})
-    assert exec_info.value.message == ("None value provided for"
-                                       " 'printer_state_message'")
+    assert str(exec_info.value) == ("None value provided for"
+                                    " 'printer_state_message'")
 
 
 def test_cups_delete_printer_form():
@@ -599,7 +599,6 @@ def test_print_job_form():
          'document_attributes_tag':
          {'file': '/path/to/file.txt'}})
 
-    print request
     assert 'NAME "Print Job"' in request
     assert 'OPERATION "Print-Job"' in request
     assert ('ATTR uri printer-uri ipp://server:port/printers/name' in

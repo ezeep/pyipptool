@@ -1,11 +1,14 @@
-import BaseHTTPServer
 import os.path
-import SocketServer
 import socket
 import tempfile
 import textwrap
 import threading
 import time
+
+from future import standard_library
+with standard_library.hooks():
+    import http.server
+    import socketserver
 
 import mock
 import pytest
@@ -179,7 +182,7 @@ def test_timeout():
     from pyipptool.core import TimeoutError
     from pyipptool.forms import get_subscriptions_form
 
-    class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
+    class Handler(http.server.BaseHTTPRequestHandler):
         """
         HTTP Handler that will make ipptool waiting
         """
@@ -193,7 +196,7 @@ def test_timeout():
     PORT = 6789
     while True:
         try:
-            httpd = SocketServer.TCPServer(("", PORT), Handler)
+            httpd = socketserver.TCPServer(("", PORT), Handler)
         except socket.error as exe:
             if exe.errno in (48, 98):
                 PORT += 1

@@ -1,5 +1,6 @@
-from deform.widget import MappingWidget, SequenceWidget, Widget
 import colander
+from deform.widget import MappingWidget, SequenceWidget, Widget
+from future.builtins import bytes, str
 
 
 class IPPDisplayWidget(Widget):
@@ -20,7 +21,7 @@ class IPPFileWidget(Widget):
     def serialize(self, field, cstruct=None, readonly=False):
         if cstruct is colander.null:
             return ''
-        if not isinstance(cstruct, basestring):
+        if not isinstance(cstruct, (str, bytes)):
             raise ValueError('Wrong value provided for field {!r}'.format(
                 field.name))
         return 'FILE {}'.format(cstruct)
