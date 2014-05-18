@@ -1,6 +1,7 @@
 language: python
 python:
     - "2.7"
+    - "3.4"
 
 
 before_install:
@@ -13,11 +14,10 @@ before_install:
     - sudo pip install -U pip setuptools
 
 install:
-    - pip install -e . pytest-cov coveralls pytest mock tornado pkipplib pep8
+    - pip install -e . pytest-cov coveralls pytest mock tornado pkipplib pytest-pep8
 
 script:
-    - py.test --cov pyipptool --ignore ipptool-20130731
-    - pep8 pyipptool tests
+    - py.test --cov pyipptool --ignore ipptool-20130731 --pep8
 
 after_success:
     coveralls
