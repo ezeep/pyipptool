@@ -21,7 +21,7 @@ TRAVIS_USER = os.getenv('TRAVIS_USER', 'travis')
 TRAVIS_BUILD_DIR = os.getenv('TRAVIS_BUILD_DIR')
 
 
-@pytest.mark.skipif(sys.version_info > (2, 7),
+@pytest.mark.skipif(sys.version_info > (3,),
                     reason='pkipplib is only python2 compatible')
 class AsyncSubprocessTestCase(tornado.testing.AsyncTestCase):
 
