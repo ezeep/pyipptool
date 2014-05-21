@@ -7,7 +7,12 @@ import subprocess
 import tempfile
 import time
 import threading
-import urlparse
+
+from future import standard_library
+from future.builtins import bytes, str
+from future.utils import PY3
+with standard_library.hooks():
+    import urllib.parse
 
 import colander
 
@@ -71,7 +76,7 @@ def pyipptool_coroutine(method):
     def sync_coroutine_consumer(*args, **kw):
         gen = method(*args, **kw)
         while True:
-            value = gen.next()
+            value = next(gen)
             try:
                 gen.send(value)
             except Return as returned:
@@ -100,14 +105,10 @@ def _get_filename_for_content(content):
     delete = False
     if content is colander.null:
         return content, delete
-    if isinstance(content, file):
-        # regular file
-        file_ = content
-    if isinstance(getattr(content, 'file', None), file):
+    if hasattr(getattr(content, 'file', None), 'read'):
         # tempfile
         file_ = content
-    if (hasattr(content, 'read') and hasattr(content, 'read') and
-            hasattr(content, 'tell')):
+    if hasattr(content, 'read'):
         # most likely a file like object
         file_ = content
     if file_ is not None:
@@ -119,8 +120,8 @@ def _get_filename_for_content(content):
                 delete = True
                 shutil.copyfileobj(file_, tmp)
             name = tmp.name
-    elif isinstance(content, basestring):
-        with tempfile.NamedTemporaryFile(delete=False, mode='w') as tmp:
+    elif isinstance(content, (str, bytes)):
+        with tempfile.NamedTemporaryFile(delete=False) as tmp:
             delete = True
             tmp.write(content)
         name = tmp.name
@@ -169,13 +170,13 @@ class IPPToolWrapper(object):
     @property
     def authenticated_uri(self):
         if 'login' in self.config and 'password' in self.config:
-            parsed_url = urlparse.urlparse(self.config['cups_uri'])
+            parsed_url = urllib.parse.urlparse(self.config['cups_uri'])
             authenticated_netloc = '{}:{}@{}'.format(self.config['login'],
                                                      self.config['password'],
                                                      parsed_url.netloc)
-            authenticated_uri = urlparse.ParseResult(parsed_url[0],
-                                                     authenticated_netloc,
-                                                     *parsed_url[2:])
+            authenticated_uri = urllib.parse.ParseResult(parsed_url[0],
+                                                         authenticated_netloc,
+                                                         *parsed_url[2:])
             return authenticated_uri.geturl()
         return self.config['cups_uri']
 
@@ -194,7 +195,7 @@ class IPPToolWrapper(object):
 
     def _call_ipptool(self, request):
         with tempfile.NamedTemporaryFile(delete=False) as temp_file:
-            temp_file.write(request)
+            temp_file.write(bytes(request, encoding='utf-8'))
         process = subprocess.Popen([self.config['ipptool_path'],
                                     self.authenticated_uri,
                                     '-X',
@@ -213,7 +214,10 @@ class IPPToolWrapper(object):
         timer.cancel()
         if future:
             raise TimeoutError
-        result = plistlib.readPlistFromString(stdout)
+        if PY3:
+            result = plistlib.loads(stdout)
+        else:
+            result = plistlib.readPlistFromString(stdout)
         try:
             return result['Tests'][0]
         except (IndexError, KeyError):
@@ -867,7 +871,7 @@ class AsyncIPPToolWrapper(IPPToolWrapper):
     @coroutine
     def _call_ipptool(self, request):
         with tempfile.NamedTemporaryFile(delete=False) as temp_file:
-            temp_file.write(request)
+            temp_file.write(bytes(request, encoding='utf-8'))
         from tornado.process import Subprocess
         process = Subprocess([self.config['ipptool_path'],
                               self.authenticated_uri, '-X',

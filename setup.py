@@ -37,10 +37,11 @@ setup(
     long_description=description,
     license='Apache Software License',
     packages=('pyipptool',),
-    install_requires=('deform>=2.0a2',),
+    install_requires=('deform>=2.0a2', 'future',),
     extra_requires={'Tornado': ('tornado', 'futures')},
-    tests_require=('mock', 'pytest', 'coverage', 'pep8',
-                   'pytest-cov', 'coveralls', 'pkipplib', 'tornado'),
+    tests_require=('mock', 'pytest', 'coverage', 'pytest-pep8',
+                   'pytest-cov', 'coveralls', 'pkipplib', 'tornado',
+                   'tox',),
     include_package_data=True,
     test_suite='tests',
     cmdclass = {'test': PyTest},
@@ -51,6 +52,7 @@ setup(
         'License :: OSI Approved :: Apache Software License',
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.4',
         'Topic :: Printing',
     ]
 )

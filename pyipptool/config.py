@@ -1,30 +1,33 @@
-import ConfigParser
 import os
+
+from future import standard_library
+with standard_library.hooks():
+    import configparser
 
 
 def read_config(paths=()):
     config = {}
-    fs_config = ConfigParser.ConfigParser()
+    fs_config = configparser.ConfigParser()
     fs_config.read(paths)
     config['cups_uri'] = fs_config.get('main', 'cups_uri')
     config['ipptool_path'] = fs_config.get('main', 'ipptool_path')
     try:
         config['login'] = fs_config.get('main', 'login')
-    except ConfigParser.NoOptionError:
+    except configparser.NoOptionError:
         pass
     try:
         config['password'] = fs_config.get('main', 'password')
-    except ConfigParser.NoOptionError:
+    except configparser.NoOptionError:
         pass
     try:
         config['graceful_shutdown_time'] = fs_config.getint(
             'main',
             'graceful_shutdown_time')
-    except ConfigParser.NoOptionError:
+    except configparser.NoOptionError:
         config['graceful_shutdown_time'] = 2
     try:
         config['timeout'] = fs_config.getint('main', 'timeout')
-    except ConfigParser.NoOptionError:
+    except configparser.NoOptionError:
         config['timeout'] = 10
     return config
 

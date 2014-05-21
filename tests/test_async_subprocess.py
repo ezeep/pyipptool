@@ -1,19 +1,28 @@
-import BaseHTTPServer
 import os
-import SocketServer
 import socket
 import threading
 import time
+import sys
 
-from pkipplib import pkipplib
+from future import standard_library
+from future.utils import PY3
+with standard_library.hooks():
+    import http.server
+    import socketserver
+
 import pytest
 import tornado.testing
+from past import autotranslate
+autotranslate(['pkipplib'])
+from pkipplib import pkipplib
 
 
 TRAVIS_USER = os.getenv('TRAVIS_USER', 'travis')
 TRAVIS_BUILD_DIR = os.getenv('TRAVIS_BUILD_DIR')
 
 
+@pytest.mark.skipif(sys.version_info > (3,),
+                    reason='pkipplib is only python2 compatible')
 class AsyncSubprocessTestCase(tornado.testing.AsyncTestCase):
 
     ipptool_path = ('%s/ipptool-20130731/ipptool' % TRAVIS_BUILD_DIR if
@@ -29,7 +38,7 @@ class AsyncSubprocessTestCase(tornado.testing.AsyncTestCase):
         from pyipptool.core import AsyncIPPToolWrapper
         from pyipptool.forms import get_subscriptions_form
 
-        class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
+        class Handler(http.server.BaseHTTPRequestHandler):
             """
             HTTP Handler that will make ipptool waiting
             """
@@ -37,9 +46,13 @@ class AsyncSubprocessTestCase(tornado.testing.AsyncTestCase):
 
             def do_POST(self):
                 # return a real IPP Response thanks to pkipplib
+                if PY3:
+                    content_length = int(self.headers.get('content-length'))
+                else:
+                    content_length = int(
+                        self.headers.getheader('content-length'))
                 ipp_request = pkipplib.IPPRequest(
-                    self.rfile.read(
-                        int(self.headers.getheader('content-length'))))
+                    self.rfile.read(content_length))
                 ipp_request.parse()
                 try:
                     self.send_response(200)
@@ -61,7 +74,7 @@ class AsyncSubprocessTestCase(tornado.testing.AsyncTestCase):
         PORT = 6789
         while True:
             try:
-                httpd = SocketServer.TCPServer(("", PORT), Handler)
+                httpd = socketserver.TCPServer(("", PORT), Handler)
             except socket.error as exe:
                 if exe.errno in (48, 98):
                     PORT += 1
@@ -110,7 +123,7 @@ class AsyncSubprocessTestCase(tornado.testing.AsyncTestCase):
         from pyipptool.core import AsyncIPPToolWrapper, TimeoutError
         from pyipptool.forms import get_subscriptions_form
 
-        class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
+        class Handler(http.server.BaseHTTPRequestHandler):
             """
             HTTP Handler that will make ipptool waiting
             """
@@ -125,7 +138,7 @@ class AsyncSubprocessTestCase(tornado.testing.AsyncTestCase):
         PORT = 6789
         while True:
             try:
-                httpd = SocketServer.TCPServer(("", PORT), Handler)
+                httpd = socketserver.TCPServer(("", PORT), Handler)
             except socket.error as exe:
                 if exe.errno in (48, 98):
                     PORT += 1
